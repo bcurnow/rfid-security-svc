@@ -1,0 +1,2 @@
+include rfidsecuritysvc/db/schema.sql
+global-exclude *.pyc
