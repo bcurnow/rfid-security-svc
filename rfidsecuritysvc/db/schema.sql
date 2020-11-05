@@ -25,5 +25,6 @@ CREATE TABLE media_perm (
   media_id TEXT NOT NULL,
   perm_id INTEGER NOT NULL,
   FOREIGN KEY (media_id) REFERENCES media (id),
-  FOREIGN KEY (perm_id) REFERENCES permission (id)
+  FOREIGN KEY (perm_id) REFERENCES permission (id),
+  CONSTRAINT unique_association UNIQUE (media_id, perm_id)
 );
