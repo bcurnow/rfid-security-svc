@@ -1,7 +1,7 @@
 #!/bin/bash
 
 currentDir=$(dirname $0)
-currentDir=$(cd ${currentDir} && basename $(pwd))
+currentDir=$(cd ${currentDir} && pwd)
 
 export FLASK_APP=rfidsecuritysvc
 export FLASK_ENV=development
