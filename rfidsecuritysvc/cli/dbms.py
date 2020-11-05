@@ -4,10 +4,10 @@ from rfidsecuritysvc.db import dbms
 
 group = AppGroup('db')
 
-def register(app)
-  parent.add_command(group)
+def register(app):
+  app.cli.add_command(group)
 
-@db.command('init')
+@group.command('init')
 @with_appcontext
 def init_db_command():
   """Clear the existing data and create new tables."""
