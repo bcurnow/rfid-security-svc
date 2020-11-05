@@ -53,5 +53,6 @@ components:
           type: string
           example: Anna's MagicBand
         desc:
-          type: string
+          type: string 
           example: This is the MagicBand that Anna got from Elsa
+          nullable: true
