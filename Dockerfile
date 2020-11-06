@@ -8,7 +8,8 @@ RUN if [ ${USER_ID:-0} -ne 0 ] && [ ${GROUP_ID:-0} -ne 0 ]; then \
     useradd -l -u ${USER_ID} -g flask flask && \
     install -d -m 0755 -o flask -g flask /home/flask && \
     mkdir -p /etc/sudoers.d && \
-    echo "flask ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/flask-all-nopasswd \
+    echo "flask ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/flask-all-nopasswd && \
+    echo "PATH=.:\${PATH}\nset -o vi" > /home/flask/.bashrc \
 ;fi
 
 COPY ./requirements.txt /var/tmp
