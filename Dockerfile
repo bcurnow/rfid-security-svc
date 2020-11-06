@@ -16,7 +16,7 @@ COPY ./.vimrc /home/flask/.vimrc
 
 RUN apt-get update && \
     apt-get -y upgrade && \
-    apt-get -y install --no-install-recommends vim sudo && \
+    apt-get -y install --no-install-recommends vim sudo less && \
     pip install -r /var/tmp/requirements.txt && \
     rm -rf /var/lib/apt/lists/*
 
