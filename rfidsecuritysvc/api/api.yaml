@@ -1,0 +1,291 @@
+---
+openapi: 3.0.0
+info:
+  title: RFID Security Service
+  description: This API allows the management of RFID media, permissions and associations.
+  contact:
+    email: Brian.Curnow@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: /api/v1.0
+  description: Version 1.0.
+tags:
+  - name: media
+    description: Media APIs.
+  - name: config
+    description: Config APIs.
+paths:
+  /media:
+    get:
+      tags:
+        - media
+      summary: Retrieves all the media
+      description: |
+        Retrieves all the media records, this implementation doesn't currently support pagination.
+      responses:
+        '200':
+          description: Array of Media objects.
+          content:
+           application/json:
+             schema:
+               type: array
+               items:
+                 $ref: '#/components/schemas/Media'
+        '400':
+          description: Invalid request.
+        '401':
+          description: You must authenticate to access this path.
+    post:
+      tags:
+        - media
+      summary: Creates a new media
+      description: |
+        Accepts a JSON payload containing a full media record and creates it.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Media'
+      responses: 
+        '201':
+          description: New record created.
+        '409':
+          description: Record already exists.
+        '401':
+          description: You must authenticate to access this path.
+  /media/{id}:
+    get:
+      tags:
+        - media
+      summary: Retrieves media by id
+      description: |
+        Takes a id and returns the media.
+      parameters:
+      - name: id
+        in: path
+        description: The id of the requested media.
+        required: true
+        schema:
+          type: string
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      responses:
+        '200':
+          description: Media object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Media'
+        '400':
+          description: Invalid request.
+        '401':
+          description: You must authenticate to access this path.
+        '404':
+          description: Record not found.
+    delete:
+      tags:
+        - media
+      summary: Deletes media by id
+      description: |
+        Takes a id and deletes that record. This method does not fail if the media does not exist as this is considered success.
+      parameters:
+      - name: id
+        in: path
+        description: The id of the media to delete.
+        required: true
+        schema:
+          type: string
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      responses:
+        '200':
+          description: Record was either deleted or did not exist.
+        '401':
+          description: You must authenticate to access this path.
+    put:
+      tags:
+        - media
+      summary: Updates the media by id
+      description: | 
+        Accepts a JSON payload containing a full media record and updates it. The id is optional in the payload and will be ignored if present.
+      parameters:
+      - name: id
+        in: path
+        description: The id of the media to update.
+        required: true
+        schema:
+          type: string
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SimpleMedia'
+            example:
+              name: Anna's MagicBand
+              desc: This is the MagicBand that Anna got from Elsa
+      responses:
+        '200':
+          description: Record was updated.
+        '201':
+          description: Record did not exist and was created.
+        '401':
+          description: You must authenticate to access this path.
+  /config:
+    get:
+      tags:
+        - config
+      summary: Retrieves all the config
+      description: |
+        Retrieves all the config records, this implementation doesn't currently support pagination.
+      responses:
+        '200':
+          description: Array of Config objects.
+          content:
+           application/json:
+             schema:
+               type: array
+               items:
+                 $ref: '#/components/schemas/Config'
+        '400':
+          description: Invalid request.
+        '401':
+          description: You must authenticate to access this path.
+    post:
+      tags:
+        - config
+      summary: Creates a new config
+      description: |
+        Accepts a JSON payload containing a full config record and creates it.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Config'
+      responses: 
+        '201':
+          description: New record created.
+        '409':
+          description: Record already exists.
+        '401':
+          description: You must authenticate to access this path.
+  /config/{key}:
+    get:
+      tags:
+        - config
+      summary: Retrieves config by key
+      description: |
+        Takes a key and returns the config.
+      parameters:
+      - name: key
+        in: path
+        description: The key of the requested config.
+        required: true
+        schema:
+          type: string
+          example: Admin User
+      responses:
+        '200':
+          description: Config object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Config'
+        '400':
+          description: Invalid request.
+        '401':
+          description: You must authenticate to access this path.
+        '404':
+          description: Record not found.
+    delete:
+      tags:
+        - config
+      summary: Deletes config by key
+      description: |
+        Takes a key and deletes that record. This method does not fail if the config does not exist as this is considered success.
+      parameters:
+      - name: key
+        in: path
+        description: The key of the config to delete.
+        required: true
+        schema:
+          type: string
+          example: Admin User
+      responses:
+        '200':
+          description: Record was either deleted or did not exist.
+        '401':
+          description: You must authenticate to access this path.
+    put:
+      tags:
+        - config
+      summary: Updates the config by key
+      description: | 
+        Accepts a JSON payload containing a full config record and updates it. The key is optional in the object and will be ignored.
+      parameters:
+      - name: key
+        in: path
+        description: The key of the config to update.
+        required: true
+        schema:
+          type: string
+          example: Admin User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SimpleConfig'
+            example:
+              value: admin
+      responses:
+        '200':
+          description: Record was updated.
+        '201':
+          description: Record did not exist and was created.
+        '401':
+          description: You must authenticate to access this path.
+components:
+  schemas:
+    SimpleConfig:
+      required:
+      - value
+      type: object
+      properties:
+        key:
+          type: string
+          example: Admin User
+        value:
+          type: string
+          example: admin
+    Config:
+      allOf:
+        - $ref: '#/components/schemas/SimpleConfig'
+        - type: object
+          required:
+          - key
+    SimpleMedia:
+      required:
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        name:
+          type: string
+          example: Anna's MagicBand
+        desc:
+          type: string
+          example: This is the MagicBand that Anna got from Elsa
+          nullable: true
+    Media:
+      allOf:
+        - $ref: '#/components/schemas/SimpleMedia'
+        - type: object
+          required:
+          - id
