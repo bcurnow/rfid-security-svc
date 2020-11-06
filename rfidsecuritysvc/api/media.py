@@ -1,6 +1,34 @@
-from rfidsecuritysvc.model import media
+import rfidsecuritysvc.exception as exception
+from rfidsecuritysvc.model import media as model
 
-def get(media_id):
-  m = media.get(media_id)
-  if m: return m.to_json()
-  return f"No media with id '{media_id}'.", 404
+def get(id):
+    m = model.get(id)
+    if m: return m.to_json()
+    return f'Object with id "{id}" does not exist.', 404
+
+def search():
+    results = []
+    for m in model.list():
+        results.append(m.to_json())
+
+    return results
+
+def post(body):
+    try:
+        model.create(**body)
+        return None, 201
+    except exception.DuplicateMediaError:
+        return f'Object with id "{body["id"]}" or name "{body["name"]}" already exists.', 409
+
+def delete(id):
+    model.delete(id)
+    return None, 200 
+
+def put(id, body):
+    try:
+        model.update(id, body['name'], body['desc'])
+        return None, 200
+    except exception.MediaNotFoundError:
+        model.create(id, body['name'], body['desc'])
+        return None, 201
+
