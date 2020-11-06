@@ -10,7 +10,7 @@ CREATE TABLE config (
 
 CREATE TABLE media (
   id TEXT PRIMARY KEY,
-  name TEXT NOT NULL,
+  name TEXT UNIQUE NOT NULL,
   desc TEXT
 );
 
