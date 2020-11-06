@@ -16,9 +16,7 @@ then
   else
     echo "Pid ${pid} is not a Flask process" >&2
     rm ${pidFile}
-    exit 1
   fi
 else
   echo "Flask is not currently running, can't find ${currentDir}/flask.pid" >&2
-  exit 1
 fi
