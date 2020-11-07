@@ -1,4 +1,5 @@
 import rfidsecuritysvc.exception as exception
+from rfidsecuritysvc.api import RECORD_COUNT_HEADER
 from rfidsecuritysvc.model import config as model
 
 def get(key):
@@ -21,8 +22,7 @@ def post(body):
         return f'Object with key "{body["key"]}" already exists.', 409
 
 def delete(key):
-    model.delete(key)
-    return None, 200 
+    return None, 200, {RECORD_COUNT_HEADER: model.delete(key)}
 
 def put(key, body):
     try:
