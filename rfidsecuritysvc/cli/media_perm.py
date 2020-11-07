@@ -31,17 +31,16 @@ def list():
 @click.pass_context
 def create(ctx, media_id, perm_id):
     """Manually adds a record to the table."""
-    if not media.get(media_id):
-        ctx.fail(click.style('No media found with id "{media_id}".', fg='red'))
-
-    if not permission.get(perm_id):
-        ctx.fail(click.style('No permission found with id "{perm_id}".', fg='red'))
-
     try:
         model.create(media_id, perm_id)
         ctx.invoke(list)
     except exception.DuplicatePermissionError:
         ctx.fail(click.style(f'Record with media_id "{media_id}" and perm_id "{perm_id}".', fg='read'))
+    except exception.MediaNotFoundError:
+        ctx.fail(click.style(f'No media found with id "{media_id}".', fg='red'))
+    except exception.PermissionNotFoundError:
+        ctx.fail(click.style(f'No permission found with id "{perm_id}".', fg='red'))
+
 
 @group.command('delete')
 @click.argument('id')
