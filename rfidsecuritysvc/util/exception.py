@@ -1,5 +1,6 @@
 import json
 from flask import Response
+
 def render_unauthorized(e):
     obj=json.dumps({
         'title': 'Unauthorized',
