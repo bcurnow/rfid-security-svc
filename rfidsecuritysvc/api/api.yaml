@@ -17,6 +17,8 @@ tags:
     description: Media APIs.
   - name: config
     description: Config APIs.
+security:
+  - ApiKey: []
 paths:
   /media:
     get:
@@ -37,7 +39,7 @@ paths:
         '400':
           description: Invalid request.
         '401':
-          description: You must authenticate to access this path.
+          $ref: "#/components/responses/UnauthorizedError"
     post:
       tags:
         - media
@@ -55,8 +57,10 @@ paths:
           description: New record created.
         '409':
           description: Record already exists.
+        '400':
+          description: Invalid request
         '401':
-          description: You must authenticate to access this path.
+          $ref: "#/components/responses/UnauthorizedError"
   /media/{id}:
     get:
       tags:
@@ -82,7 +86,7 @@ paths:
         '400':
           description: Invalid request.
         '401':
-          description: You must authenticate to access this path.
+          $ref: "#/components/responses/UnauthorizedError"
         '404':
           description: Record not found.
     delete:
@@ -102,8 +106,10 @@ paths:
       responses:
         '200':
           description: Record was either deleted or did not exist.
+        '400':
+          description: Invalid request
         '401':
-          description: You must authenticate to access this path.
+          $ref: "#/components/responses/UnauthorizedError"
     put:
       tags:
         - media
@@ -132,8 +138,10 @@ paths:
           description: Record was updated.
         '201':
           description: Record did not exist and was created.
+        '400':
+          description: Invalid request
         '401':
-          description: You must authenticate to access this path.
+          $ref: "#/components/responses/UnauthorizedError"
   /config:
     get:
       tags:
@@ -153,7 +161,7 @@ paths:
         '400':
           description: Invalid request.
         '401':
-          description: You must authenticate to access this path.
+          $ref: "#/components/responses/UnauthorizedError"
     post:
       tags:
         - config
@@ -169,10 +177,12 @@ paths:
       responses: 
         '201':
           description: New record created.
+        '400':
+          description: Invalid request
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
         '409':
           description: Record already exists.
-        '401':
-          description: You must authenticate to access this path.
   /config/{key}:
     get:
       tags:
@@ -198,7 +208,7 @@ paths:
         '400':
           description: Invalid request.
         '401':
-          description: You must authenticate to access this path.
+          $ref: "#/components/responses/UnauthorizedError"
         '404':
           description: Record not found.
     delete:
@@ -218,8 +228,10 @@ paths:
       responses:
         '200':
           description: Record was either deleted or did not exist.
+        '400':
+          description: Invalid request
         '401':
-          description: You must authenticate to access this path.
+          $ref: "#/components/responses/UnauthorizedError"
     put:
       tags:
         - config
@@ -247,8 +259,10 @@ paths:
           description: Record was updated.
         '201':
           description: Record did not exist and was created.
+        '400':
+          description: Invalid request
         '401':
-          description: You must authenticate to access this path.
+          $ref: "#/components/responses/UnauthorizedError"
 components:
   schemas:
     SimpleConfig:
@@ -289,3 +303,17 @@ components:
         - type: object
           required:
           - id
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-RFIDSECURITYSVC-API-KEY
+      x-apikeyInfoFunc : rfidsecuritysvc.api.auth.verify_apikey
+  responses:
+    UnauthorizedError:
+      description: API key is missing or invalid
+      headers:
+        WWW_Authenticate:
+          schema:
+            type: string
+          description: You must provide the X-RFIDSECURITYSVC-API-KEY header with an api key
