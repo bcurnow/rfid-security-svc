@@ -17,7 +17,7 @@ CREATE TABLE media (
 CREATE TABLE permission (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT UNIQUE NOT NULL,
-  desc TEX 
+  desc TEXT
 );
 
 CREATE TABLE media_perm (
