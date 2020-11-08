@@ -17,7 +17,7 @@ def list():
 
     return result  
 
-def create(id, name, desc):
+def create(id, name, desc=None):
     return table.create(id, name, desc)
 
 def delete(id):
