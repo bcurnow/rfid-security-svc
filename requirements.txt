@@ -3,3 +3,4 @@ pytest
 coverage
 wheel
 connexion[swagger-ui]
+blinker
