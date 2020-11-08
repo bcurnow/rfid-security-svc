@@ -132,3 +132,4 @@ dmypy.json
 flask.pid
 flask.log
 *.swp
+test.apikey
