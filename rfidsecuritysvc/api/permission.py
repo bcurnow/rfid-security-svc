@@ -26,8 +26,7 @@ def delete(name):
 
 def put(name, body):
     try:
-        model.update_by_name(name, body['desc'])
-        return None, 200
+        return None, 200, {RECORD_COUNT_HEADER: model.update_by_name(name, body['desc'])}
     except exception.PermissionNotFoundError:
         model.create(name, body['desc'])
-        return None, 201
+        return None, 201, {RECORD_COUNT_HEADER: 1}
