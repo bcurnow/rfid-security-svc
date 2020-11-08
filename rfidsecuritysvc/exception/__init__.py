@@ -24,3 +24,9 @@ class MediaPermNotFoundError(BaseError):
 
 class DuplicateMediaPermError(BaseError):
     pass
+
+class DuplicateAssociationError(BaseError):
+    pass
+
+class AssociationNotFoundError(BaseError):
+    pass
