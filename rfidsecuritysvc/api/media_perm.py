@@ -32,7 +32,7 @@ def put(media_id, perm_id):
     try:
         # Since there are no additional fields beyond media_id and perm_id, assume this is a create
         model.create(media_id, perm_id)
-        return None, 201
+        return None, 201, {RECORD_COUNT_HEADER: 1}
     except exception.DuplicateMediaPermError:
         # This already exists so simply return a 200 because there's nothing else to update
-        return None, 200
+        return None, 200, {RECORD_COUNT_HEADER: 0}
