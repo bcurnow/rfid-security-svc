@@ -39,6 +39,9 @@ def update(id, name, desc):
 
 def update_by_name(name, desc):
     db = get_db()
-    if db.execute('UPDATE permission SET desc = ? WHERE NAME = ?', (desc,name)).rowcount == 0:
+    count = db.execute('UPDATE permission SET desc = ? WHERE NAME = ?', (desc,name)).rowcount
+    if count == 0:
         raise exception.PermissionNotFoundError
+
     db.commit()
+    return count
