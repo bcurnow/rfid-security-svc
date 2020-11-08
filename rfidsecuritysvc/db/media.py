@@ -24,6 +24,9 @@ def delete(id):
 
 def update(id, name, desc):
     db = get_db()
-    if db.execute('UPDATE media SET name = ?, desc = ? WHERE id = ?', (name, desc, id)).rowcount == 0:
+    count = db.execute('UPDATE media SET name = ?, desc = ? WHERE id = ?', (name, desc, id)).rowcount
+    if count == 0:
         raise exception.MediaNotFoundError
+
     db.commit();
+    return count

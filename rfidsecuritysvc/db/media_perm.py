@@ -33,6 +33,9 @@ def delete_by_media_and_perm(media_id, perm_id):
 
 def update(id, media_id, perm_id):
     db = get_db()
-    if db.execute('UPDATE media_perm SET media_id = ?, perm_id = ? WHERE id = ?', (media_id, perm_id, id)).rowcount == 0:
+    count = db.execute('UPDATE media_perm SET media_id = ?, perm_id = ? WHERE id = ?', (media_id, perm_id, id)).rowcount
+    if count == 0:
         raise exception.MediaPermNotFoundError
+
     db.commit();
+    return count
