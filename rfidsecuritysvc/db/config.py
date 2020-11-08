@@ -24,6 +24,9 @@ def delete(key):
 
 def update(key, value):
     db = get_db()
-    if db.execute('UPDATE config SET value = ? WHERE key = ?', (value, key)).rowcount == 0:
+    count =  db.execute('UPDATE config SET value = ? WHERE key = ?', (value, key)).rowcount
+    if count == 0:
         raise exception.ConfigNotFoundError
+    
     db.commit();
+    return count
