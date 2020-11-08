@@ -1,8 +1,8 @@
 #!/bin/bash
 
-currentDir=$(dirname $0)
-currentDir=$(cd ${currentDir} && pwd)
-pidFile=${currentDir}/flask.pid
+rootDir=$(dirname $0)
+rootDir=$(cd ${rootDir}/.. && pwd)
+pidFile=${rootDir}/flask.pid
 
 if [ -f ${pidFile} ]
 then
@@ -14,9 +14,9 @@ then
     kill ${pid}
     rm ${pidFile}
   else
-    echo "Pid ${pid} is not a Flask process" >&2
+    echo "Pid ${pid} is not a Flask process, cleaning up ${pidFile}" >&2
     rm ${pidFile}
   fi
 else
-  echo "Flask is not currently running, can't find ${currentDir}/flask.pid" >&2
+  echo "Flask is not currently running, can't find ${pidFile}" >&2
 fi
