@@ -13,146 +13,134 @@ servers:
 - url: /api/v1.0
   description: Version 1.0.
 tags:
-  - name: media
-    description: Media APIs
+  - name: association
+    description: Association APIs
+  - name: authorized
+    description: Authorization APIs
   - name: config
     description: Config APIs
-  - name: permission
-    description: Permission APIs
+  - name: media
+    description: Media APIs
   - name: media-perm
     description: Media Permission APIs
+  - name: permission
+    description: Permission APIs
 security:
   - ApiKey: []
 paths:
-  /media:
+  /association:
     get:
       tags:
-        - media
-      summary: Retrieves all the media
+        - association
+      summary: Retrieves a list of all associations
       description: |
-        Retrieves all the media records, this implementation doesn't currently support pagination.
+        Retrieves an array of all the media_id to permission name associations. This implementation does not currently support pagination.
       responses:
         '200':
-          description: Array of Media objects.
+          description: Array of Association objects.
           content:
-           application/json:
-             schema:
-               type: array
-               items:
-                 $ref: '#/components/schemas/Media'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Association'
         '400':
           description: Invalid request.
         '401':
-          $ref: "#/components/responses/UnauthorizedError"
+          $ref: '#/components/responses/UnauthorizedError'
     post:
       tags:
-        - media
-      summary: Creates a new media
+        - association
+      summary: Associates media with a permission
       description: |
-        Accepts a JSON payload containing a full media record and creates it.
+        Business interface which takes a media_id and a permission name and creates an association.
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Media'
-      responses: 
+              $ref: '#/components/schemas/Association'
+      responses:
         '201':
           description: New record created.
         '409':
           description: Record already exists.
         '400':
-          description: Invalid request
+          description: Invalid request.
         '401':
           $ref: "#/components/responses/UnauthorizedError"
-  /media/{id}:
-    get:
+  /association/media/{media_id}/perm/{perm_name}:
+    delete:
       tags:
-        - media
-      summary: Retrieves media by id
+        - association
+      summary: Deletes an association
       description: |
-        Takes a id and returns the media.
+        Business interface which takes a media_id and a permision name and deletes the associate.
       parameters:
-      - name: id
+      - name: media_id
         in: path
-        description: The id of the requested media.
+        description: The media_id of the association.
         required: true
         schema:
           type: string
           example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      - name: perm_name
+        in: path
+        description: The permmission name of the association.
+        required: true
+        schema:
+          type: string
+          example: Open Door
       responses:
         '200':
-          description: Media object.
-          content:
-            application/json:
+          description: Record was either deleted or did not exist.
+          headers:
+            x-record-count:
               schema:
-                $ref: '#/components/schemas/Media'
+                type: integer
+              description: The actual number of records deleted, could be zero if the record did not exist.
         '400':
           description: Invalid request.
         '401':
           $ref: "#/components/responses/UnauthorizedError"
-        '404':
-          description: Record not found.
-    delete:
+  /authorized/media/{media_id}/perm/{perm_name}:
+    get:
       tags:
-        - media
-      summary: Deletes media by id
+        - authorized
+      summary: Checks if media has a permission
       description: |
-        Takes a id and deletes that record. This method does not fail if the media does not exist as this is considered success.
+        Checks if the supplied media_id has the supplied permission
       parameters:
-      - name: id
+      - name: media_id
         in: path
-        description: The id of the media to delete.
+        description: The media_id to check
         required: true
         schema:
           type: string
           example: d290f1ee-6c54-4b01-90e6-d701748f0851
-      responses:
-        '200':
-          description: Record was either deleted or did not exist.
-        '400':
-          description: Invalid request
-        '401':
-          $ref: "#/components/responses/UnauthorizedError"
-    put:
-      tags:
-        - media
-      summary: Updates the media by id
-      description: | 
-        Accepts a JSON payload containing a full media record and updates it. The id is optional in the payload and will be ignored if present.
-      parameters:
-      - name: id
+      - name: perm_name
         in: path
-        description: The id of the media to update.
+        description: The permmission name to check
         required: true
         schema:
           type: string
-          example: d290f1ee-6c54-4b01-90e6-d701748f0851
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SimpleMedia'
-            example:
-              name: Anna's MagicBand
-              desc: This is the MagicBand that Anna got from Elsa
+          example: Open Door
       responses:
         '200':
-          description: Record was updated.
-        '201':
-          description: Record did not exist and was created.
+          description: Media has the supplied permission.
         '400':
-          description: Invalid request
+          description: Invalid request.
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+        '403':
+          description: Media does not have the supplied permission
   /config:
     get:
       tags:
         - config
       summary: Retrieves all the config
       description: |
-        Retrieves all the config records, this implementation doesn't currently support pagination.
+        Retrieves all the config records. This implementation does not currently support pagination.
       responses:
         '200':
           description: Array of Config objects.
@@ -182,7 +170,7 @@ paths:
         '201':
           description: New record created.
         '400':
-          description: Invalid request
+          description: Invalid request.
         '401':
           $ref: "#/components/responses/UnauthorizedError"
         '409':
@@ -232,8 +220,13 @@ paths:
       responses:
         '200':
           description: Record was either deleted or did not exist.
+          headers:
+            x-record-count:
+              schema:
+                type: integer
+              description: The actual number of records deleted, could be zero if the record did not exist.
         '400':
-          description: Invalid request
+          description: Invalid request.
         '401':
           $ref: "#/components/responses/UnauthorizedError"
     put:
@@ -261,75 +254,80 @@ paths:
       responses:
         '200':
           description: Record was updated.
+          headers:
+            x-record-count:
+              schema:
+                type: integer
+              description: The actual number of records updated or created
         '201':
           description: Record did not exist and was created.
         '400':
-          description: Invalid request
+          description: Invalid request.
         '401':
           $ref: "#/components/responses/UnauthorizedError"
-  /permission:
+  /media:
     get:
       tags:
-        - permission
-      summary: Retrieves all the permisions
+        - media
+      summary: Retrieves all the media
       description: |
-        Retrieves all the permission records, this implementation doesn't currently support pagination.
+        Retrieves all the media records This implementation does not currently support pagination.
       responses:
         '200':
-          description: Array of Permission objects.
+          description: Array of Media objects.
           content:
            application/json:
              schema:
                type: array
                items:
-                 $ref: '#/components/schemas/Permission'
+                 $ref: '#/components/schemas/Media'
         '400':
           description: Invalid request.
         '401':
           $ref: "#/components/responses/UnauthorizedError"
     post:
       tags:
-        - permission
-      summary: Creates a new permission
+        - media
+      summary: Creates a new media
       description: |
-        Accepts a JSON payload containing a full permission record and creates it.
+        Accepts a JSON payload containing a full media record and creates it.
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Permission'
+              $ref: '#/components/schemas/Media'
       responses: 
         '201':
           description: New record created.
-        '400':
-          description: Invalid request
-        '401':
-          $ref: "#/components/responses/UnauthorizedError"
         '409':
           description: Record already exists.
-  /permission/{name}:
+        '400':
+          description: Invalid request.
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+  /media/{id}:
     get:
       tags:
-        - permission
-      summary: Retrieves permission by name
+        - media
+      summary: Retrieves media by id
       description: |
-        Takes a name and returns the permission.
+        Takes a id and returns the media.
       parameters:
-      - name: name
+      - name: id
         in: path
-        description: The name of the requested permission.
+        description: The id of the requested media.
         required: true
         schema:
           type: string
-          example: Open Door
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
       responses:
         '200':
-          description: Permission object.
+          description: Media object.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Permission'
+                $ref: '#/components/schemas/Media'
         '400':
           description: Invalid request.
         '401':
@@ -338,54 +336,65 @@ paths:
           description: Record not found.
     delete:
       tags:
-        - permission
-      summary: Deletes permission by name
+        - media
+      summary: Deletes media by id
       description: |
-        Takes a name and deletes that record. This method does not fail if the permission does not exist as this is considered success.
+        Takes a id and deletes that record. This method does not fail if the media does not exist as this is considered success.
       parameters:
-      - name: name
+      - name: id
         in: path
-        description: The name of the permission to delete.
+        description: The id of the media to delete.
         required: true
         schema:
           type: string
-          example: Open Door
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
       responses:
         '200':
           description: Record was either deleted or did not exist.
+          headers:
+            x-record-count:
+              schema:
+                type: integer
+              description: The actual number of records deleted, could be zero if the record did not exist.
         '400':
-          description: Invalid request
+          description: Invalid request.
         '401':
           $ref: "#/components/responses/UnauthorizedError"
     put:
       tags:
-        - permission
-      summary: Updates the permission by name
+        - media
+      summary: Updates the media by id
       description: | 
-        Accepts a JSON payload containing a full permission record and updates it. The name is optional in the object and will be ignored.
+        Accepts a JSON payload containing a full media record and updates it. The id is optional in the payload and will be ignored if present.
       parameters:
-      - name: name
+      - name: id
         in: path
-        description: The name of the permission to update.
+        description: The id of the media to update.
         required: true
         schema:
           type: string
-          example: Open Door
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SimplePermission'
+              $ref: '#/components/schemas/SimpleMedia'
             example:
-              desc: Opens the door
+              name: Anna's MagicBand
+              desc: This is the MagicBand that Anna got from Elsa
       responses:
         '200':
           description: Record was updated.
+          headers:
+            x-record-count:
+              schema:
+                type: integer
+              description: The actual number of records updated or created
         '201':
           description: Record did not exist and was created.
         '400':
-          description: Invalid request
+          description: Invalid request.
         '401':
           $ref: "#/components/responses/UnauthorizedError"
   /media-perm:
@@ -394,7 +403,7 @@ paths:
         - media-perm
       summary: Retrieves all the meida permisions
       description: |
-        Retrieves all the meida permission records, this implementation doesn't currently support pagination.
+        Retrieves all the meida permission records. This implementation does not currently support pagination.
       responses:
         '200':
           description: Array of MediaPerm objects.
@@ -424,7 +433,7 @@ paths:
         '201':
           description: New record created.
         '400':
-          description: Invalid request
+          description: Invalid request.
         '401':
           $ref: "#/components/responses/UnauthorizedError"
         '409':
@@ -489,8 +498,13 @@ paths:
       responses:
         '200':
           description: Record was either deleted or did not exist.
+          headers:
+            x-record-count:
+              schema:
+                type: integer
+              description: The actual number of records deleted, could be zero if the record did not exist.
         '400':
-          description: Invalid request
+          description: Invalid request.
         '401':
           $ref: "#/components/responses/UnauthorizedError"
     put:
@@ -517,71 +531,174 @@ paths:
       responses:
         '200':
           description: Record was updated.
+          headers:
+            x-record-count:
+              schema:
+                type: integer
+              description: The actual number of records updated or created
         '201':
           description: Record did not exist and was created.
         '400':
-          description: Invalid request
+          description: Invalid request.
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+  /permission:
+    get:
+      tags:
+        - permission
+      summary: Retrieves all the permisions
+      description: |
+        Retrieves all the permission records. This implementation does not currently support pagination.
+      responses:
+        '200':
+          description: Array of Permission objects.
+          content:
+           application/json:
+             schema:
+               type: array
+               items:
+                 $ref: '#/components/schemas/Permission'
+        '400':
+          description: Invalid request.
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+    post:
+      tags:
+        - permission
+      summary: Creates a new permission
+      description: |
+        Accepts a JSON payload containing a full permission record and creates it.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Permission'
+      responses: 
+        '201':
+          description: New record created.
+        '400':
+          description: Invalid request.
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '409':
+          description: Record already exists.
+  /permission/{name}:
+    get:
+      tags:
+        - permission
+      summary: Retrieves permission by name
+      description: |
+        Takes a name and returns the permission.
+      parameters:
+      - name: name
+        in: path
+        description: The name of the requested permission.
+        required: true
+        schema:
+          type: string
+          example: Open Door
+      responses:
+        '200':
+          description: Permission object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permission'
+        '400':
+          description: Invalid request.
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: Record not found.
+    delete:
+      tags:
+        - permission
+      summary: Deletes permission by name
+      description: |
+        Takes a name and deletes that record. This method does not fail if the permission does not exist as this is considered success.
+      parameters:
+      - name: name
+        in: path
+        description: The name of the permission to delete.
+        required: true
+        schema:
+          type: string
+          example: Open Door
+      responses:
+        '200':
+          description: Record was either deleted or did not exist.
+          headers:
+            x-record-count:
+              schema:
+                type: integer
+              description: The actual number of records deleted, could be zero if the record did not exist.
+        '400':
+          description: Invalid request.
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+    put:
+      tags:
+        - permission
+      summary: Updates the permission by name
+      description: | 
+        Accepts a JSON payload containing a full permission record and updates it. The name is optional in the object and will be ignored.
+      parameters:
+      - name: name
+        in: path
+        description: The name of the permission to update.
+        required: true
+        schema:
+          type: string
+          example: Open Door
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SimplePermission'
+            example:
+              desc: Opens the door
+      responses:
+        '200':
+          description: Record was updated.
+          headers:
+            x-record-count:
+              schema:
+                type: integer
+              description: The actual number of records updated or created
+        '201':
+          description: Record did not exist and was created.
+        '400':
+          description: Invalid request.
         '401':
           $ref: "#/components/responses/UnauthorizedError"
 components:
   schemas:
-    SimpleConfig:
+    Association:
       required:
-      - value
+      - media_id
+      - perm_name
       type: object
       properties:
-        key:
+        media_id:
           type: string
-          example: Admin User
-        value:
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        perm_name:
           type: string
-          example: admin
+          example: Open Door
     Config:
       allOf:
         - $ref: '#/components/schemas/SimpleConfig'
         - type: object
           required:
           - key
-    SimpleMedia:
-      required:
-      - name
-      type: object
-      properties:
-        id:
-          type: string
-          example: d290f1ee-6c54-4b01-90e6-d701748f0851
-        name:
-          type: string
-          example: Anna's MagicBand
-        desc:
-          type: string
-          example: This is the MagicBand that Anna got from Elsa
-          nullable: true
     Media:
       allOf:
         - $ref: '#/components/schemas/SimpleMedia'
         - type: object
           required:
           - id
-    SimplePermission:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: True
-          example: 1
-        name:
-          type: string
-          example: Open Door
-        desc:
-          type: string
-          example: Opens the door
-    Permission:
-      allOf:
-        - $ref: '#/components/schemas/SimplePermission'
-        - type: object
-          required:
-          - name
     MediaPerm:
       type: object
       required:
@@ -598,6 +715,51 @@ components:
         perm_id:
           type: integer
           example: 1
+    Permission:
+      allOf:
+        - $ref: '#/components/schemas/SimplePermission'
+        - type: object
+          required:
+          - name
+    SimpleConfig:
+      required:
+      - value
+      type: object
+      properties:
+        key:
+          type: string
+          example: Admin User
+        value:
+          type: string
+          example: admin
+    SimpleMedia:
+      required:
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        name:
+          type: string
+          example: Anna's MagicBand
+        desc:
+          type: string
+          example: This is the MagicBand that Anna got from Elsa
+          nullable: true
+    SimplePermission:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: True
+          example: 1
+        name:
+          type: string
+          example: Open Door
+        desc:
+          type: string
+          example: Opens the door
   securitySchemes:
     ApiKey:
       type: apiKey
