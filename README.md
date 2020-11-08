@@ -21,3 +21,6 @@ When you're ready to test your application, you'll need to first install it with
 
 Once you've installed with pip, you can run the tests with `pytest --import-mode=importlib`
 
+You can also run using coverage.py by using `coverage run -m pytest --import-mode=importlib`
+
+Once you're doing running, you can get a coverage report with `coverage report`
