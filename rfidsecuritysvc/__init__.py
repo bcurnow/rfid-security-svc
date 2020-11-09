@@ -45,7 +45,7 @@ def create_app(test_config=None):
         pass
 
     # Bootstrap rfidsecuritysvc
-    from rfidsecuritysvc.bootstrap import main
-    main.bootstrap(app)
+    from rfidsecuritysvc.bootstrap import bootstrap
+    bootstrap(app)
 
     return app
