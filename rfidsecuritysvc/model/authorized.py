@@ -5,8 +5,8 @@ def authorized(media_id, perm_name):
     try:
         if association.get(media_id, perm_name):
             return True
-        else:
-            return False
+
+        return False
     except exception.PermissionNotFoundError:
         return False
     except exception.AssociationNotFoundError:
