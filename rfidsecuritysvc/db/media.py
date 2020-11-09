@@ -8,7 +8,7 @@ def get(id):
 def list():
     return get_db().execute('SELECT * FROM media ORDER BY id').fetchall()
 
-def create(id, name, desc):
+def create(id, name, desc=None):
     try:
         db = get_db()
         db.execute('INSERT INTO media (id, name, desc) VALUES (?,?,?)', (id, name, desc))
