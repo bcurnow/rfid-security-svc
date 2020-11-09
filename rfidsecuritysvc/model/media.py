@@ -23,7 +23,7 @@ def create(id, name, desc=None):
 def delete(id):
     return table.delete(id)
 
-def update(id, name, desc):
+def update(id, name, desc=None):
     return table.update(id, name, desc)
 
 def __model(row):
