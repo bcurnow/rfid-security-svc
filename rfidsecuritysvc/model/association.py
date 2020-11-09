@@ -23,7 +23,7 @@ def get(media_id, perm_name):
 def list():
     result = []
     for row in association.list():
-        result.append(__model(row))
+        result.append(Association(row['media_id'], row['perm_name']))
 
     return result  
 
@@ -50,7 +50,3 @@ def delete(media_id, perm_name):
         return 0
 
     return media_perm.delete(mp.id)
-
-def __model(row):
-    if not row: return
-    return Association(row['media_id'], row['perm_name'])
