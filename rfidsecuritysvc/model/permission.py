@@ -20,7 +20,7 @@ def list():
 
     return result  
 
-def create(name, desc):
+def create(name, desc=None):
     return table.create(name, desc)
 
 def delete(id):
@@ -29,10 +29,10 @@ def delete(id):
 def delete_by_name(name):
     return table.delete_by_name(name)
 
-def update(id, name, desc):
+def update(id, name, desc=None):
     return table.update(id, name, desc)
 
-def update_by_name(name, desc):
+def update_by_name(name, desc=None):
     return table.update_by_name(name, desc)
 
 def __model(row):
