@@ -27,7 +27,7 @@ def delete(id):
 
 def delete_by_media_and_perm(media_id, perm_id):
     db = get_db()
-    count = db.execute('DELETE FROM media_perm WHERE media_id = ? AND perm_id =?', (media_id, perm_id)).rowcount
+    count = db.execute('DELETE FROM media_perm WHERE media_id = ? AND perm_id = ?', (media_id, perm_id)).rowcount
     db.commit()
     return count
 
