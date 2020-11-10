@@ -12,7 +12,7 @@ def search():
 def post(body):
     try:
         association.create(**body)
-        return None, 200
+        return None, 201
     except exception.DuplicateAssociationError:
         return f'Object with media_id "{body["media_id"]}" and perm_name "{body["perm_name"]}" already exists.', 409
 
