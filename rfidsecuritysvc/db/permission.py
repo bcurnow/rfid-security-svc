@@ -33,13 +33,15 @@ def delete_by_name(name):
 
 def update(id, name, desc):
     db = get_db()
-    if db.execute('UPDATE permission SET name = ?, desc = ? WHERE id = ?', (name, desc, id)).rowcount == 0:
+    count = db.execute('UPDATE permission SET name = ?, desc = ? WHERE id = ?', (name, desc, id)).rowcount
+    if count == 0:
         raise exception.PermissionNotFoundError
     db.commit();
+    return count
 
 def update_by_name(name, desc):
     db = get_db()
-    count = db.execute('UPDATE permission SET desc = ? WHERE NAME = ?', (desc,name)).rowcount
+    count = db.execute('UPDATE permission SET desc = ? WHERE name = ?', (desc,name)).rowcount
     if count == 0:
         raise exception.PermissionNotFoundError
 
