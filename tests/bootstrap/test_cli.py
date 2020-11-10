@@ -1,4 +1,3 @@
-
 def test_bootstrap_registers_cli_group(app):
     """This test will simply ensure that all the expected top-level groups are available, test code for each cli module will do the rest"""
     with app.app_context():
