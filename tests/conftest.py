@@ -1,8 +1,9 @@
 import os
 import tempfile
 import pytest
+from types import ModuleType
 
-from unittest.mock import Mock
+from unittest.mock import Mock, PropertyMock
 
 from rfidsecuritysvc import create_app
 from rfidsecuritysvc.db.dbms import get_db, init_db, close_db
@@ -69,11 +70,10 @@ class MockDb(object):
         self._db_execute_return_value_index += 1
         return rv
 
-    def register(self, get_db):
-        """Accepts a mock of the get_db function and sets it up, this is because we can't simply generically mock out get_db"""
-        get_db.return_value = self._db
+    def get_db(self):
+        return self._db
 
-    def add_execute(self, sql, sql_args, cursor_return=None):
+    def add_execute(self, sql, sql_args=None, cursor_return=None, rowcount=None):
         index = 0
         if sql in self._executes:
             index = len(self._executes) - 1
@@ -85,7 +85,10 @@ class MockDb(object):
         self._executes[sql].append({})
         execute = self._executes[sql][index]
         execute['sql_args'] = sql_args
-        self._add_cursor(execute, cursor_return)
+        self._add_cursor(execute, cursor_return, rowcount)
+
+    def add_commit(self, side_effect=None):
+        self._db.commit.side_effect = side_effect
 
     def assert_db(self):
         if len(self._executes) == 0:
@@ -95,32 +98,59 @@ class MockDb(object):
         for (sql, execs) in self._executes.items():
             for e in execs:
                 total_execs += 1
-                self._db.execute.assert_any_call(sql, e['sql_args'])
+                if e['sql_args']:
+                    self._db.execute.assert_any_call(sql, e['sql_args'])
+                else:
+                    self._db.execute.assert_any_call(sql)
                 if 'cursor_return' in e:
                     e['cursor_return_method'].assert_called_once()
+                if 'rowcount' in e:
+                    e['rowcount_mock'].assert_called_once()
+
 
         assert self._db.execute.call_count == total_execs
 
-    def _add_cursor(self, execute, cursor_return):
+    def _add_cursor(self, execute, cursor_return, rowcount):
         """Creates a cursor mock and populates the return value"""
         cursor = Mock()
         execute['cursor'] = cursor
-        execute['cursor_return'] = cursor_return
 
-        if cursor_return and _is_iterable(cursor_return):
+        if self._is_iterable(cursor_return):
             # Assume fetchall
+            execute['cursor_return'] = cursor_return
             execute['cursor_return_method'] = cursor.fetchall
             cursor.fetchall.return_value = cursor_return
+        elif cursor_return is None:
+            # Assume this is a DELETE, UPDATE, INSERT, etc
+            execute['cursor_return_method'] = None
         else:
             # Assume it is a single return (either a non-iterable value or None)
+            execute['cursor_return'] = cursor_return
             execute['cursor_return_method'] = cursor.fetchone
             cursor.fetchone.return_value = cursor_return
 
-    def _is_iterable(arg):
+        if rowcount is not None:
+            execute['rowcount'] = rowcount
+            p = PropertyMock(return_value=rowcount)
+            execute['rowcount_mock'] = p
+            type(cursor).rowcount = p
+
+    def _is_iterable(self, arg):
         """ Returns true if the passed in object has an __iter__ attribute but is neither a string nor an array of bytes (which are iterable but not in the way we mean)"""
         return hasattr(arg, '__iter__') and not isinstance(arg, (str, bytes))
 
 @pytest.fixture
-def mockdb():
-    return MockDb()
+def mockdb(request, monkeypatch):
+    db = MockDb()
+    
+    # Find all the get_db methods and monekypatch them to return MockDb instead
+    for name, val in request.module.__dict__.items():
+        if isinstance(val, ModuleType):
+            if 'rfidsecuritysvc.db' in val.__name__:
+                get_db = getattr(val, 'get_db', None)
+                if get_db:
+                    monkeypatch.setattr(val, 'get_db', db.get_db, raising=True)
 
+    yield db
+
+    db.assert_db()
