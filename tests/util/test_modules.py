@@ -21,6 +21,20 @@ def test_call_method_on_each_calls_each():
     assert one.called == True
     assert two.called == True
 
+def test_call_method_on_each_with_filter():
+    package = __import_testmod()
+    import testmod.call_method_on_each as one
+    import testmod.call_method_on_each2 as two
+
+    # Reset to uncalled sdtate
+    one.called = False
+    two.called = False
+
+    call_method_on_each(package, 'test', {}, lambda module: module not in ['call_method_on_each2'])
+
+    assert one.called == True
+    assert two.called == False
+
 def __import_testmod():
     # Because of the way python works, we need to do a bit of trickery to makek the testmod available
     # First, determine the absolute path to the testmod directory
