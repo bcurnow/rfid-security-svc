@@ -765,7 +765,7 @@ components:
       type: apiKey
       in: header
       name: X-RFIDSECURITYSVC-API-KEY
-      x-apikeyInfoFunc : rfidsecuritysvc.api.auth.verify_apikey
+      x-apikeyInfoFunc : rfidsecuritysvc.util.auth.verify_apikey
   responses:
     UnauthorizedError:
       description: API key is missing or invalid
