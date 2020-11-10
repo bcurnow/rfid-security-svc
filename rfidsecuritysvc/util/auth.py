@@ -4,11 +4,12 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from rfidsecuritysvc.model import config
 
 API_KEY_CONFIG_KEY = 'ADMIN_API_KEY'
+API_KEY_SIZE = 64
 
 def generate_api_key():
     """Generates a new 512-bit secure token, hashes it and stores it in the config table, returns the unhashed value"""
     # Generate a 1024 token
-    token = token_urlsafe(64)
+    token = token_urlsafe(API_KEY_SIZE)
     
     #Always delete first to avoid a duplicate key error
     config.delete(API_KEY_CONFIG_KEY)
