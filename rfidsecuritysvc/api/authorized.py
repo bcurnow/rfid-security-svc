@@ -1,4 +1,3 @@
-
 from rfidsecuritysvc.model import authorized
 
 def get(media_id, perm_name):
