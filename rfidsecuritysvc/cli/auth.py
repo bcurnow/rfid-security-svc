@@ -1,7 +1,7 @@
 import click
 from flask.cli import AppGroup
 import rfidsecuritysvc.exception as exception
-from rfidsecuritysvc.api import auth
+from rfidsecuritysvc.util import auth
 
 group = AppGroup('auth')
 
