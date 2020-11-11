@@ -3,6 +3,7 @@ import tempfile
 import pytest
 from types import ModuleType
 
+import click
 from unittest.mock import Mock, PropertyMock
 
 from rfidsecuritysvc import create_app
@@ -155,3 +156,13 @@ def mockdb(request, monkeypatch):
     yield db
 
     db.assert_db()
+    
+@pytest.fixture
+def assert_output():
+    def assert_output(result, msg, **style):
+        if style:
+            assert bytes(click.style(str(msg), **style), 'UTF-8') in result.stdout_bytes
+        else:
+            assert str(msg) in result.output
+
+    return assert_output
