@@ -39,3 +39,9 @@ def test_delete(model):
     model.delete.return_value = 1
     assert api.delete(m.media_id, m.perm_name) == (None, 200, {RECORD_COUNT_HEADER: 1})
     model.delete.assert_called_once_with(m.media_id, m.perm_name)
+
+@patch('rfidsecuritysvc.api.association.association')
+def test_delete_no_permission(model):
+    model.delete.side_effect = PermissionNotFoundError
+    assert api.delete(m.media_id, m.perm_name) == (f'Permission "${m.perm_name}" does not exist.', 400)
+    model.delete.assert_called_once_with(m.media_id, m.perm_name)
