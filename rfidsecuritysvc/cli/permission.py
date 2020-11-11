@@ -42,7 +42,7 @@ def create(ctx, name, desc):
 @click.pass_context
 def delete(ctx, id):
     """Manually deletes a record from the table."""
-    click.echo(click.style(f'{model.delete(id)} record(s) deleted', bg='green', fg='black'))
+    click.echo(click.style(f'{model.delete(id)} record(s) deleted.', bg='green', fg='black'))
     ctx.invoke(list)
 
 @group.command('update')
