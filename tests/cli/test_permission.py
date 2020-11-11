@@ -15,10 +15,11 @@ def test_get(model, runner, assert_output):
     model.get.return_value = m
     result = runner.invoke(args=['permission', 'get', m.id])
     assert_output(result, m.to_json())
+    print(result.output)
     model.get.assert_called_once_with(m.id)
 
 @patch('rfidsecuritysvc.cli.permission.model')
-def test_get(model, runner, assert_output):
+def test_get_notfound(model, runner, assert_output):
     model.get.return_value = None
     result = runner.invoke(args=['permission', 'get', m.id], color=True)
     assert_output(result, f'No record found with id "{m.id}".', fg='red')
@@ -76,13 +77,6 @@ def test_delete_id_required():
         delete.make_context('permission delete', args=[])
 
 @patch('rfidsecuritysvc.cli.permission.model')
-def test_delete(model, runner, assert_output):
-    model.delete.return_value = 1
-    result = runner.invoke(args=['permission', 'delete', m.id], color=True)
-    assert_output(result, f'1 record(s) deleted.', bg='green', fg='black')
-    model.delete.assert_called_once_with(m.id)
-
-@patch('rfidsecuritysvc.cli.permission.model')
 def test_update(model, runner, assert_output):
     model.update.return_value = 1
     model.list.return_value = [m]
@@ -92,7 +86,7 @@ def test_update(model, runner, assert_output):
     model.list.assert_called_once()
 
 @patch('rfidsecuritysvc.cli.permission.model')
-def test_update_not_found(model, runner, assert_output):
+def test_update_notfound(model, runner, assert_output):
     model.update.side_effect = NotFoundError
     result = runner.invoke(args=['permission', 'update', m.id, m.name, m.desc], color=True)
     assert_output(result, f'Record with name "{m.name}" does not exist.', fg='red')
