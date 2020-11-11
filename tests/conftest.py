@@ -21,6 +21,7 @@ def app():
     # Create an application with a testing indicator and override the default database path to our temp path
     app = create_app({
         'TESTING': True,
+        'ENV': 'development',
         'DATABASE': db_path,
     })
 
