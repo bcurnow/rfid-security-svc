@@ -9,7 +9,7 @@ def register(app):
     app.cli.add_command(group)
 
 @group.command('get')
-@click.argument('id')
+@click.argument('id', type=int)
 @click.pass_context
 def get(ctx, id):
     """Gets a single record from the table."""
@@ -38,7 +38,7 @@ def create(ctx, name, desc):
         ctx.fail(click.style(f'Record with name "{name}" already exists.', fg='red'))
 
 @group.command('delete')
-@click.argument('id')
+@click.argument('id', type=int)
 @click.pass_context
 def delete(ctx, id):
     """Manually deletes a record from the table."""
@@ -46,7 +46,7 @@ def delete(ctx, id):
     ctx.invoke(list)
 
 @group.command('update')
-@click.argument('id')
+@click.argument('id', type=int)
 @click.argument('name')
 @click.argument('desc', required=False)
 @click.pass_context
