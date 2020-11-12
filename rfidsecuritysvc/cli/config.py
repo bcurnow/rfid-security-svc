@@ -35,7 +35,7 @@ def create(ctx, key, value):
         model.create(key, value)
         ctx.invoke(list)
     except exception.DuplicateConfigError:
-        ctx.fail(click.style(f'Record with key "{key}" already exists', fg='red'))
+        ctx.fail(click.style(f'Record with key "{key}" already exists.', fg='red'))
 
 @group.command('delete')
 @click.argument('key')
@@ -56,4 +56,4 @@ def update(ctx, key, value):
         click.echo(click.style(f'Record updated.', bg='green', fg='black'))
         ctx.invoke(list)
     except exception.ConfigNotFoundError:
-        ctx.fail(click.style(f'Record key "{key}" does not exist.', fg='red'))
+        ctx.fail(click.style(f'Record with key "{key}" does not exist.', fg='red'))
