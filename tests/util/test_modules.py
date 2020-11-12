@@ -1,11 +1,10 @@
 import os
 import sys
-import pkgutil
 import importlib.machinery
 import importlib.util
-from importlib import import_module
 
 from rfidsecuritysvc.util.modules import call_method_on_each
+
 
 def test_call_method_on_each_calls_each():
     package = __import_testmod()
@@ -18,8 +17,9 @@ def test_call_method_on_each_calls_each():
 
     call_method_on_each(package, 'test', {})
 
-    assert one.called == True
-    assert two.called == True
+    assert one.called is True
+    assert two.called is True
+
 
 def test_call_method_on_each_with_filter():
     package = __import_testmod()
@@ -32,8 +32,9 @@ def test_call_method_on_each_with_filter():
 
     call_method_on_each(package, 'test', {}, lambda module: module not in ['call_method_on_each2'])
 
-    assert one.called == True
-    assert two.called == False
+    assert one.called is True
+    assert two.called is False
+
 
 def __import_testmod():
     # Because of the way python works, we need to do a bit of trickery to makek the testmod available
@@ -43,10 +44,8 @@ def __import_testmod():
     # Import the __init__.py file as a module to serve as the package
     package = __load_from_path('testmod', os.path.join(module_path, '__init__.py'))
 
-    #modules = []
-    #for mod_name in ['call_method_on_each', 'call_method_on_each2']:
-#    return (package, modules)  
     return package
+
 
 def __load_from_path(name, path):
     spec = importlib.util.spec_from_file_location(name, path)
@@ -54,5 +53,3 @@ def __load_from_path(name, path):
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
     return module
-
-    

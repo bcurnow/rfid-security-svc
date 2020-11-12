@@ -13,6 +13,7 @@ from rfidsecuritysvc.db.dbms import get_db, init_db, close_db
 with open(os.path.join(os.path.dirname(__file__), 'db/data.sql'), 'rb') as f:
     _data_sql = f.read().decode('utf8')
 
+
 @pytest.fixture
 def app():
     """A Flask app class"""
@@ -42,13 +43,16 @@ def app():
     os.close(db_fd)
     os.unlink(db_path)
 
+
 @pytest.fixture
 def client(app):
     return app.test_client()
 
+
 @pytest.fixture
 def runner(app):
     return app.test_cli_runner()
+
 
 class MockDb(object):
     def __init__(self):
@@ -81,7 +85,7 @@ class MockDb(object):
             index = len(self._executes) - 1
         else:
             # We don't yet have any registered executes for this SQL, create an empty list
-            self._executes[sql] = [] 
+            self._executes[sql] = []
 
         # Add a dict for this specific execute of the SQL
         self._executes[sql].append({})
@@ -104,11 +108,10 @@ class MockDb(object):
                     self._db.execute.assert_any_call(sql, e['sql_args'])
                 else:
                     self._db.execute.assert_any_call(sql)
-                if 'cursor_return' in e:
-                    e['cursor_return_method'].assert_called_once()
-                if 'rowcount' in e:
-                    e['rowcount_mock'].assert_called_once()
-
+                    if 'cursor_return' in e:
+                        e['cursor_return_method'].assert_called_once()
+                        if 'rowcount' in e:
+                            e['rowcount_mock'].assert_called_once()
 
         assert self._db.execute.call_count == total_execs
 
@@ -138,13 +141,17 @@ class MockDb(object):
             type(cursor).rowcount = p
 
     def _is_iterable(self, arg):
-        """ Returns true if the passed in object has an __iter__ attribute but is neither a string nor an array of bytes (which are iterable but not in the way we mean)"""
+        """
+        Returns true if the passed in object has an __iter__ attribute but is neither a string nor an array of bytes
+        (which are iterable but not in the way we mean)
+        """
         return hasattr(arg, '__iter__') and not isinstance(arg, (str, bytes))
+
 
 @pytest.fixture
 def mockdb(request, monkeypatch):
     db = MockDb()
-    
+
     # Find all the get_db methods and monekypatch them to return MockDb instead
     for name, val in request.module.__dict__.items():
         if isinstance(val, ModuleType):
@@ -156,7 +163,8 @@ def mockdb(request, monkeypatch):
     yield db
 
     db.assert_db()
-    
+
+
 @pytest.fixture
 def assert_output():
     def assert_output(result, msg, exit_code=0, **style):

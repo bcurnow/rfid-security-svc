@@ -1,6 +1,5 @@
 from unittest.mock import patch
 
-from rfidsecuritysvc.cli.dbms import init_db
 
 @patch('rfidsecuritysvc.cli.dbms.dbms')
 def test_init_db(dbms, runner, assert_output):
@@ -8,6 +7,7 @@ def test_init_db(dbms, runner, assert_output):
     result = runner.invoke(args=['db', 'init'], input='y')
     assert_output(result, 'Are you sure, this will delete all current data?')
     assert_output(result, 'Initialized the database.')
+
 
 @patch('rfidsecuritysvc.cli.dbms.dbms')
 def test_init_db_no(dbms, runner, assert_output):
