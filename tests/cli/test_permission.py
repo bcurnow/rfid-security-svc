@@ -21,11 +21,11 @@ def test_get(model, runner, assert_output):
 def test_get_notfound(model, runner, assert_output):
     model.get.return_value = None
     result = runner.invoke(args=['permission', 'get', str(m.id)], color=True)
-    assert_output(result, f'No record found with id "{m.id}".', fg='red')
+    assert_output(result, f'No record found with id "{m.id}".', 2, fg='red')
     model.get.assert_called_once_with(m.id)
 
 def test_get_id_required():
-    with pytest.raises(MissingParameter):
+    with pytest.raises(MissingParameter, match='missing parameter: id'):
         get.make_context('permission get', args=[])
 
 @patch('rfidsecuritysvc.cli.permission.model')
@@ -50,11 +50,11 @@ def test_create(model, runner, assert_output):
 def test_create_duplicate(model, runner, assert_output):
     model.create.side_effect = DuplicateError
     result = runner.invoke(args=['permission', 'create', m.name, m.desc], color=True)
-    assert_output(result, f'Record with name "{m.name}" already exists.', fg='red')
+    assert_output(result, f'Record with name "{m.name}" already exists.', 2, fg='red')
     model.create.assert_called_once_with(m.name, m.desc)
 
 def test_create_name_required():
-    with pytest.raises(MissingParameter):
+    with pytest.raises(MissingParameter, match='missing parameter: name'):
         create.make_context('permission create', args=[])
 
 def test_create_desc_optional():
@@ -72,7 +72,7 @@ def test_delete(model, runner, assert_output):
     model.delete.assert_called_once_with(m.id)
 
 def test_delete_id_required():
-    with pytest.raises(MissingParameter):
+    with pytest.raises(MissingParameter, match='missing parameter: id'):
         delete.make_context('permission delete', args=[])
 
 @patch('rfidsecuritysvc.cli.permission.model')
@@ -88,5 +88,5 @@ def test_update(model, runner, assert_output):
 def test_update_notfound(model, runner, assert_output):
     model.update.side_effect = NotFoundError
     result = runner.invoke(args=['permission', 'update', str(m.id), m.name, m.desc], color=True)
-    assert_output(result, f'Record with name "{m.name}" does not exist.', fg='red')
+    assert_output(result, f'Record with name "{m.name}" does not exist.', 2, fg='red')
     model.update.assert_called_once_with(m.id, m.name, m.desc)
