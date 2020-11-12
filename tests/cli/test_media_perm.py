@@ -24,11 +24,11 @@ def test_get(model, runner, assert_output):
 def test_get_notfound(model, runner, assert_output):
     model.get.return_value = None
     result = runner.invoke(args=['media-perm', 'get', str(m.id)], color=True)
-    assert_output(result, f'No record found with id "{m.id}".', fg='red')
+    assert_output(result, f'No record found with id "{m.id}".', 2, fg='red')
     model.get.assert_called_once_with(m.id)
 
 def test_get_id_required():
-    with pytest.raises(MissingParameter):
+    with pytest.raises(MissingParameter, match='missing parameter: id'):
         get.make_context('media-perm get', args=[])
 
 @patch('rfidsecuritysvc.cli.media_perm.model')
@@ -53,31 +53,29 @@ def test_create(model, runner, assert_output):
 def test_create_duplicate(model, runner, assert_output):
     model.create.side_effect = DuplicateError
     result = runner.invoke(args=['media-perm', 'create', m.media_id, str(m.perm_id)], color=True)
-    print(result)
-    print(result.output)
-    assert_output(result, f'Record with media_id "{m.media_id}" and perm_id "{m.perm_id}" already exists.', fg='red')
+    assert_output(result, f'Record with media_id "{m.media_id}" and perm_id "{m.perm_id}" already exists.', 2, fg='red')
     model.create.assert_called_once_with(m.media_id, m.perm_id)
 
 @patch('rfidsecuritysvc.cli.media_perm.model')
 def test_create_media_notfound(model, runner, assert_output):
     model.create.side_effect = MediaNotFoundError
     result = runner.invoke(args=['media-perm', 'create', m.media_id, str(m.perm_id)], color=True)
-    assert_output(result, f'No media found with id "{m.media_id}".', fg='red')
+    assert_output(result, f'No media found with id "{m.media_id}".', 2, fg='red')
     model.create.assert_called_once_with(m.media_id, m.perm_id)
 
 @patch('rfidsecuritysvc.cli.media_perm.model')
-def test_create_media_notfound(model, runner, assert_output):
+def test_create_permission_notfound(model, runner, assert_output):
     model.create.side_effect = PermissionNotFoundError
     result = runner.invoke(args=['media-perm', 'create', m.media_id, str(m.perm_id)], color=True)
-    assert_output(result, f'No permission found with id "{m.perm_id}".', fg='red')
+    assert_output(result, f'No permission found with id "{m.perm_id}".', 2, fg='red')
     model.create.assert_called_once_with(m.media_id, m.perm_id)
 
 def test_create_media_id_required():
-    with pytest.raises(MissingParameter):
+    with pytest.raises(MissingParameter, match='missing parameter: media_id'):
         create.make_context('media-perm create', args=[])
 
 def test_create_perm_id_required():
-    with pytest.raises(MissingParameter):
+    with pytest.raises(MissingParameter, match='missing parameter: perm_id'):
         create.make_context('media-perm create', args=[m.media_id])
 
 @patch('rfidsecuritysvc.cli.media_perm.model')
@@ -88,7 +86,7 @@ def test_delete(model, runner, assert_output):
     model.delete.assert_called_once_with(m.id)
 
 def test_delete_id_required():
-    with pytest.raises(MissingParameter):
+    with pytest.raises(MissingParameter, match='missing parameter: id'):
         delete.make_context('media-perm delete', args=[])
 
 @patch('rfidsecuritysvc.cli.media_perm.model')
@@ -104,5 +102,5 @@ def test_update(model, runner, assert_output):
 def test_update_notfound(model, runner, assert_output):
     model.update.side_effect = NotFoundError
     result = runner.invoke(args=['media-perm', 'update', str(m.id), m.media_id, str(m.perm_id)], color=True)
-    assert_output(result, f'Record with id "{m.id}", media_id "{m.media_id}" and perm_id "{m.perm_id}" does not exist.', fg='red')
+    assert_output(result, f'Record with id "{m.id}", media_id "{m.media_id}" and perm_id "{m.perm_id}" does not exist.', 2, fg='red')
     model.update.assert_called_once_with(m.id, m.media_id, m.perm_id)
