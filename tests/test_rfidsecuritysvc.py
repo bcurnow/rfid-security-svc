@@ -39,7 +39,6 @@ def test_create_app_config_py():
         f.write('TEST_CREATE_APP_CONFIG_PY=True\n')
 
     app = create_app()
-    print(app.config)
 
     assert app.config['TEST_CREATE_APP_CONFIG_PY'] == True
 
