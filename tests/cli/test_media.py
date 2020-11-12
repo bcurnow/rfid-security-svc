@@ -24,11 +24,11 @@ def test_get(model, runner, assert_output):
 def test_get_notfound(model, runner, assert_output):
     model.get.return_value = None
     result = runner.invoke(args=['media', 'get', m.id], color=True)
-    assert_output(result, f'No record found with id "{m.id}".', fg='red')
+    assert_output(result, f'No record found with id "{m.id}".', 2, fg='red')
     model.get.assert_called_once_with(m.id)
 
 def test_get_id_required():
-    with pytest.raises(MissingParameter):
+    with pytest.raises(MissingParameter, match='missing parameter: id'):
         get.make_context('media get', args=[])
 
 @patch('rfidsecuritysvc.cli.media.model')
@@ -53,17 +53,15 @@ def test_create(model, runner, assert_output):
 def test_create_duplicate(model, runner, assert_output):
     model.create.side_effect = DuplicateError
     result = runner.invoke(args=['media', 'create', m.id, m.name, m.desc], color=True)
-    print(result)
-    print(result.output)
-    assert_output(result, f'Record with id "{m.id}" or name "{m.name}" already exists.', fg='red')
+    assert_output(result, f'Record with id "{m.id}" or name "{m.name}" already exists.', 2, fg='red')
     model.create.assert_called_once_with(m.id, m.name, m.desc)
 
 def test_create_id_required():
-    with pytest.raises(MissingParameter):
+    with pytest.raises(MissingParameter, match='missing parameter: id'):
         create.make_context('media create', args=[])
 
 def test_create_name_required():
-    with pytest.raises(MissingParameter):
+    with pytest.raises(MissingParameter, match='missing parameter: name'):
         create.make_context('media create', args=[m.id])
 
 def test_create_desc_optional():
@@ -94,5 +92,5 @@ def test_update(model, runner, assert_output):
 def test_update_notfound(model, runner, assert_output):
     model.update.side_effect = NotFoundError
     result = runner.invoke(args=['media', 'update', m.id, m.name, m.desc], color=True)
-    assert_output(result, f'Record with id "{m.id}" does not exist.', fg='red')
+    assert_output(result, f'Record with id "{m.id}" does not exist.', 2, fg='red')
     model.update.assert_called_once_with(m.id, m.name, m.desc)
