@@ -9,6 +9,7 @@ from rfidsecuritysvc.model.association import Association as Model
 
 m = Model('test', 'Open Door')
 
+
 @patch('rfidsecuritysvc.api.association.association')
 def test_search(model):
     m2 = Model('test2', 'Close Door')
@@ -16,11 +17,13 @@ def test_search(model):
     assert api.search() == [m.to_json(), m2.to_json()]
     model.list.assert_called_once()
 
+
 @patch('rfidsecuritysvc.api.association.association')
 def test_search_noresults(model):
     model.list.return_value = []
     assert api.search() == []
     model.list.assert_called_once()
+
 
 @patch('rfidsecuritysvc.api.association.association')
 def test_post(model):

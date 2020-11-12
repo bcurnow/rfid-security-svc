@@ -2,12 +2,12 @@ import click
 from flask.cli import AppGroup
 from werkzeug.security import generate_password_hash
 
-import rfidsecuritysvc.exception as exception
-
 group = AppGroup('test')
+
 
 def register(app):
     app.cli.add_command(group)
+
 
 @group.command('generate-test-apikey')
 @click.argument('value')

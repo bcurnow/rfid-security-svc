@@ -1,12 +1,13 @@
 import click
 from flask.cli import AppGroup
-import rfidsecuritysvc.exception as exception
 from rfidsecuritysvc.util import auth
 
 group = AppGroup('auth')
 
+
 def register(app):
     app.cli.add_command(group)
+
 
 @group.command('generate-api-key')
 @click.pass_context

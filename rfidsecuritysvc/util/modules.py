@@ -1,6 +1,7 @@
 from pkgutil import iter_modules
 from importlib import import_module
 
+
 def call_method_on_each(package, method_name, method_args, module_filter=None):
     """Execute the specified method name passing the specified arguments on all modules in the specified package that match the filter."""
     for module_info in iter_modules(path=package.__path__):

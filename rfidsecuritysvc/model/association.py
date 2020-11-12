@@ -5,10 +5,12 @@ from rfidsecuritysvc.model import BaseModel
 from rfidsecuritysvc.model import media
 from rfidsecuritysvc.model import permission
 
+
 class Association(BaseModel):
     def __init__(self, media_id, perm_name):
         self.media_id = media_id
         self.perm_name = perm_name
+
 
 def get(media_id, perm_name):
     p = permission.get_by_name(perm_name)
@@ -20,12 +22,14 @@ def get(media_id, perm_name):
     if mp:
         return Association(media_id, p.name)
 
+
 def list():
     result = []
     for row in association.list():
         result.append(Association(row['media_id'], row['perm_name']))
 
-    return result  
+    return result
+
 
 def create(media_id, perm_name):
     m = media.get(media_id)
@@ -39,6 +43,7 @@ def create(media_id, perm_name):
         media_perm.create(media_id, p.id)
     except exception.DuplicateMediaPermError as e:
         raise exception.DuplicateAssociationError from e
+
 
 def delete(media_id, perm_name):
     p = permission.get_by_name(perm_name)

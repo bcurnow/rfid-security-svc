@@ -1,5 +1,6 @@
 from rfidsecuritysvc.model import authorized
 
+
 def get(media_id, perm_name):
     if authorized.authorized(media_id, perm_name):
         return None, 200

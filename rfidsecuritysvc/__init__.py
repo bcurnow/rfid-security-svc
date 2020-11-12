@@ -3,11 +3,10 @@ import connexion
 from connexion.exceptions import OAuthProblem
 from connexion.resolver import RestyResolver
 from swagger_ui_bundle import swagger_ui_3_path
-from flask import Flask
 from rfidsecuritysvc.util.exception import render_unauthorized
 
-def create_app(test_config=None):
 
+def create_app(test_config=None):
     swagger_ui_config = {
         'docExpansion': 'none',
         'persistAuthorization': True,
@@ -28,7 +27,7 @@ def create_app(test_config=None):
 
     # Get the wrapped Flask class so we can configure Flask
     app = api_app.app
-    
+
     app.config.from_mapping({
         'SECRET_KEY': 'dev',
         'DATABASE': os.path.join(app.instance_path, 'rfidsecurity.sqlite'),

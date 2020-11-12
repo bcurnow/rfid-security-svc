@@ -1,12 +1,14 @@
 import click
 from flask.cli import AppGroup
 import rfidsecuritysvc.exception as exception
-from rfidsecuritysvc.model import media_perm as model, media, permission
+from rfidsecuritysvc.model import media_perm as model
 
 group = AppGroup('media-perm')
 
+
 def register(app):
     app.cli.add_command(group)
+
 
 @group.command('get')
 @click.argument('id', type=int)
@@ -19,11 +21,13 @@ def get(ctx, id):
 
     click.echo(record.to_json())
 
+
 @group.command('list')
 def list():
     """List all the records in the table."""
     for i in model.list():
         click.echo(i.to_json())
+
 
 @group.command('create')
 @click.argument('media_id')
@@ -50,6 +54,7 @@ def delete(ctx, id):
     click.echo(click.style(str(model.delete(id)) + ' record(s) deleted.', bg='green', fg='black'))
     ctx.invoke(list)
 
+
 @group.command('update')
 @click.argument('id', type=int)
 @click.argument('media_id')
@@ -59,7 +64,7 @@ def update(ctx, id, media_id, perm_id):
     """Manually updates a record in the table."""
     try:
         model.update(id, media_id, perm_id)
-        click.echo(click.style(f'Record updated.', bg='green', fg='black'))
+        click.echo(click.style('Record updated.', bg='green', fg='black'))
         ctx.invoke(list)
     except exception.MediaPermNotFoundError:
         ctx.fail(click.style(f'Record with id "{id}", media_id "{media_id}" and perm_id "{perm_id}" does not exist.', fg='red'))

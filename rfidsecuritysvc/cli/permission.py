@@ -5,8 +5,10 @@ from rfidsecuritysvc.model import permission as model
 
 group = AppGroup('permission')
 
+
 def register(app):
     app.cli.add_command(group)
+
 
 @group.command('get')
 @click.argument('id', type=int)
@@ -19,11 +21,13 @@ def get(ctx, id):
 
     click.echo(record.to_json())
 
+
 @group.command('list')
 def list():
     """List all the records in the table."""
     for i in model.list():
         click.echo(i.to_json())
+
 
 @group.command('create')
 @click.argument('name')
@@ -37,6 +41,7 @@ def create(ctx, name, desc):
     except exception.DuplicatePermissionError:
         ctx.fail(click.style(f'Record with name "{name}" already exists.', fg='red'))
 
+
 @group.command('delete')
 @click.argument('id', type=int)
 @click.pass_context
@@ -44,6 +49,7 @@ def delete(ctx, id):
     """Manually deletes a record from the table."""
     click.echo(click.style(f'{model.delete(id)} record(s) deleted.', bg='green', fg='black'))
     ctx.invoke(list)
+
 
 @group.command('update')
 @click.argument('id', type=int)
@@ -54,7 +60,7 @@ def update(ctx, id, name, desc):
     """Manually updates a record in the table."""
     try:
         model.update(id, name, desc)
-        click.echo(click.style(f'Record updated.', bg='green', fg='black'))
+        click.echo(click.style('Record updated.', bg='green', fg='black'))
         ctx.invoke(list)
     except exception.PermissionNotFoundError:
         ctx.fail(click.style(f'Record with name "{name}" does not exist.', fg='red'))

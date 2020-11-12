@@ -4,24 +4,29 @@ from rfidsecuritysvc.model import permission
 from rfidsecuritysvc.model import media
 from rfidsecuritysvc.model import BaseModel
 
+
 class MediaPerm(BaseModel):
     def __init__(self, id, media_id, perm_id):
         self.id = id
         self.media_id = media_id
         self.perm_id = perm_id
 
+
 def get(id):
     return __model(table.get(id))
 
+
 def get_by_media_and_perm(media_id, perm_id):
     return __model(table.get_by_media_and_perm(media_id, perm_id))
+
 
 def list():
     result = []
     for row in table.list():
         result.append(__model(row))
 
-    return result  
+    return result
+
 
 def create(media_id, perm_id):
     m = media.get(media_id)
@@ -33,6 +38,7 @@ def create(media_id, perm_id):
 
     return table.create(media_id, perm_id)
 
+
 def create_by_perm_name(media_id, perm_name):
     p = permission.get_by_name(perm_name)
     if not p:
@@ -40,14 +46,18 @@ def create_by_perm_name(media_id, perm_name):
 
     return table.create(media_id, p.id)
 
+
 def delete(id):
     return table.delete(id)
+
 
 def delete_by_media_and_perm(media_id, perm_id):
     return table.delete_by_media_and_perm(media_id, perm_id)
 
+
 def update(id, media_id, perm_id):
     return table.update(id, media_id, perm_id)
+
 
 def update_by_perm_name(media_id, perm_name):
     p = permission.get_by_name(perm_name)
@@ -56,6 +66,8 @@ def update_by_perm_name(media_id, perm_name):
 
     return table.update(media_id, p.id)
 
+
 def __model(row):
-    if not row: return
+    if not row:
+        return
     return MediaPerm(row['id'], row['media_id'], row['perm_id'])

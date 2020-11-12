@@ -5,8 +5,10 @@ from rfidsecuritysvc.model import config as model
 
 group = AppGroup('config')
 
+
 def register(app):
     app.cli.add_command(group)
+
 
 @group.command('get')
 @click.argument('key')
@@ -19,11 +21,13 @@ def get(ctx, key):
 
     click.echo(record.to_json())
 
+
 @group.command('list')
 def list():
     """List all the records in the table."""
     for i in model.list():
         click.echo(i.to_json())
+
 
 @group.command('create')
 @click.argument('key')
@@ -37,6 +41,7 @@ def create(ctx, key, value):
     except exception.DuplicateConfigError:
         ctx.fail(click.style(f'Record with key "{key}" already exists.', fg='red'))
 
+
 @group.command('delete')
 @click.argument('key')
 @click.pass_context
@@ -44,6 +49,7 @@ def delete(ctx, key):
     """Manually deletes a record from the table."""
     click.echo(click.style(f'{model.delete(key)} record(s) deleted.', bg='green', fg='black'))
     ctx.invoke(list)
+
 
 @group.command('update')
 @click.argument('key')
@@ -53,7 +59,7 @@ def update(ctx, key, value):
     """Manually updates a record in the table."""
     try:
         model.update(key, value)
-        click.echo(click.style(f'Record updated.', bg='green', fg='black'))
+        click.echo(click.style('Record updated.', bg='green', fg='black'))
         ctx.invoke(list)
     except exception.ConfigNotFoundError:
         ctx.fail(click.style(f'Record with key "{key}" does not exist.', fg='red'))

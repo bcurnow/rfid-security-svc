@@ -2,10 +2,13 @@ import rfidsecuritysvc.exception as exception
 from rfidsecuritysvc.api import RECORD_COUNT_HEADER
 from rfidsecuritysvc.model import config as model
 
+
 def get(key):
     m = model.get(key)
-    if m: return m.to_json()
+    if m:
+        return m.to_json()
     return f'Object with key "{key}" does not exist.', 404
+
 
 def search():
     results = []
@@ -14,6 +17,7 @@ def search():
 
     return results
 
+
 def post(body):
     try:
         model.create(**body)
@@ -21,8 +25,10 @@ def post(body):
     except exception.DuplicateConfigError:
         return f'Object with key "{body["key"]}" already exists.', 409
 
+
 def delete(key):
     return None, 200, {RECORD_COUNT_HEADER: model.delete(key)}
+
 
 def put(key, body):
     try:
@@ -30,4 +36,3 @@ def put(key, body):
     except exception.ConfigNotFoundError:
         model.create(key, body["value"])
         return None, 201, {RECORD_COUNT_HEADER: 1}
-
