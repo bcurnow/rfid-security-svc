@@ -9,7 +9,7 @@ def register(app):
     app.cli.add_command(group)
 
 
-@group.command('generate-test-apikey')
+@group.command('generate-test-api-key')
 @click.argument('value')
 def generate_api_key(value):
     """ Takes the value from the command line and generates a password_hash that can then be used to populate the
