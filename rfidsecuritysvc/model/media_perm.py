@@ -12,10 +12,6 @@ class MediaPerm(BaseModel):
         self.perm_id = perm_id
 
 
-    def _read_only_keys(self):
-        return ['id']
-
-
 def get(id):
     return __model(table.get(id))
 

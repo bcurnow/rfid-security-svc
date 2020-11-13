@@ -9,10 +9,6 @@ class Permission(BaseModel):
         self.desc = desc
 
 
-    def _read_only_keys(self):
-        return ['id']
-
-
 def get(id):
     return __model(table.get(id))
 
