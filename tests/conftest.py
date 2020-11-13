@@ -1,5 +1,4 @@
 from glob import glob
-import pytest
 
 
 def convert_to_module_name(string: str):
@@ -9,5 +8,3 @@ def convert_to_module_name(string: str):
 pytest_plugins = [
     convert_to_module_name(fixture) for fixture in glob('tests/fixtures/*.py') if '__' not in fixture
 ]
-
-
