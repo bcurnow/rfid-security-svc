@@ -4,10 +4,10 @@ import tempfile
 
 from rfidsecuritysvc import create_app
 from rfidsecuritysvc.db import config, media, permission, media_perm
-from rfidsecuritysvc.db.dbms import get_db, init_db, close_db
+from rfidsecuritysvc.db.dbms import init_db, close_db
 
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def app(configs, medias, permissions, media_perms):
     """A Flask app class"""
     # Create a temporary director for this set of tests
@@ -47,11 +47,11 @@ def app(configs, medias, permissions, media_perms):
     os.unlink(db_path)
 
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def client(app):
     return app.test_client()
 
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def runner(app):
     return app.test_cli_runner()
