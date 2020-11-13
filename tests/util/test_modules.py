@@ -37,7 +37,7 @@ def test_call_method_on_each_with_filter():
 
 
 def __import_testmod():
-    # Because of the way python works, we need to do a bit of trickery to makek the testmod available
+    # Because of the way python works, we need to do a bit of trickery to make the testmod package available
     # First, determine the absolute path to the testmod directory
     module_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'testmod'))
 
