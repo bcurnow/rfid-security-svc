@@ -34,8 +34,5 @@ def put(id, body):
     try:
         return None, 200, {RECORD_COUNT_HEADER: model.update(id, body['name'], body['desc'])}
     except exception.MediaNotFoundError:
-        try:
-            model.create(id, body['name'], body['desc'])
-            return None, 201, {RECORD_COUNT_HEADER: 1}
-        except exception.DuplicateMediaError:
-            return f'Object with id "{id}" or name "{body["name"]}" already exists.', 409
+        model.create(id, body['name'], body['desc'])
+        return None, 201, {RECORD_COUNT_HEADER: 1}
