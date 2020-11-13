@@ -1,4 +1,4 @@
-import os
+import hashlib
 import pytest
 from types import ModuleType
 from unittest.mock import Mock, PropertyMock
@@ -16,12 +16,13 @@ class MockDb(object):
         self._executes = {}
 
     def get_return_value_for_execute(self, *args, **kwargs):
+        key = hashlib.sha256(bytes(args[0], 'utf-8')).hexdigest()
         # If we get a call and we're out of return values, just return a Mock, this will return a better error message because we'll get to assert
-        if self._db_execute_return_value_index > (len(self._executes[args[0]]) - 1):
+        if self._db_execute_return_value_index > (len(self._executes[key]) - 1):
             return Mock()
 
         # The first arg is the SQL statement, use it to get the executes array and use the global pointer to pull back the cursor for this execute
-        rv = self._executes[args[0]][self._db_execute_return_value_index]['cursor']
+        rv = self._executes[key][self._db_execute_return_value_index]['cursor']
         # Increment the index so next call returns the next value
         self._db_execute_return_value_index += 1
         return rv
@@ -31,15 +32,18 @@ class MockDb(object):
 
     def add_execute(self, sql, sql_args=None, cursor_return=None, rowcount=None):
         index = 0
-        if sql in self._executes:
+        key = hashlib.sha256(bytes(sql, 'utf-8')).hexdigest()
+
+        if key in self._executes:
             index = len(self._executes) - 1
         else:
             # We don't yet have any registered executes for this SQL, create an empty list
-            self._executes[sql] = []
+            self._executes[key] = []
 
         # Add a dict for this specific execute of the SQL
-        self._executes[sql].append({})
-        execute = self._executes[sql][index]
+        self._executes[key].append({})
+        execute = self._executes[key][index]
+        execute['sql'] = sql
         execute['sql_args'] = sql_args
         self._add_cursor(execute, cursor_return, rowcount)
 
@@ -51,13 +55,13 @@ class MockDb(object):
             self._db.execute.assert_not_called()
 
         total_execs = 0
-        for (sql, execs) in self._executes.items():
+        for (key, execs) in self._executes.items():
             for e in execs:
                 total_execs += 1
                 if e['sql_args']:
-                    self._db.execute.assert_any_call(sql, e['sql_args'])
+                    self._db.execute.assert_any_call(e['sql'], e['sql_args'])
                 else:
-                    self._db.execute.assert_any_call(sql)
+                    self._db.execute.assert_any_call(e['sql'])
                     if 'cursor_return' in e:
                         e['cursor_return_method'].assert_called_once()
                         if 'rowcount' in e:
