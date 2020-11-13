@@ -14,7 +14,6 @@ class ResponseHandler:
         self._app = app
         self._assert_model = assert_model
 
-
     def open(self, method, api, data=None, content_type='application/json'):
         h = Headers()
         # Add the default testing authorization header so the calls succeed
@@ -22,7 +21,12 @@ class ResponseHandler:
 
         if data is not None and 'application/json' in content_type:
             if isinstance(data, BaseModel):
-                data = json.dumps(data.to_json())
+                if callable(getattr(data, 'to_json_rw')) and method in ('post', 'put'):
+                    # This is special scenario where there are readonly fields on the model
+                    # To avoid errors, call the to_json_rw method which is monkeypatched in
+                    data = json.dumps(data.to_json_rw())
+                else:
+                    data = json.dumps(data.to_json())
             else:
                 data = json.dumps(data)
 
@@ -35,7 +39,6 @@ class ResponseHandler:
             data=data,
         )
         return self._client.open(builder)
-
 
     def assert_response(self, response, status_code=200, expected=None, headers=None):
         # Add some helpful debug info if we aren't going to be successful
@@ -67,21 +70,22 @@ class ResponseHandler:
         if headers is not None:
             for header, value in headers.items():
                 assert response.headers.get(header) == value
+        # Return the response that was passed into us, this is helpful if the test wants to do some additional
+        # testing but doesn't wants to keep the single line assert semantics
+        return response
 
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def rh(client, api_base, app, assert_model):
     return ResponseHandler(client, api_base, app, assert_model)
 
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def test_api_key():
     # This value is 'testing'
     return 'pbkdf2:sha256:150000$gQ68PeFG$8171ee457bac33eff68dce8d2d1dc84c32d9b39ef21c0623ebfa384a210cb44d'
 
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def api_base():
     return '/api/v1.0/'
-
-
