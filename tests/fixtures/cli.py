@@ -3,7 +3,7 @@ import pytest
 import click
 
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def assert_output():
     def assert_output(result, msg, exit_code=0, **style):
         assert result.exit_code == exit_code
