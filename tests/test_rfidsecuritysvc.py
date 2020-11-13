@@ -80,7 +80,6 @@ def _assert_test_app_config(app):
 def _assert_default_app_config(app):
     assert app.config['SECRET_KEY'] == 'dev'
     assert app.config['DATABASE'] == os.path.join(app.instance_path, 'rfidsecurity.sqlite')
-    assert app.config['JSON_SORT_KEYS'] is False
     # We aren't explicitly setting this but, just to be safe...
     assert app.config['TESTING'] is False
 
