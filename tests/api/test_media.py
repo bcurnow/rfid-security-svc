@@ -74,15 +74,6 @@ def test_put_does_not_exist(model):
     model.create.assert_called_once_with(m.id, m.name, m.desc)
 
 
-@patch('rfidsecuritysvc.api.media.model')
-def test_put_does_not_exist_duplicate(model):
-    model.update.side_effect = NotFoundError
-    model.create.side_effect = DuplicateError
-    assert api.put(m.id, _update(m)) == (f'Object with id "{m.id}" or name "{m.name}" already exists.', 409)
-    model.update.assert_called_once_with(m.id, m.name, m.desc)
-    model.create.assert_called_once_with(m.id, m.name, m.desc)
-
-
 def _update(m):
     d = m.to_json().copy()
     d.pop('id')
