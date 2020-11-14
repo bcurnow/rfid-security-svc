@@ -15,16 +15,17 @@ RUN if [ ${USER_ID:-0} -eq 0 ] || [ ${GROUP_ID:-0} -eq 0 ]; then \
     fi \
     && install -d -m 0755 -o flask -g flask /home/flask \
     && mkdir -p /etc/sudoers.d  \
-    && echo "flask ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/flask-all-nopasswd \
-    && echo "PATH=.:\${PATH}\nset -o vi" > /home/flask/.bashrc
+    && echo "flask ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/flask-all-nopasswd
 
 COPY ./docker-files/home/.* /home/flask/
 COPY ./requirements.txt /var/tmp
 
-RUN apt-get update && \
-    apt-get -y install --no-install-recommends vim sudo less && \
-    pip install -r /var/tmp/requirements.txt && \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get -y install --no-install-recommends \
+    vim \
+    sudo \
+    less \
+    && pip install -r /var/tmp/requirements.txt \
+    && rm -rf /var/lib/apt/lists/*
 
 USER flask
 
