@@ -12,11 +12,10 @@ RUN if [ ${USER_ID:-0} -ne 0 ] && [ ${GROUP_ID:-0} -ne 0 ]; then \
     echo "PATH=.:\${PATH}\nset -o vi" > /home/flask/.bashrc \
 ;fi
 
+COPY ./docker-files/home/.* /home/flask/
 COPY ./requirements.txt /var/tmp
-COPY ./.vimrc /home/flask/.vimrc
 
 RUN apt-get update && \
-    apt-get -y upgrade && \
     apt-get -y install --no-install-recommends vim sudo less && \
     pip install -r /var/tmp/requirements.txt && \
     rm -rf /var/lib/apt/lists/*
