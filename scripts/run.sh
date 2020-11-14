@@ -5,6 +5,7 @@ rootDir=$(cd ${rootDir}/.. && pwd)
 
 export FLASK_APP=rfidsecuritysvc
 export FLASK_ENV=development
+export FLASK_DEBUG=1
 
 pidFile=${rootDir}/flask.pid
 logFile=${rootDir}/flask.log
@@ -15,7 +16,7 @@ then
   exit 1
 fi
 
-flask run --host 0.0.0.0 > ${logFile} 2>&1 &
+flask run --host 0.0.0.0 --cert ${rootDir}/cert.pem --key ${rootDir}/key.pem > ${logFile} 2>&1 &
 pid=$!
 
 echo $pid > ${pidFile}
