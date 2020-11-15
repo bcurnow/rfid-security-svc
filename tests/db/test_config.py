@@ -25,6 +25,7 @@ def test_create(mockdb):
 def test_create_IntegrityError(mockdb):
     mockdb.add_execute('INSERT INTO config (key, value) VALUES (?,?)', ('test', 1))
     mockdb.add_commit(sqlite3.IntegrityError)
+    mockdb.add_rollback()
     with pytest.raises(Duplicate) as e:
         db.create('test', 1)
 
@@ -45,6 +46,5 @@ def test_update(mockdb):
 
 def test_update_NotFoundError(mockdb):
     mockdb.add_execute('UPDATE config SET value = ? WHERE key = ?', (1, 'test'), rowcount=0)
-    mockdb.add_commit()
     with pytest.raises(NotFound):
         db.update('test', 1)
