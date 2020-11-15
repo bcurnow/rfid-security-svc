@@ -1,48 +1,52 @@
 import sqlite3
-from rfidsecuritysvc.db.dbms import get_db
+from rfidsecuritysvc.db.dbms import with_dbconn
 import rfidsecuritysvc.exception as exception
 
 
-def get(id):
-    return get_db().execute('SELECT * FROM media_perm WHERE id = ?', (id,)).fetchone()
+@with_dbconn
+def get(conn, id):
+    with conn:
+        return conn.execute('SELECT * FROM media_perm WHERE id = ?', (id,)).fetchone()
 
 
-def get_by_media_and_perm(media_id, perm_id):
-    return get_db().execute('SELECT * FROM media_perm WHERE media_id = ? AND perm_id = ?', (media_id, perm_id)).fetchone()
+@with_dbconn
+def get_by_media_and_perm(conn, media_id, perm_id):
+    with conn:
+        return conn.execute('SELECT * FROM media_perm WHERE media_id = ? AND perm_id = ?', (media_id, perm_id)).fetchone()
 
 
-def list():
-    return get_db().execute('SELECT * FROM media_perm ORDER BY id').fetchall()
+@with_dbconn
+def list(conn):
+    with conn:
+        return conn.execute('SELECT * FROM media_perm ORDER BY id').fetchall()
 
 
-def create(media_id, perm_id):
+@with_dbconn
+def create(conn, media_id, perm_id):
     try:
-        db = get_db()
-        db.execute('INSERT INTO media_perm (media_id, perm_id) VALUES (?,?)', (media_id, perm_id))
-        db.commit()
+        with conn:
+            conn.execute('INSERT INTO media_perm (media_id, perm_id) VALUES (?,?)', (media_id, perm_id))
     except sqlite3.IntegrityError as e:
         raise exception.DuplicateMediaPermError from e
 
 
-def delete(id):
-    db = get_db()
-    count = db.execute('DELETE FROM media_perm WHERE id = ?', (id,)).rowcount
-    db.commit()
-    return count
+@with_dbconn
+def delete(conn, id):
+    with conn:
+        return conn.execute('DELETE FROM media_perm WHERE id = ?', (id,)).rowcount
 
 
-def delete_by_media_and_perm(media_id, perm_id):
-    db = get_db()
-    count = db.execute('DELETE FROM media_perm WHERE media_id = ? AND perm_id = ?', (media_id, perm_id)).rowcount
-    db.commit()
-    return count
+@with_dbconn
+def delete_by_media_and_perm(conn, media_id, perm_id):
+    with conn:
+        return conn.execute('DELETE FROM media_perm WHERE media_id = ? AND perm_id = ?', (media_id, perm_id)).rowcount
 
 
-def update(id, media_id, perm_id):
-    db = get_db()
-    count = db.execute('UPDATE media_perm SET media_id = ?, perm_id = ? WHERE id = ?', (media_id, perm_id, id)).rowcount
+@with_dbconn
+def update(conn, id, media_id, perm_id):
+    with conn:
+        count = conn.execute('UPDATE media_perm SET media_id = ?, perm_id = ? WHERE id = ?', (media_id, perm_id, id)).rowcount
     if count == 0:
         raise exception.MediaPermNotFoundError
 
-    db.commit()
     return count

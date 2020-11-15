@@ -1,10 +1,12 @@
 import textwrap
 
-from rfidsecuritysvc.db.dbms import get_db
+from rfidsecuritysvc.db.dbms import with_dbconn
 
 
-def list():
-    return get_db().execute(textwrap.dedent('''
+@with_dbconn
+def list(conn):
+    with conn:
+        return conn.execute(textwrap.dedent('''
                                             SELECT
                                             media_id,
                                             permission.name as perm_name
