@@ -41,10 +41,10 @@ def test_close_db(app):
 def test_close_db_clears_g(app):
     with app.app_context():
         get_connection()
-        assert 'db' in g
+        assert 'db_connection' in g
         theg = g.__dict__
 
-    assert 'db' not in theg
+    assert 'db_connection' not in theg
 
 
 def test_init_db(app):
