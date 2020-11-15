@@ -30,6 +30,7 @@ def test_create(mockdb):
 def test_create_IntegrityError(mockdb):
     mockdb.add_execute('INSERT INTO media_perm (media_id, perm_id) VALUES (?,?)', ('test', 1))
     mockdb.add_commit(sqlite3.IntegrityError)
+    mockdb.add_rollback()
     with pytest.raises(Duplicate) as e:
         db.create('test', 1)
 
