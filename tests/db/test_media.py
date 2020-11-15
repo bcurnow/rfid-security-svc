@@ -25,6 +25,7 @@ def test_create(mockdb):
 def test_create_IntegrityError(mockdb):
     mockdb.add_execute('INSERT INTO media (id, name, desc) VALUES (?,?,?)', ('test', 'test name', 'test desc'))
     mockdb.add_commit(sqlite3.IntegrityError)
+    mockdb.add_rollback()
     with pytest.raises(Duplicate) as e:
         db.create('test', 'test name', 'test desc')
 
