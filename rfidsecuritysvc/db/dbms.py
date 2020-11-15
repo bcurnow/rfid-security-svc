@@ -19,7 +19,7 @@ def close_db(e=None):
         try:
             connection.execute('PRAGMA optimize')
         finally:
-            db.close()
+            connection.close()
 
 
 def with_dbconn(func):
