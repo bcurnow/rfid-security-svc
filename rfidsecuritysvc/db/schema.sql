@@ -1,6 +1,7 @@
+PRAGMA foreign_keys = OFF;
 DROP TABLE IF EXISTS config;
-DROP TABLE IF EXISTS media_perm;
 DROP TABLE IF EXISTS media;
+DROP TABLE IF EXISTS media_perm;
 DROP TABLE IF EXISTS permission;
 
 CREATE TABLE config (
