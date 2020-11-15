@@ -3,18 +3,23 @@ from flask import current_app, g
 
 
 def get_connection():
-    if 'db' not in g:
-        g.db = sqlite3.connect(current_app.config['DATABASE'], detect_types=sqlite3.PARSE_DECLTYPES)
-        g.db.row_factory = sqlite3.Row
-        g.db.execute('PRAGMA foreign_keys = ON')
+    if 'db_connection' not in g:
+        g.db_connection = sqlite3.connect(current_app.config['DATABASE'], detect_types=sqlite3.PARSE_DECLTYPES)
+        g.db_connection.row_factory = sqlite3.Row
+        # Ensure that foreign_keys are turned on: https://www.sqlite.org/pragma.html#pragma_foreign_keys
+        g.db_connection.execute('PRAGMA foreign_keys = ON')
 
-    return g.db
+    return g.db_connection
 
 
 def close_db(e=None):
-    db = g.pop('db', None)
-    if db is not None:
-        db.close()
+    connection = g.pop('db_connection', None)
+    if connection is not None:
+        # Optimize the database before we close it per https://www.sqlite.org/pragma.html#pragma_optimize
+        try:
+            connection.execute('PRAGMA optimize')
+        finally:
+            db.close()
 
 
 def with_dbconn(func):
