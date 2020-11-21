@@ -40,3 +40,7 @@ class DuplicateAssociationError(BaseError):
 
 class AssociationNotFoundError(BaseError):
     pass
+
+
+class DeviceNotFoundError(BaseError):
+    pass
