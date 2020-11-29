@@ -4,6 +4,5 @@ coverage
 wheel
 connexion[swagger-ui]
 flake8
-autopep8
 pyopenssl
-evdev
+https://github.com/bcurnow/rfid-reader/releases/download/1.0.0/rfidreader-1.0.0-py3-none-any.whl
