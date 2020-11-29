@@ -24,3 +24,12 @@ Once you've installed with pip, you can run the tests with `pytest --import-mode
 You can also run using coverage.py by using `coverage run -m pytest --import-mode=importlib`
 
 Once you're doing running, you can get a coverage report with `coverage report`
+
+# First time setup
+
+Before you can run Flask and actually execute the APIs, you'll need to setup the database, run the following commands:
+* `scripts/flask.sh db init` - When prompted, answer `y` to setup the tables.
+* `scripts/flask.sh auth generate-api-key` - When prompted, answer `y` to invalidated the old key (there is no old key, you just created an empty DB). It will be helpful to record the value printed by this command as it's not retrievable again but you need it to authorize in the Swagger UI.
+* `scripts/flask.sh config create RFID_DEVICE <device name>` - This is likely /dev/input/rfid but if your setup has a different device name, replace it here. This tells the API what device to read from.
+
+Now you can run the API with `scripts/run.sh`.
