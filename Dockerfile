@@ -2,6 +2,7 @@ from python:3
 
 ARG USER_ID
 ARG GROUP_ID
+ARG INPUT_GROUP_ID
 
 # Don't attempt to set the flask user to the root user (uid=0) or group (gid=0)
 RUN if [ ${USER_ID:-0} -eq 0 ] || [ ${GROUP_ID:-0} -eq 0 ]; then \
@@ -17,15 +18,21 @@ RUN if [ ${USER_ID:-0} -eq 0 ] || [ ${GROUP_ID:-0} -eq 0 ]; then \
     && mkdir -p /etc/sudoers.d  \
     && echo "flask ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/flask-all-nopasswd
 
-COPY ./docker-files/home/.* /home/flask/
-COPY ./requirements.txt /var/tmp
+# Add the input group
+RUN groupadd -g ${INPUT_GROUP_ID} input \
+    && usermod -a -G input flask
 
 RUN apt-get update && apt-get -y install --no-install-recommends \
     vim \
     sudo \
     less \
-    && pip install -r /var/tmp/requirements.txt \
     && rm -rf /var/lib/apt/lists/*
+
+COPY ./docker-files/home/.* /home/flask/
+
+COPY ./requirements.txt /tmp
+
+RUN pip install -r /tmp/requirements.txt
 
 USER flask
 
