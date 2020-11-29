@@ -1,12 +1,30 @@
 from setuptools import find_packages, setup
 
+
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
 setup(
     name='rfidsecuritysvc',
     version='1.0.0',
+    author='Brian Curnow',
+    author_email='brian.curnow+rfidreader@gmail.com',
+    description='A Flask and Connexion-based REST API and database for managing RFID media and permissions.',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
+    url='https://github.com/bcurnow/rfid-security-svc',
     packages=find_packages(),
-    include_package_data=True,
-    zip_safe=False,
+    classifiers=[
+        'Programming Language :: Python :: 3.9',
+        'License :: OSI Approved :: Apache Software License'
+        'Operating System :: OS Independent',
+        'Natural Language :: English',
+    ],
+    python_requires='>=3.9',
     install_requires=[
-        'flask',
+        'Flask',
+        'connexion[swagger-ui]',
+        'pyopenssl',
+        'rfidreader@https://github.com/bcurnow/rfid-reader/releases/download/1.0.0/rfidreader-1.0.0-py3-none-any.whl',
     ],
 )
