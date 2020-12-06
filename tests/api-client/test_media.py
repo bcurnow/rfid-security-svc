@@ -9,6 +9,10 @@ def test_get(rh, medias):
     rh.assert_response(rh.open('get', f'{api}/{medias[0].id}'), 200, medias[0])
 
 
+def test_get_no_desc(rh, no_desc_media):
+    rh.assert_response(rh.open('get', f'{api}/{no_desc_media.id}'), 200, no_desc_media)
+
+
 def test_get_notfound(rh, medias):
     rh.assert_response(rh.open('get', f'{api}/bogus'), 404)
 

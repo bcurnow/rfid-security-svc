@@ -9,6 +9,10 @@ def test_get(rh, permissions):
     rh.assert_response(rh.open('get', f'{api}/{permissions[0].name}'), 200, permissions[0])
 
 
+def test_get_no_desc(rh, no_desc_permission):
+    rh.assert_response(rh.open('get', f'{api}/{no_desc_permission.name}'), 200, no_desc_permission)
+
+
 def test_get_notfound(rh, permissions):
     rh.assert_response(rh.open('get', f'{api}/bogus'), 404)
 
