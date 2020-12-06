@@ -1,3 +1,5 @@
+from functools import wraps
+
 import sqlite3
 from flask import current_app, g
 
@@ -24,6 +26,7 @@ def close_db(e=None):
 
 def with_dbconn(func):
     """Decorator which injects a database connection."""
+    @wraps(func)
     def with_dbconn_impl(*args, **kwargs):
         conn = get_connection()
         return func(conn, *args, **kwargs)
