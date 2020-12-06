@@ -794,6 +794,7 @@ components:
         desc:
           type: string
           example: Opens the door
+          nullable: true
   securitySchemes:
     ApiKey:
       type: apiKey
