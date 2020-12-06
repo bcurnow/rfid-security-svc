@@ -37,7 +37,6 @@ def creatable_media():
     return Media('creatable id', 'creatable name', 'creatable desc')
 
 
-
 @pytest.fixture(scope='session')
 def no_desc_media(medias):
     return medias[6]
@@ -54,7 +53,6 @@ def permissions():
         Permission(6, 'Perm 5', 'Permission 5'),
         Permission(7, 'No Desc', None)
     ]
-
 
 
 @pytest.fixture(scope='session')

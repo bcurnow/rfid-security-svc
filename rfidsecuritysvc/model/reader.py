@@ -1,6 +1,3 @@
-import os
-import select
-
 from flask import g, current_app
 
 from rfidreader import RFIDReader

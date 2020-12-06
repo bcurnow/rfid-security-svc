@@ -1,6 +1,5 @@
 import pytest
-import time
-from unittest.mock import call, patch
+from unittest.mock import patch
 
 from flask import g
 
