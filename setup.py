@@ -20,7 +20,7 @@ setup(
         'Operating System :: OS Independent',
         'Natural Language :: English',
     ],
-    python_requires='>=3.9',
+    python_requires='>=3.6',
     install_requires=[
         'Flask',
         'connexion[swagger-ui]',
