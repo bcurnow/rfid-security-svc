@@ -28,12 +28,19 @@ def medias():
         Media('test media 4', 'test media 4', 'Media for testing (4)'),
         Media('test media 5', 'test media 5', 'Media for testing (5)'),
         Media('test open door', 'test open door', 'This media will be assigned the permission Open Door'),
+        Media('test without desc', 'test without desc', None),
     ]
 
 
 @pytest.fixture(scope='session')
 def creatable_media():
     return Media('creatable id', 'creatable name', 'creatable desc')
+
+
+
+@pytest.fixture(scope='session')
+def no_desc_media(medias):
+    return medias[6]
 
 
 @pytest.fixture(scope='session')
@@ -45,12 +52,19 @@ def permissions():
         Permission(4, 'Perm 3', 'Permission 3'),
         Permission(5, 'Perm 4', 'Permission 4'),
         Permission(6, 'Perm 5', 'Permission 5'),
+        Permission(7, 'No Desc', None)
     ]
 
 
+
 @pytest.fixture(scope='session')
-def creatable_permission():
-    return Permission(7, 'creatable name', 'creatable desc')
+def no_desc_permission(permissions):
+    return permissions[6]
+
+
+@pytest.fixture(scope='session')
+def creatable_permission(permissions):
+    return Permission(len(permissions) + 1, 'creatable name', 'creatable desc')
 
 
 @pytest.fixture(scope='session')
@@ -66,8 +80,8 @@ def media_perms(medias, permissions):
 
 
 @pytest.fixture(scope='session')
-def creatable_media_perm():
-    return MediaPerm(7, 'test media 1', 3)
+def creatable_media_perm(media_perms):
+    return MediaPerm(len(media_perms) + 1, 'test media 1', 3)
 
 
 @pytest.fixture(scope='session')
