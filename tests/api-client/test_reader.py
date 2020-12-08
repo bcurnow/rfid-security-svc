@@ -5,7 +5,7 @@ api = 'reader'
 
 @patch(f'rfidsecuritysvc.api.{api}.reader')
 def test_search(reader, rh):
-    reader.read.return_value = '80558aba5c3504'
+    reader.read.return_value = '80558ABA5C3504'
     rh.assert_response(rh.open('get', f'{api}'), 200, reader.read.return_value)
     reader.read.assert_called_once_with(10)
 
