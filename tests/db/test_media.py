@@ -17,17 +17,23 @@ def test_list(mockdb):
 
 
 def test_create(mockdb):
-    mockdb.add_execute('INSERT INTO media (id, name, desc) VALUES (?,?,?)', ('test', 'test name', 'test desc'))
+    mockdb.add_execute('INSERT INTO media (id, name, desc) VALUES (?,?,?)', ('TEST', 'test name', 'test desc'))
     mockdb.add_commit()
-    assert db.create('test', 'test name', 'test desc') is None
+    assert db.create('TEST', 'test name', 'test desc') is None
+
+
+def test_create_ensure_uppercase(mockdb):
+    mockdb.add_execute('INSERT INTO media (id, name, desc) VALUES (?,?,?)', ('LOWERCASEID', 'test name', 'test desc'))
+    mockdb.add_commit()
+    assert db.create('lowercaseid', 'test name', 'test desc') is None
 
 
 def test_create_IntegrityError(mockdb):
-    mockdb.add_execute('INSERT INTO media (id, name, desc) VALUES (?,?,?)', ('test', 'test name', 'test desc'))
+    mockdb.add_execute('INSERT INTO media (id, name, desc) VALUES (?,?,?)', ('TEST', 'test name', 'test desc'))
     mockdb.add_commit(sqlite3.IntegrityError)
     mockdb.add_rollback()
     with pytest.raises(Duplicate) as e:
-        db.create('test', 'test name', 'test desc')
+        db.create('TEST', 'test name', 'test desc')
 
     assert type(e.value.__cause__) == sqlite3.IntegrityError
 
