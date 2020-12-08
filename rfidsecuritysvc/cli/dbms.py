@@ -10,9 +10,9 @@ def register(app):
 
 
 @group.command('init')
+@click.confirmation_option(prompt='Are you sure, this will delete all current data?')
 @with_appcontext
 def init_db():
     """Clear the existing data and create new tables."""
-    click.confirm('Are you sure, this will delete all current data?', abort=True)
     dbms.init_db()
     click.echo(click.style('Initialized the database.', bg='green', fg='black'))
