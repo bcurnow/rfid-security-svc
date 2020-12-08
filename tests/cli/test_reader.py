@@ -33,6 +33,19 @@ def test_set_device_name_alreadyexists(config, list, runner, assert_output):
 
 @patch('rfidsecuritysvc.cli.reader.list')
 @patch('rfidsecuritysvc.cli.reader.config')
+def test_set_device_name_alreadyexists_yes_flag(config, list, runner, assert_output):
+    config.get.return_value = Config(RFID_DEVICE_CONFIG_KEY, '/dev/othervalue')
+    config.update.return_value = 1
+    list.return_value = [Config(RFID_DEVICE_CONFIG_KEY, '/dev/test')]
+    result = runner.invoke(args=['reader', 'set-device-name', '/dev/test', '--yes'], color=True)
+    assert f'There is already a key "{RFID_DEVICE_CONFIG_KEY}" with value "/dev/othervalue", do you want to replace with "/dev/test"?' not in result.output
+    config.get.assert_called_once_with(RFID_DEVICE_CONFIG_KEY)
+    config.update.assert_called_once_with(RFID_DEVICE_CONFIG_KEY, '/dev/test')
+    list.assert_called_once()
+
+
+@patch('rfidsecuritysvc.cli.reader.list')
+@patch('rfidsecuritysvc.cli.reader.config')
 def test_set_device_name_alreadyexists_n(config, list, runner, assert_output):
     config.get.return_value = Config(RFID_DEVICE_CONFIG_KEY, '/dev/othervalue')
     result = runner.invoke(args=['reader', 'set-device-name', '/dev/test'], input='n', color=True)
