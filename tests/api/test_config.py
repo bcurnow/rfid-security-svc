@@ -4,7 +4,6 @@ from rfidsecuritysvc.api import RECORD_COUNT_HEADER
 from rfidsecuritysvc.api import config as api
 from rfidsecuritysvc.exception import DuplicateConfigError as DuplicateError
 from rfidsecuritysvc.exception import ConfigNotFoundError as NotFoundError
-from rfidsecuritysvc.exception import InvalidValueError
 from rfidsecuritysvc.model.config import Config as Model
 
 m = Model('key', 'value')
@@ -54,13 +53,6 @@ def test_post_Duplicate(model):
 
 
 @patch('rfidsecuritysvc.api.config.model')
-def test_post_InvalidValueError(model):
-    model.create.side_effect = InvalidValueError
-    assert api.post(m.to_json()) == (None, 400)
-    model.create.assert_called_once_with(**m.to_json())
-
-
-@patch('rfidsecuritysvc.api.config.model')
 def test_delete(model):
     model.delete.return_value = 1
     assert api.delete(m.key) == (None, 200, {RECORD_COUNT_HEADER: 1})
@@ -80,13 +72,6 @@ def test_put_already_exists(model):
     assert api.put(m.key, _update(m)) == (None, 201, {RECORD_COUNT_HEADER: 1})
     model.update.assert_called_once_with(m.key, m.value)
     model.create.assert_called_once_with(m.key, m.value)
-
-
-@patch('rfidsecuritysvc.api.config.model')
-def test_put_InvalidValueError(model):
-    model.update.side_effect = InvalidValueError
-    assert api.put(m.key, _update(m)) == (None, 400)
-    model.update.assert_called_once_with(m.key, m.value)
 
 
 def _update(m):
