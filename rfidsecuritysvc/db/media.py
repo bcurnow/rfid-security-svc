@@ -20,8 +20,7 @@ def list(conn):
 def create(conn, id, name, desc=None):
     try:
         # Always make sure the ID is in upper case
-        if id:
-            id = id.upper()
+        id = id.upper()
         with conn:
             conn.execute('INSERT INTO media (id, name, desc) VALUES (?,?,?)', (id, name, desc))
     except sqlite3.IntegrityError as e:
