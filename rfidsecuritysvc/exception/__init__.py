@@ -2,10 +2,6 @@ class BaseError(Exception):
     pass
 
 
-class InvalidValueError(BaseError):
-    """ Thrown when an invalid value is provided to a method."""
-    pass
-
 class MediaNotFoundError(BaseError):
     pass
 
