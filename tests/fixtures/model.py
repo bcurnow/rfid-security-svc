@@ -22,19 +22,19 @@ def creatable_config():
 @pytest.fixture(scope='session')
 def medias():
     return [
-        Media('test media 1', 'test media 1', 'Media for testing (1)'),
-        Media('test media 2', 'test media 2', 'Media for testing (2)'),
-        Media('test media 3', 'test media 3', 'Media for testing (3)'),
-        Media('test media 4', 'test media 4', 'Media for testing (4)'),
-        Media('test media 5', 'test media 5', 'Media for testing (5)'),
-        Media('test open door', 'test open door', 'This media will be assigned the permission Open Door'),
-        Media('test without desc', 'test without desc', None),
+        Media('TEST MEDIA 1', 'test media 1', 'Media for testing (1)'),
+        Media('TEST MEDIA 2', 'test media 2', 'Media for testing (2)'),
+        Media('TEST MEDIA 3', 'test media 3', 'Media for testing (3)'),
+        Media('TEST MEDIA 4', 'test media 4', 'Media for testing (4)'),
+        Media('TEST MEDIA 5', 'test media 5', 'Media for testing (5)'),
+        Media('TEST OPEN DOOR', 'test open door', 'This media will be assigned the permission Open Door'),
+        Media('TEST WITHOUT DESC', 'test without desc', None),
     ]
 
 
 @pytest.fixture(scope='session')
 def creatable_media():
-    return Media('creatable id', 'creatable name', 'creatable desc')
+    return Media('CREATABLE ID', 'creatable name', 'creatable desc')
 
 
 @pytest.fixture(scope='session')
@@ -69,17 +69,17 @@ def creatable_permission(permissions):
 def media_perms(medias, permissions):
     return [
         MediaPerm(1, medias[5].id, permissions[0].id),
-        MediaPerm(2, 'test media 1', 2),
-        MediaPerm(3, 'test media 2', 3),
-        MediaPerm(4, 'test media 3', 4),
-        MediaPerm(5, 'test media 4', 5),
-        MediaPerm(6, 'test media 5', 6),
+        MediaPerm(2, 'TEST MEDIA 1', 2),
+        MediaPerm(3, 'TEST MEDIA 2', 3),
+        MediaPerm(4, 'TEST MEDIA 3', 4),
+        MediaPerm(5, 'TEST MEDIA 4', 5),
+        MediaPerm(6, 'TEST MEDIA 5', 6),
     ]
 
 
 @pytest.fixture(scope='session')
 def creatable_media_perm(media_perms):
-    return MediaPerm(len(media_perms) + 1, 'test media 1', 3)
+    return MediaPerm(len(media_perms) + 1, 'TEST MEDIA 1', 3)
 
 
 @pytest.fixture(scope='session')
@@ -97,7 +97,7 @@ def associations(medias, permissions):
 
 @pytest.fixture(scope='session')
 def creatable_association():
-    return Association('test media 1', 'Perm 4')
+    return Association('TEST MEDIA 1', 'Perm 4')
 
 
 @pytest.fixture(scope='session')
