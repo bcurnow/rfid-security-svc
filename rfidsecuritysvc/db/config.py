@@ -2,6 +2,7 @@ import sqlite3
 
 from rfidsecuritysvc.db.dbms import with_dbconn
 import rfidsecuritysvc.exception as exception
+from rfidsecuritysvc.util.validation import is_truthy
 
 
 @with_dbconn
@@ -18,6 +19,8 @@ def list(conn):
 
 @with_dbconn
 def create(conn, key, value):
+    is_truthy(key)
+    is_truthy(value)
     try:
         with conn as conn:
             conn.execute('INSERT INTO config (key, value) VALUES (?,?)', (key, value))
@@ -33,6 +36,8 @@ def delete(conn, key):
 
 @with_dbconn
 def update(conn, key, value):
+    is_truthy(key)
+    is_truthy(value)
     with conn:
         count = conn.execute('UPDATE config SET value = ? WHERE key = ?', (value, key)).rowcount
     if count == 0:

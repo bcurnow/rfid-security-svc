@@ -24,6 +24,8 @@ def post(body):
         return None, 201
     except exception.DuplicateConfigError:
         return f'Object with key "{body["key"]}" already exists.', 409
+    except exception.InvalidValueError:
+        return None, 400
 
 
 def delete(key):
@@ -36,3 +38,5 @@ def put(key, body):
     except exception.ConfigNotFoundError:
         model.create(key, body["value"])
         return None, 201, {RECORD_COUNT_HEADER: 1}
+    except exception.InvalidValueError:
+        return None, 400
