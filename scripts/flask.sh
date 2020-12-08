@@ -8,4 +8,5 @@ export FLASK_ENV=development
 
 cd ${rootDir}
 
-flask "$@"
+
+bash -c "/usr/local/bin/flask $(printf ' %q' "$@")"
