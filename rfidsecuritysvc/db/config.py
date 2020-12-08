@@ -2,7 +2,6 @@ import sqlite3
 
 from rfidsecuritysvc.db.dbms import with_dbconn
 import rfidsecuritysvc.exception as exception
-from rfidsecuritysvc.util.validation import is_truthy
 
 
 @with_dbconn
