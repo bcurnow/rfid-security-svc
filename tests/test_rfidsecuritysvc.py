@@ -86,7 +86,7 @@ def _assert_default_app_config(app):
 
 def _assert_bootstrap(app):
     # The commands will only be present if the bootstrap code is called, so check for those
-    expected = ['auth', 'config', 'db', 'media', 'media-perm', 'permission', 'test']
+    expected = ['auth', 'config', 'db', 'media', 'media-perm', 'permission', 'reader', 'test']
     for cmd in app.cli.list_commands(app.app_context()):
         assert cmd in expected
 
