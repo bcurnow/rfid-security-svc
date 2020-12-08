@@ -85,7 +85,7 @@ paths:
         required: true
         schema:
           type: string
-          example: 80558aba5c3504
+          example: 80558ABA5C3504
       - name: perm_name
         in: path
         description: The permmission name of the association.
@@ -119,7 +119,7 @@ paths:
         required: true
         schema:
           type: string
-          example: 80558aba5c3504
+          example: 80558ABA5C3504
       - name: perm_name
         in: path
         description: The permmission name to check
@@ -322,7 +322,7 @@ paths:
         required: true
         schema:
           type: string
-          example: 80558aba5c3504
+          example: 80558ABA5C3504
       responses:
         '200':
           description: Media object.
@@ -349,7 +349,7 @@ paths:
         required: true
         schema:
           type: string
-          example: 80558aba5c3504
+          example: 80558ABA5C3504
       responses:
         '200':
           description: Record was either deleted or did not exist.
@@ -375,7 +375,7 @@ paths:
         required: true
         schema:
           type: string
-          example: 80558aba5c3504
+          example: 80558ABA5C3504
       requestBody:
         required: true
         content:
@@ -455,7 +455,7 @@ paths:
         required: true
         schema:
           type: string
-          example: 80558aba5c3504
+          example: 80558ABA5C3504
       - name: perm_id
         in: path
         description: The perm_id of the requested media permission.
@@ -489,7 +489,7 @@ paths:
         required: true
         schema:
           type: string
-          example: 80558aba5c3504
+          example: 80558ABA5C3504
       - name: perm_id
         in: path
         description: The perm_id of the requested media permission.
@@ -522,7 +522,7 @@ paths:
         required: true
         schema:
           type: string
-          example: 80558aba5c3504
+          example: 80558ABA5C3504
       - name: perm_id
         in: path
         description: The perm_id of the requested media permission.
@@ -700,7 +700,7 @@ paths:
             application/json:
               schema:
                 type: string
-                example: 80558aba5c3504
+                example: 80558ABA5C3504
         '204':
           description: No data read from reader, it is recommended to try again, possibly with a longer timeout.
         '400':
@@ -717,7 +717,7 @@ components:
       properties:
         media_id:
           type: string
-          example: 80558aba5c3504
+          example: 80558ABA5C3504
         perm_name:
           type: string
           example: Open Door
@@ -745,7 +745,7 @@ components:
           example: 1
         media_id:
           type: string
-          example: 80558aba5c3504
+          example: 80558ABA5C3504
         perm_id:
           type: integer
           example: 1
@@ -773,7 +773,7 @@ components:
       properties:
         id:
           type: string
-          example: 80558aba5c3504
+          example: 80558ABA5C3504
         name:
           type: string
           example: Anna's MagicBand
