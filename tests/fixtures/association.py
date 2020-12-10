@@ -1,23 +1,23 @@
 import pytest
 
-
-import rfidsecuritysvc
 from rfidsecuritysvc.model.association import Association
 
 
 @pytest.fixture(scope='session')
-def associations(medias, permissions):
-    return [
-        Association(medias[5].id, permissions[0].name),
-        Association(medias[0].id, permissions[1].name),
-        Association(medias[1].id, permissions[2].name),
-        Association(medias[2].id, permissions[3].name),
-        Association(medias[3].id, permissions[4].name),
-        Association(medias[4].id, permissions[5].name),
+def associations(media_perms,
+                 permissions,
+                 open_door_media,
+                 open_door_permission,
+                 default_permission,
+                 not_authorized_media):
 
-    ]
+    perm_map = dict((p.id, p.name) for p in permissions)
+    associations = []
+    for mp in media_perms:
+        associations.append(Association(mp.media_id, perm_map[mp.perm_id]))
+    return associations
 
 
 @pytest.fixture(scope='session')
-def creatable_association():
-    return Association('TEST MEDIA 1', 'Perm 4')
+def creatable_association(medias, permissions):
+    return Association(medias[0].id, permissions[1].name)

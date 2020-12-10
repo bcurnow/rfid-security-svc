@@ -4,7 +4,8 @@ def test_get(rh, open_door):
 
 
 def test_get_nomedia(rh, open_door):
-    rh.assert_response(rh.open('get', 'authorized/media/no such media/perm/no such perm'), 403)
+    media, perm, media_perm = open_door
+    rh.assert_response(rh.open('get', 'authorized/media/no such media/perm/{perm.name}'), 403)
 
 
 def test_get_noperm(rh, open_door):

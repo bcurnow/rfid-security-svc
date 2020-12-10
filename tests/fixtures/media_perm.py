@@ -1,22 +1,26 @@
 import pytest
 
-
-import rfidsecuritysvc
 from rfidsecuritysvc.model.media_perm import MediaPerm
 
 
 @pytest.fixture(scope='session')
-def media_perms(medias, permissions):
-    return [
-        MediaPerm(1, medias[5].id, permissions[0].id),
-        MediaPerm(2, 'TEST MEDIA 1', 2),
-        MediaPerm(3, 'TEST MEDIA 2', 3),
-        MediaPerm(4, 'TEST MEDIA 3', 4),
-        MediaPerm(5, 'TEST MEDIA 4', 5),
-        MediaPerm(6, 'TEST MEDIA 5', 6),
-    ]
+def media_perms(medias, open_door_media, open_door_permission, default_permission, not_authorized_media):
+    # The DB will return these ordered by id, please build the list accordingly
+    media_perms = []
+    for i in range(len(medias)):
+        if medias[i] == not_authorized_media:
+            print('skipping in media_perms')
+        else:
+            media_perms.append(MediaPerm(i, medias[i].id, default_permission.id))
+    media_perms.append(MediaPerm(len(media_perms) + 1, open_door_media.id, open_door_permission.id))
+    return media_perms
 
 
 @pytest.fixture(scope='session')
-def creatable_media_perm(media_perms):
-    return MediaPerm(len(media_perms) + 1, 'TEST MEDIA 1', 3)
+def creatable_media_perm(media_perms, media_for_creatable_media_perm, permission_for_creatable_media_perm):
+    return MediaPerm(len(media_perms) + 1, media_for_creatable_media_perm.id, permission_for_creatable_media_perm.id)
+
+
+@pytest.fixture(scope='session')
+def open_door_media_perm(media_perms):
+    return media_perms[0]

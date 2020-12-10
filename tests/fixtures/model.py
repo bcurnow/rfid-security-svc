@@ -5,12 +5,12 @@ from rfidsecuritysvc.model import BaseModel
 
 
 @pytest.fixture(scope='session')
-def open_door(medias, permissions, media_perms):
+def open_door(open_door_media, open_door_permission, open_door_media_perm):
     """
     This fixture returns a tuple containing the Media, Permission and MediaPerm objects corresponding to the open door test
     data
     """
-    return (medias[5], permissions[0], media_perms[0])
+    return (open_door_media, open_door_permission, open_door_media_perm)
 
 
 @pytest.fixture(scope='session')
