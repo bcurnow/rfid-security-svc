@@ -1,2 +1,3 @@
 include rfidsecuritysvc/db/schema.sql
+include rfidsecuritysvcapi/api.yaml
 global-exclude *.pyc
