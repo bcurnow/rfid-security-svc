@@ -1,103 +1,7 @@
 import pytest
 
-
 import rfidsecuritysvc
-from rfidsecuritysvc.model.association import Association
-from rfidsecuritysvc.model.config import Config
-from rfidsecuritysvc.model.media import Media
-from rfidsecuritysvc.model.media_perm import MediaPerm
-from rfidsecuritysvc.model.permission import Permission
-
-
-@pytest.fixture(scope='session')
-def configs(test_api_key):
-    return [Config('ADMIN_API_KEY', test_api_key)]
-
-
-@pytest.fixture(scope='session')
-def creatable_config():
-    return Config('creatable key', 'creatable value')
-
-
-@pytest.fixture(scope='session')
-def medias():
-    return [
-        Media('TEST MEDIA 1', 'test media 1', 'Media for testing (1)'),
-        Media('TEST MEDIA 2', 'test media 2', 'Media for testing (2)'),
-        Media('TEST MEDIA 3', 'test media 3', 'Media for testing (3)'),
-        Media('TEST MEDIA 4', 'test media 4', 'Media for testing (4)'),
-        Media('TEST MEDIA 5', 'test media 5', 'Media for testing (5)'),
-        Media('TEST OPEN DOOR', 'test open door', 'This media will be assigned the permission Open Door'),
-        Media('TEST WITHOUT DESC', 'test without desc', None),
-    ]
-
-
-@pytest.fixture(scope='session')
-def creatable_media():
-    return Media('CREATABLE ID', 'creatable name', 'creatable desc')
-
-
-@pytest.fixture(scope='session')
-def no_desc_media(medias):
-    return medias[6]
-
-
-@pytest.fixture(scope='session')
-def permissions():
-    return [
-        Permission(1, 'Open Door', 'Opens the door'),
-        Permission(2, 'Perm 1', 'Permission 1'),
-        Permission(3, 'Perm 2', 'Permission 2'),
-        Permission(4, 'Perm 3', 'Permission 3'),
-        Permission(5, 'Perm 4', 'Permission 4'),
-        Permission(6, 'Perm 5', 'Permission 5'),
-        Permission(7, 'No Desc', None)
-    ]
-
-
-@pytest.fixture(scope='session')
-def no_desc_permission(permissions):
-    return permissions[6]
-
-
-@pytest.fixture(scope='session')
-def creatable_permission(permissions):
-    return Permission(len(permissions) + 1, 'creatable name', 'creatable desc')
-
-
-@pytest.fixture(scope='session')
-def media_perms(medias, permissions):
-    return [
-        MediaPerm(1, medias[5].id, permissions[0].id),
-        MediaPerm(2, 'TEST MEDIA 1', 2),
-        MediaPerm(3, 'TEST MEDIA 2', 3),
-        MediaPerm(4, 'TEST MEDIA 3', 4),
-        MediaPerm(5, 'TEST MEDIA 4', 5),
-        MediaPerm(6, 'TEST MEDIA 5', 6),
-    ]
-
-
-@pytest.fixture(scope='session')
-def creatable_media_perm(media_perms):
-    return MediaPerm(len(media_perms) + 1, 'TEST MEDIA 1', 3)
-
-
-@pytest.fixture(scope='session')
-def associations(medias, permissions):
-    return [
-        Association(medias[5].id, permissions[0].name),
-        Association(medias[0].id, permissions[1].name),
-        Association(medias[1].id, permissions[2].name),
-        Association(medias[2].id, permissions[3].name),
-        Association(medias[3].id, permissions[4].name),
-        Association(medias[4].id, permissions[5].name),
-
-    ]
-
-
-@pytest.fixture(scope='session')
-def creatable_association():
-    return Association('TEST MEDIA 1', 'Perm 4')
+from rfidsecuritysvc.model import BaseModel
 
 
 @pytest.fixture(scope='session')
@@ -112,6 +16,10 @@ def open_door(medias, permissions, media_perms):
 @pytest.fixture(scope='session')
 def assert_model():
     def go(expected, actual):
+        if isinstance(expected, BaseModel):
+            expected = expected.to_json()
+        if isinstance(actual, BaseModel):
+            actual = actual.to_json()
         _assert_keys(expected, actual)
         _assert_keys(actual, expected)
 
@@ -147,12 +55,12 @@ def add_to_json_rw(monkeypatch):
 
         return copy
 
+    models_to_patch = {
+        rfidsecuritysvc.model.permission.Permission: ['id'],
+        rfidsecuritysvc.model.media_perm.MediaPerm: ['id'],
+    }
     monkeypatch.setattr(rfidsecuritysvc.model.BaseModel, '_read_only_keys', _read_only_keys, raising=False)
     monkeypatch.setattr(rfidsecuritysvc.model.BaseModel, 'to_json_rw', to_json_rw, raising=False)
 
-    # Create an override method for Permission and MediaPerm
-    def remove_id(self):
-        return ['id']
-
-    monkeypatch.setattr(rfidsecuritysvc.model.permission.Permission, '_read_only_keys', remove_id, raising=False)
-    monkeypatch.setattr(rfidsecuritysvc.model.media_perm.MediaPerm, '_read_only_keys', remove_id, raising=False)
+    for c, read_only_attrs in models_to_patch.items():
+        monkeypatch.setattr(c, '_read_only_keys', lambda _: read_only_attrs, raising=False)
