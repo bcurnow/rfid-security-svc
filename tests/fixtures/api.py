@@ -89,3 +89,32 @@ def test_api_key():
 @pytest.fixture(scope='session')
 def api_base():
     return '/api/v1.0/'
+
+
+@pytest.fixture(autouse=True)
+def add_to_json_rw(monkeypatch):
+    """
+    Patches the rfidsecuritysvc.model.BaseModel class to add a to_json_rw method that returns
+    only the keys that are not marked readonly in the API.
+    Adds implementation to Permission and MediaPerm
+    """
+
+    def to_json_rw(self):
+        """ Returns a JSON compatible value stripped of keys which are defined read only at the API."""
+        copy = self.__dict__.copy()
+        for key in self._read_only_keys():
+            del copy[key]
+
+        return copy
+
+    import rfidsecuritysvc
+    models_to_patch = {
+        rfidsecuritysvc.model.permission.Permission: ['id'],
+        rfidsecuritysvc.model.media_perm.MediaPerm: ['id'],
+        rfidsecuritysvc.model.guest.Guest: ['id'],
+    }
+    monkeypatch.setattr(rfidsecuritysvc.model.BaseModel, '_read_only_keys', lambda _: [], raising=False)
+    monkeypatch.setattr(rfidsecuritysvc.model.BaseModel, 'to_json_rw', to_json_rw, raising=False)
+
+    for c, read_only_attrs in models_to_patch.items():
+        monkeypatch.setattr(c, '_read_only_keys', lambda _: read_only_attrs, raising=False)
