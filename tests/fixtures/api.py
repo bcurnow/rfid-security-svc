@@ -58,12 +58,12 @@ class ResponseHandler:
 
                 for index, item in enumerate(expected):
                     if isinstance(item, BaseModel):
-                        self._assert_model(item.to_json(), actual[index])
+                        self._assert_model(item, actual[index])
                     else:
                         assert item == actual[index]
             else:
                 if isinstance(expected, BaseModel):
-                    self._assert_model(expected.to_json(), actual)
+                    self._assert_model(expected, actual)
                 else:
                     assert expected == actual
 
