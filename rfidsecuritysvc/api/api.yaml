@@ -19,6 +19,8 @@ tags:
     description: Authorization APIs
   - name: config
     description: Config APIs
+  - name: guest
+    description: Guest APIs
   - name: media
     description: Media APIs
   - name: media-perm
@@ -267,13 +269,145 @@ paths:
           description: Invalid request.
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+  /guest:
+    get:
+      tags:
+        - guest
+      summary: Retrieves all the guests
+      description: |
+        Retrieves all the guest records. This implementation does not currently support pagination.
+      responses:
+        '200':
+          description: Array of Guest objects.
+          content:
+           application/json:
+             schema:
+               type: array
+               items:
+                 $ref: '#/components/schemas/Guest'
+        '400':
+          description: Invalid request.
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+    post:
+      tags:
+        - guest
+      summary: Creates a new guest
+      description: |
+        Accepts a JSON payload containing a full guest record and creates it.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Guest'
+      responses:
+        '201':
+          description: New record created.
+        '409':
+          description: Record already exists.
+        '400':
+          description: Invalid request.
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+  /guest/{id}:
+    get:
+      tags:
+        - guest
+      summary: Retrieves guest by id
+      description: |
+        Takes a id and returns the guest.
+      parameters:
+      - name: id
+        in: path
+        description: The id of the requested guest.
+        required: true
+        schema:
+          type: integer
+          example: 1
+      responses:
+        '200':
+          description: Guest object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Guest'
+        '400':
+          description: Invalid request.
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: Record not found.
+    delete:
+      tags:
+        - guest
+      summary: Deletes guest by id
+      description: |
+        Takes a id and deletes that record. This method does not fail if the guest does not exist as this is considered success.
+      parameters:
+      - name: id
+        in: path
+        description: The id of the guest to delete.
+        required: true
+        schema:
+          type: integer
+          example: 1
+      responses:
+        '200':
+          description: Record was either deleted or did not exist.
+          headers:
+            x-record-count:
+              schema:
+                type: integer
+              description: The actual number of records deleted, could be zero if the record did not exist.
+        '400':
+          description: Invalid request.
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+    put:
+      tags:
+        - guest
+      summary: Updates the guest by id
+      description: |
+        Accepts a JSON payload containing a full guest record and updates it. The id is optional in the payload and will be ignored if present.
+      parameters:
+      - name: id
+        in: path
+        description: The id of the media to update.
+        required: true
+        schema:
+          type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SimpleGuest'
+            example:
+              first_name: Mickey
+              last_name: Mouse
+      responses:
+        '200':
+          description: Record was updated.
+          headers:
+            x-record-count:
+              schema:
+                type: integer
+              description: The actual number of records updated or created
+        '201':
+          description: Record did not exist and was created.
+        '400':
+          description: Invalid request.
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
   /media:
     get:
       tags:
         - media
       summary: Retrieves all the media
       description: |
-        Retrieves all the media records This implementation does not currently support pagination.
+        Retrieves all the media records. This implementation does not currently support pagination.
       responses:
         '200':
           description: Array of Media objects.
@@ -727,6 +861,12 @@ components:
         - type: object
           required:
           - key
+    Guest:
+      allOf:
+        - $ref: '#/components/schemas/SimpleGuest'
+        -type: object
+         required:
+         - id
     Media:
       allOf:
         - $ref: '#/components/schemas/SimpleMedia'
@@ -766,6 +906,21 @@ components:
         value:
           type: string
           example: admin
+    SimpleGuest:
+      required:
+      - first_name
+      - last_name
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        first_name:
+          type: string
+          example: Mickey
+        last_name:
+          type: string
+          example: Mouse
     SimpleMedia:
       required:
       - name
