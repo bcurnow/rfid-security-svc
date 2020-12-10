@@ -49,7 +49,7 @@ def test_close_db_clears_g(app):
 
 def test_init_db(app):
     with app.app_context():
-        table_names = ['config', 'media', 'media_perm', 'permission']
+        table_names = ['config', 'guest', 'guest_media', 'guest_perm', 'guest_pref', 'media', 'media_perm', 'permission', 'sound']
         connection = get_connection()
 
         # Start by making sure all the tables exist
