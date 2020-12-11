@@ -14,7 +14,7 @@ for arg in "$@"
 do
   if [[ ${arg} == *[[:space:]]* ]]
   then
-    formatted_args="${formatted_args}\"${arg}\" "
+    formatted_args="${formatted_args}$(printf "%q " "${arg}")"
   else
     formatted_args="${formatted_args}${arg} "
   fi
