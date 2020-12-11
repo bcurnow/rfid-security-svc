@@ -20,14 +20,11 @@ class ResponseHandler:
         h.add_header('X-RFIDSECURITYSVC-API-KEY', 'testing')
 
         if data is not None and 'application/json' in content_type:
-            print(data)
             if isinstance(data, BaseModel):
-                print(data)
                 if method in ('post', 'put'):
                     # This is special scenario where there are readonly fields on the model
                     # To avoid errors, call the to_json_rw method which is monkeypatched in
                     data = json.dumps(data.to_json_rw())
-                    print(data)
                 else:
                     data = json.dumps(data.to_json())
             else:
