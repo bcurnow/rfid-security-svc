@@ -8,9 +8,7 @@ def media_perms(medias, open_door_media, open_door_permission, default_permissio
     # The DB will return these ordered by id, please build the list accordingly
     media_perms = []
     for i in range(len(medias)):
-        if medias[i] == not_authorized_media:
-            print('skipping in media_perms')
-        else:
+        if medias[i] != not_authorized_media:
             media_perms.append(MediaPerm(i, medias[i].id, default_permission.id))
     media_perms.append(MediaPerm(len(media_perms) + 1, open_door_media.id, open_door_permission.id))
     return media_perms
