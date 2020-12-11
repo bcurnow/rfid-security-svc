@@ -1,6 +1,8 @@
 import atexit
 import os
+from importlib import import_module
 from pathlib import Path
+from pkgutil import iter_modules
 
 from connexion.exceptions import OAuthProblem
 from connexion.resolver import RestyResolver
@@ -86,9 +88,16 @@ def _assert_default_app_config(app):
 
 def _assert_bootstrap(app):
     # The commands will only be present if the bootstrap code is called, so check for those
-    expected = ['auth', 'config', 'db', 'media', 'media-perm', 'permission', 'reader', 'test']
+    # First, iterate over the modules in cli and pull the command names so we make sure
+    # we check them all as we add more over time
+    import rfidsecuritysvc
+    commands = []
+    for module_info in iter_modules(path=rfidsecuritysvc.cli.__path__):
+        module = import_module(f'{rfidsecuritysvc.cli.__name__}.{module_info.name}')
+        commands.append(getattr(module, 'group').name)
+
     for cmd in app.cli.list_commands(app.app_context()):
-        assert cmd in expected
+        assert cmd in commands
 
     # Make sure the close_db function is registered
     assert close_db in app.teardown_appcontext_funcs
