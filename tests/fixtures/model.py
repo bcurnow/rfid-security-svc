@@ -1,6 +1,5 @@
 import pytest
 
-import rfidsecuritysvc
 from rfidsecuritysvc.model import BaseModel
 
 
