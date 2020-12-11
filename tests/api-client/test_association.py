@@ -6,7 +6,6 @@ api = 'association'
 
 
 def test_search(rh, associations):
-    print(associations)
     rh.assert_response(rh.open('get', f'{api}'), 200, associations)
 
 
