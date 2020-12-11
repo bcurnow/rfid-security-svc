@@ -21,8 +21,8 @@ def list():
     return result
 
 
-def create(id, first_name, last_name):
-    return table.create(id, first_name, last_name)
+def create(first_name, last_name):
+    return table.create(first_name, last_name)
 
 
 def delete(id):
