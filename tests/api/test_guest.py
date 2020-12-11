@@ -61,12 +61,12 @@ def test_delete(model):
 @patch('rfidsecuritysvc.api.guest.model')
 def test_put(model):
     model.create.return_value = 1
-    assert api.put(**m.to_json()) == (None, 201, {RECORD_COUNT_HEADER: 1})
+    assert api.put(1, m.to_json()) == (None, 201, {RECORD_COUNT_HEADER: 1})
     model.create.assert_called_once_with(m.first_name, m.last_name)
 
 
 @patch('rfidsecuritysvc.api.guest.model')
 def test_put_does_not_exist(model):
     model.create.side_effect = DuplicateError
-    assert api.put(**m.to_json()) == (None, 200, {RECORD_COUNT_HEADER: 0})
+    assert api.put(1, m.to_json()) == (None, 200, {RECORD_COUNT_HEADER: 0})
     model.create.assert_called_once_with(m.first_name, m.last_name)
