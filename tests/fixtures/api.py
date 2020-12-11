@@ -20,11 +20,14 @@ class ResponseHandler:
         h.add_header('X-RFIDSECURITYSVC-API-KEY', 'testing')
 
         if data is not None and 'application/json' in content_type:
+            print(data)
             if isinstance(data, BaseModel):
-                if callable(getattr(data, 'to_json_rw')) and method in ('post', 'put'):
+                print(data)
+                if method in ('post', 'put'):
                     # This is special scenario where there are readonly fields on the model
                     # To avoid errors, call the to_json_rw method which is monkeypatched in
                     data = json.dumps(data.to_json_rw())
+                    print(data)
                 else:
                     data = json.dumps(data.to_json())
             else:
@@ -91,8 +94,16 @@ def api_base():
     return '/api/v1.0/'
 
 
-@pytest.fixture(autouse=True)
-def add_to_json_rw(monkeypatch):
+@pytest.fixture(scope='session')
+def monkeypatch_session():
+    from _pytest.monkeypatch import MonkeyPatch
+    m = MonkeyPatch()
+    yield m
+    m.undo()
+
+
+@pytest.fixture(autouse=True, scope='session')
+def add_to_json_rw(monkeypatch_session):
     """
     Patches the rfidsecuritysvc.model.BaseModel class to add a to_json_rw method that returns
     only the keys that are not marked readonly in the API.
@@ -113,8 +124,8 @@ def add_to_json_rw(monkeypatch):
         rfidsecuritysvc.model.media_perm.MediaPerm: ['id'],
         rfidsecuritysvc.model.guest.Guest: ['id'],
     }
-    monkeypatch.setattr(rfidsecuritysvc.model.BaseModel, '_read_only_keys', lambda _: [], raising=False)
-    monkeypatch.setattr(rfidsecuritysvc.model.BaseModel, 'to_json_rw', to_json_rw, raising=False)
+    monkeypatch_session.setattr(rfidsecuritysvc.model.BaseModel, '_read_only_keys', lambda _: [], raising=False)
+    monkeypatch_session.setattr(rfidsecuritysvc.model.BaseModel, 'to_json_rw', to_json_rw, raising=False)
 
     for c, read_only_attrs in models_to_patch.items():
-        monkeypatch.setattr(c, '_read_only_keys', lambda _: read_only_attrs, raising=False)
+        monkeypatch_session.setattr(c, '_read_only_keys', lambda _: read_only_attrs, raising=False)
