@@ -3,7 +3,6 @@ from unittest.mock import patch
 from rfidsecuritysvc.api import RECORD_COUNT_HEADER
 from rfidsecuritysvc.api import guest as api
 from rfidsecuritysvc.exception import DuplicateGuestError as DuplicateError
-from rfidsecuritysvc.exception import GuestNotFoundError as NotFoundError
 from rfidsecuritysvc.model.guest import Guest as Model
 
 m = Model(1, 'first_name', 'last_name')
@@ -48,7 +47,7 @@ def test_post(model):
 @patch('rfidsecuritysvc.api.guest.model')
 def test_post_Duplicate(model):
     model.create.side_effect = DuplicateError
-    assert api.post(m.to_json()) == (f'Object with id "{m.id}" or first_name "{m.first_name}" and last_name "{m.last_name}" already exists.', 409)
+    assert api.post(m.to_json()) == (f'Object with first_name "{m.first_name}" and last_name "{m.last_name}" already exists.', 409)
     model.create.assert_called_once_with(**m.to_json())
 
 
@@ -62,12 +61,12 @@ def test_delete(model):
 @patch('rfidsecuritysvc.api.guest.model')
 def test_put(model):
     model.create.return_value = 1
-    assert api.put(**m.to_json_rw()) == (None, 201, {RECORD_COUNT_HEADER: 1})
+    assert api.put(**m.to_json()) == (None, 201, {RECORD_COUNT_HEADER: 1})
     model.create.assert_called_once_with(m.first_name, m.last_name)
 
 
 @patch('rfidsecuritysvc.api.guest.model')
 def test_put_does_not_exist(model):
     model.create.side_effect = DuplicateError
-    assert api.put(**m.to_json_rw()) == (None, 200, {RECORD_COUNT_HEADER: 0})
+    assert api.put(**m.to_json()) == (None, 200, {RECORD_COUNT_HEADER: 0})
     model.create.assert_called_once_with(m.first_name, m.last_name)
