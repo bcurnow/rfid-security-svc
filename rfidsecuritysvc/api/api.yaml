@@ -373,7 +373,7 @@ paths:
       parameters:
       - name: id
         in: path
-        description: The id of the media to update.
+        description: The id of the guest to update.
         required: true
         schema:
           type: integer
@@ -383,7 +383,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SimpleGuest'
+              $ref: '#/components/schemas/Guest'
             example:
               first_name: Mickey
               last_name: Mouse
@@ -862,11 +862,21 @@ components:
           required:
           - key
     Guest:
-      allOf:
-        - $ref: '#/components/schemas/SimpleGuest'
-        -type: object
-         required:
-         - id
+      required:
+      - first_name
+      - last_name
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: True
+          example: 1
+        first_name:
+          type: string
+          example: Mickey
+        last_name:
+          type: string
+          example: Mouse
     Media:
       allOf:
         - $ref: '#/components/schemas/SimpleMedia'
@@ -906,21 +916,6 @@ components:
         value:
           type: string
           example: admin
-    SimpleGuest:
-      required:
-      - first_name
-      - last_name
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-        first_name:
-          type: string
-          example: Mickey
-        last_name:
-          type: string
-          example: Mouse
     SimpleMedia:
       required:
       - name
