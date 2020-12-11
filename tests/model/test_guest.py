@@ -44,8 +44,8 @@ def test_list_noresults(table):
 @patch('rfidsecuritysvc.model.guest.table')
 def test_create(table):
     table.create.return_value = None
-    assert model.create(1, 'first', 'last') is None
-    table.create.assert_called_once_with(1, 'first', 'last')
+    assert model.create('first', 'last') is None
+    table.create.assert_called_once_with('first', 'last')
 
 
 @patch('rfidsecuritysvc.model.guest.table')
