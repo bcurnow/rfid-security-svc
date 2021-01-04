@@ -15,7 +15,6 @@ m = Model(1, 'first_name', 'last_name')
 def test_get(model, runner, assert_output):
     model.get.return_value = m
     result = runner.invoke(args=['guest', 'get', str(m.id)])
-    print(dir(result.exception))
     assert_output(result, m.to_json())
     model.get.assert_called_once_with(m.id)
 
