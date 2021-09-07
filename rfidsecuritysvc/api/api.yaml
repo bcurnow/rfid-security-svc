@@ -813,13 +813,13 @@ paths:
     get:
       tags:
         - reader
-      summary: Reads an RFID via a reader
+      summary: Reads an RFID tag via the configured reader
       description: |
-        Uses the configured input device to read the next RFID ID from the reader and returns the value.
+        Uses the configured reader read the RFID UID.
       parameters:
         - name: timeout
           in: query
-          description: The amount of time in seconds to wait for the reader to present its input
+          description: The amount of time in seconds to wait for a UID.
           required: false
           schema:
             type: integer
