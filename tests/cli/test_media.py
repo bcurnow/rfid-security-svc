@@ -28,7 +28,7 @@ def test_get_notfound(model, runner, assert_output):
 
 
 def test_get_id_required():
-    with pytest.raises(MissingParameter, match='missing parameter: id'):
+    with pytest.raises(MissingParameter, match='Missing parameter: id'):
         get.make_context('media get', args=[])
 
 
@@ -61,12 +61,12 @@ def test_create_duplicate(model, runner, assert_output):
 
 
 def test_create_id_required():
-    with pytest.raises(MissingParameter, match='missing parameter: id'):
+    with pytest.raises(MissingParameter, match='Missing parameter: id'):
         create.make_context('media create', args=[])
 
 
 def test_create_name_required():
-    with pytest.raises(MissingParameter, match='missing parameter: name'):
+    with pytest.raises(MissingParameter, match='Missing parameter: name'):
         create.make_context('media create', args=[m.id])
 
 

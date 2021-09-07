@@ -15,5 +15,5 @@ def test_generate_test_api_key_value(generate_password_hash, runner, assert_outp
 
 
 def test_generate_test_api_key_value_required():
-    with pytest.raises(MissingParameter, match='missing parameter: value'):
+    with pytest.raises(MissingParameter, match='Missing parameter: value'):
         generate_api_key.make_context('generate-api-key', [])

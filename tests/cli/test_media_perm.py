@@ -30,7 +30,7 @@ def test_get_notfound(model, runner, assert_output):
 
 
 def test_get_id_required():
-    with pytest.raises(MissingParameter, match='missing parameter: id'):
+    with pytest.raises(MissingParameter, match='Missing parameter: id'):
         get.make_context('media-perm get', args=[])
 
 
@@ -79,12 +79,12 @@ def test_create_permission_notfound(model, runner, assert_output):
 
 
 def test_create_media_id_required():
-    with pytest.raises(MissingParameter, match='missing parameter: media_id'):
+    with pytest.raises(MissingParameter, match='Missing parameter: media_id'):
         create.make_context('media-perm create', args=[])
 
 
 def test_create_perm_id_required():
-    with pytest.raises(MissingParameter, match='missing parameter: perm_id'):
+    with pytest.raises(MissingParameter, match='Missing parameter: perm_id'):
         create.make_context('media-perm create', args=[m.media_id])
 
 
@@ -97,7 +97,7 @@ def test_delete(model, runner, assert_output):
 
 
 def test_delete_id_required():
-    with pytest.raises(MissingParameter, match='missing parameter: id'):
+    with pytest.raises(MissingParameter, match='Missing parameter: id'):
         delete.make_context('media-perm delete', args=[])
 
 
