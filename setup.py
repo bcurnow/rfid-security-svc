@@ -24,6 +24,5 @@ setup(
     install_requires=[
         'Flask',
         'connexion[swagger-ui]',
-        'rfidreader@https://github.com/bcurnow/rfid-reader/releases/download/1.0.0/rfidreader-1.0.0-py3-none-any.whl',
     ],
 )
