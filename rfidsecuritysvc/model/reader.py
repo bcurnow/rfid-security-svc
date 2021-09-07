@@ -1,34 +1,35 @@
+import requests
+
 from flask import g, current_app
 
-from rfidreader import RFIDReader
 from rfidsecuritysvc.exception import ConfigNotFoundError
 from rfidsecuritysvc.model import config
 
-""" The configuration key that specifies the RFID input device."""
-RFID_DEVICE_CONFIG_KEY = 'RFID_DEVICE'
+""" The configuration key that specifies the RFID service URL."""
+RFID_SERVICE_URL_CONFIG_KEY = 'RFID_SERVICE_URL'
 
 
 def read(timeout):
-    current_app.logger.debug(f'Connecting to "{_device_name()}".')
-    reader = RFIDReader(_device_name())
-    # Need to grab the device before reading, we're assuming we're running both the API and the main reader loop
-    # on the same host and therefore, the main reader loop would normally read the tag before we could.
-    # Grabbing the device makes it exclusive to our process and allows us to read the next tag scanned.
-    reader.device.grab()
-    try:
-        return reader.read(timeout)
-    finally:
-        reader.device.ungrab()
+    current_app.logger.debug(f'Connecting to "{_rfid_service_url()}".')
+    # make sure to set the timeout just in case, in theory, the web service will timeout
+    # before the requests.get call does, but this ensures no hung threads
+    r = requests.get(_rfid_service_url(), params={'timeout': timeout}, timeout=timeout * 2)
+    print(r)
+    print(r.status)
+    print(r.text)
+    if r.status != 200:
+        return None
+    return r.text
 
 
-def _device_name():
-    if 'rfid_device_name' not in g:
-        # Get the input device from config
-        device_name = config.get(RFID_DEVICE_CONFIG_KEY)
+def _rfid_service_url():
+    if 'rfid_service_url' not in g:
+        # Get the URL from config
+        url = config.get(RFID_SERVICE_URL_CONFIG_KEY)
 
-        if not device_name:
-            raise ConfigNotFoundError(f'Unable to retrieve configuration key "{RFID_DEVICE_CONFIG_KEY}".')
+        if not url:
+            raise ConfigNotFoundError(f'Unable to retrieve configuration key "{RFID_SERVICE_URL_CONFIG_KEY}".')
 
-        g.rfid_device_name = device_name.value
+        g.rfid_service_url = url.value
 
-    return g.rfid_device_name
+    return g.rfid_service_url

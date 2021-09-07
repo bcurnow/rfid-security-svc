@@ -1,51 +1,65 @@
 import pytest
-from unittest.mock import patch
+from unittest.mock import patch, PropertyMock
 
 from flask import g
 
 import rfidsecuritysvc.model.reader as model
 from rfidsecuritysvc.exception import ConfigNotFoundError
 from rfidsecuritysvc.model.config import Config
-from rfidsecuritysvc.model.reader import RFID_DEVICE_CONFIG_KEY
+from rfidsecuritysvc.model.reader import RFID_SERVICE_URL_CONFIG_KEY
 
 timeout = 10
 
 
-@patch('rfidsecuritysvc.model.reader.RFIDReader')
+@patch('rfidsecuritysvc.model.reader.requests')
 @patch('rfidsecuritysvc.model.reader.config')
-def test_read(config, RFIDReader, app):
-    config.get.return_value = Config(RFID_DEVICE_CONFIG_KEY, '/dev/test')
-    reader = RFIDReader.return_value
-    reader.read.return_value = '08'
-    device = reader.device
+def test_read(config, requests, app):
+    config.get.return_value = Config(RFID_SERVICE_URL_CONFIG_KEY, 'http://localhost:8080/get_uid')
+    request_mock = requests.get.return_value
+    status = PropertyMock(return_value=200)
+    text = PropertyMock(return_value='08')
+    type(request_mock).status = status
+    type(request_mock).text = text
 
     with app.app_context():
         assert model.read(timeout) == '08'
 
-    config.get.assert_called_once_with(RFID_DEVICE_CONFIG_KEY)
-    RFIDReader.assert_called_once_with('/dev/test')
-    device.grab.assert_called_once()
-    reader.read.assert_called_once_with(timeout)
-    device.ungrab.assert_called_once()
+    config.get.assert_called_once_with(RFID_SERVICE_URL_CONFIG_KEY)
+    requests.get.assert_called_once_with('http://localhost:8080/get_uid', params={'timeout':timeout}, timeout=timeout *2)
 
 
+@patch('rfidsecuritysvc.model.reader.requests')
 @patch('rfidsecuritysvc.model.reader.config')
-def test__device_name(config, app):
-    config.get.return_value = Config(RFID_DEVICE_CONFIG_KEY, '/dev/test')
+def test_read_204(config, requests, app):
+    config.get.return_value = Config(RFID_SERVICE_URL_CONFIG_KEY, 'http://localhost:8080/get_uid')
+    request_mock = requests.get.return_value
+    status = PropertyMock(return_value=204)
+    type(request_mock).status = status
+
     with app.app_context():
-        assert 'rfid_device_name' not in g
-        assert model._device_name() == config.get.return_value.value
-        assert 'rfid_device_name' in g
-        assert g.rfid_device_name == config.get.return_value.value
-        # Assert the call again to make sure we're returning the cached value
-        assert model._device_name() == config.get.return_value.value
-    config.get.assert_called_once_with(RFID_DEVICE_CONFIG_KEY)
+        assert model.read(timeout) is None
+
+    config.get.assert_called_once_with(RFID_SERVICE_URL_CONFIG_KEY)
+    requests.get.assert_called_once_with('http://localhost:8080/get_uid', params={'timeout':timeout}, timeout=timeout *2)
 
 
 @patch('rfidsecuritysvc.model.reader.config')
-def test__device_name_noconfig(config, app):
+def test__rfid_service_url_name(config, app):
+    config.get.return_value = Config(RFID_SERVICE_URL_CONFIG_KEY, 'http://localhost:8080/get_uid')
+    with app.app_context():
+        assert 'rfid_service_url' not in g
+        assert model._rfid_service_url() == config.get.return_value.value
+        assert 'rfid_service_url' in g
+        assert g.rfid_service_url == config.get.return_value.value
+        # Assert the call again to make sure we're returning the cached value
+        assert model._rfid_service_url() == config.get.return_value.value
+    config.get.assert_called_once_with(RFID_SERVICE_URL_CONFIG_KEY)
+
+
+@patch('rfidsecuritysvc.model.reader.config')
+def test__rfid_service_url_noconfig(config, app):
     config.get.return_value = None
     with app.app_context():
         with pytest.raises(ConfigNotFoundError):
-            model._device_name()
-    config.get.assert_called_once_with(RFID_DEVICE_CONFIG_KEY)
+            model._rfid_service_url()
+    config.get.assert_called_once_with(RFID_SERVICE_URL_CONFIG_KEY)
