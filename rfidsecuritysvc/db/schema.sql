@@ -33,7 +33,8 @@ CREATE TABLE guest_media (
   guest_id INTEGER NOT NULL,
   media_id TEXT NOT NULL,
   FOREIGN KEY (guest_id) REFERENCES guest (id) ON DELETE CASCADE,
-  FOREIGN KEY (media_id) REFERENCES media (id) ON DELETE CASCADE
+  FOREIGN KEY (media_id) REFERENCES media (id) ON DELETE CASCADE,
+  CONSTRAINT only_one_guest_for_media UNIQUE(media_id)
 );
 
 CREATE TABLE permission (
@@ -70,7 +71,7 @@ CREATE TABLE media_perm (
 
 CREATE TABLE sound (
   id INTEGER PRIMARY KEY,
-  data BLOB,
   file_name TEXT NOT NULL,
+  content BLOB,
   CONSTRAINT unique_file_name UNIQUE (file_name)
 );
