@@ -14,10 +14,7 @@ def read(timeout):
     # make sure to set the timeout just in case, in theory, the web service will timeout
     # before the requests.get call does, but this ensures no hung threads
     r = requests.get(_rfid_service_url(), params={'timeout': timeout}, timeout=timeout * 2)
-    print(r)
-    print(r.status)
-    print(r.text)
-    if r.status != 200:
+    if r.status_code != 200:
         return None
     return r.text
 
