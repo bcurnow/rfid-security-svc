@@ -18,7 +18,7 @@ def test_read(config, requests, app):
     request_mock = requests.get.return_value
     status = PropertyMock(return_value=200)
     text = PropertyMock(return_value='08')
-    type(request_mock).status = status
+    type(request_mock).status_code = status
     type(request_mock).text = text
 
     with app.app_context():
@@ -34,7 +34,7 @@ def test_read_204(config, requests, app):
     config.get.return_value = Config(RFID_SERVICE_URL_CONFIG_KEY, 'http://localhost:8080/get_uid')
     request_mock = requests.get.return_value
     status = PropertyMock(return_value=204)
-    type(request_mock).status = status
+    type(request_mock).status_code = status
 
     with app.app_context():
         assert model.read(timeout) is None
