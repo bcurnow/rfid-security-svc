@@ -5,6 +5,10 @@ from rfidsecuritysvc.api import RECORD_COUNT_HEADER
 api = 'association'
 
 
+def test_get(rh, by_media_associations):
+    rh.assert_response(rh.open('get', f'{api}/media/{by_media_associations[0].media_id}'), 200, by_media_associations)
+
+
 def test_search(rh, associations):
     rh.assert_response(rh.open('get', f'{api}'), 200, associations)
 

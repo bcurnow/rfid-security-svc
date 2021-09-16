@@ -73,6 +73,34 @@ paths:
           description: Invalid request.
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+  /association/media/{media_id}:
+    get:
+      tags:
+        - association
+      summary: Retrieves all the associations for the specified media
+      description: |
+        Retrieves an array of all the media_id to permission name associations for the specified media.
+      parameters:
+        - name: media_id
+          in: path
+          description: The media_id to lookup the associations for
+          required: true
+          schema:
+            type: string
+            example: 80558ABA5C3504
+      responses:
+        '200':
+          description: Array of permission names.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Association'
+        '400':
+          description: Invalid request.
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
   /association/media/{media_id}/perm/{perm_name}:
     delete:
       tags:
@@ -537,9 +565,9 @@ paths:
     get:
       tags:
         - media-perm
-      summary: Retrieves all the meida permisions
+      summary: Retrieves all the media permisions
       description: |
-        Retrieves all the meida permission records. This implementation does not currently support pagination.
+        Retrieves all the media permission records. This implementation does not currently support pagination.
       responses:
         '200':
           description: Array of MediaPerm objects.

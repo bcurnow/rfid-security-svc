@@ -10,6 +10,14 @@ m = Model('test', 'Open Door')
 
 
 @patch('rfidsecuritysvc.api.association.association')
+def test_get(model):
+    m2 = Model('test2', 'Close Door')
+    model.by_media.return_value = [m, m2]
+    assert api.get(m.media_id) == [m.to_json(), m2.to_json()]
+    model.by_media.assert_called_once()
+
+
+@patch('rfidsecuritysvc.api.association.association')
 def test_search(model):
     m2 = Model('test2', 'Close Door')
     model.list.return_value = [m, m2]

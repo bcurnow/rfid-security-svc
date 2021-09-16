@@ -3,6 +3,13 @@ from rfidsecuritysvc.api import RECORD_COUNT_HEADER
 from rfidsecuritysvc.model import association
 
 
+def get(media_id):
+    results = []
+    for a in association.by_media(media_id):
+        results.append(a.to_json())
+
+    return results
+
 def search():
     results = []
     for a in association.list():

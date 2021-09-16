@@ -46,6 +46,14 @@ def test_get_notfound(permission, media_perm):
 
 
 @patch('rfidsecuritysvc.model.association.association')
+def test_by_media(association):
+    expected = _default()
+    association.by_media.return_value = [_default().__dict__]
+    assert model.by_media(expected.media_id) == [expected]
+    association.by_media.assert_called_once_with(expected.media_id)
+
+
+@patch('rfidsecuritysvc.model.association.association')
 def test_list(table):
     table.list.return_value = [
         _default().__dict__,
