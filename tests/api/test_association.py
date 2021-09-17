@@ -3,7 +3,9 @@ from unittest.mock import patch
 from rfidsecuritysvc.api import RECORD_COUNT_HEADER
 from rfidsecuritysvc.api import association as api
 from rfidsecuritysvc.exception import PermissionNotFoundError
-from rfidsecuritysvc.exception import DuplicateAssociationError as DuplicateError
+from rfidsecuritysvc.exception import DuplicateAssociationError
+from rfidsecuritysvc.exception import PermissionNotFoundError
+from rfidsecuritysvc.exception import MediaNotFoundError
 from rfidsecuritysvc.model.association import Association as Model
 
 m = Model('test', 'Open Door')
@@ -41,8 +43,22 @@ def test_post(model):
 
 @patch('rfidsecuritysvc.api.association.association')
 def test_post_Duplicate(model):
-    model.create.side_effect = DuplicateError
+    model.create.side_effect = DuplicateAssociationError
     assert api.post(m.to_json()) == (f'Object with media_id "{m.media_id}" and perm_name "{m.perm_name}" already exists.', 409)
+    model.create.assert_called_once_with(**m.to_json())
+
+
+@patch('rfidsecuritysvc.api.association.association')
+def test_post_PermissionNotFound(model):
+    model.create.side_effect = PermissionNotFoundError
+    assert api.post(m.to_json()) == (f'Permission with name "{m.perm_name}" does not exist.', 400)
+    model.create.assert_called_once_with(**m.to_json())
+
+
+@patch('rfidsecuritysvc.api.association.association')
+def test_post_MediaNotFound(model):
+    model.create.side_effect = MediaNotFoundError
+    assert api.post(m.to_json()) == (f'Media with id "{m.media_id}" does not exist.', 400)
     model.create.assert_called_once_with(**m.to_json())
 
 

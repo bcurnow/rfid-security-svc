@@ -24,6 +24,10 @@ def post(body):
         return None, 201
     except exception.DuplicateAssociationError:
         return f'Object with media_id "{body["media_id"]}" and perm_name "{body["perm_name"]}" already exists.', 409
+    except exception.MediaNotFoundError:
+        return f'Media with id "{body["media_id"]}" does not exist.', 400
+    except exception.PermissionNotFoundError:
+        return f'Permission with name "{body["perm_name"]}" does not exist.', 400
 
 
 def delete(media_id, perm_name):
