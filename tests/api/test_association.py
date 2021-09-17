@@ -4,7 +4,6 @@ from rfidsecuritysvc.api import RECORD_COUNT_HEADER
 from rfidsecuritysvc.api import association as api
 from rfidsecuritysvc.exception import PermissionNotFoundError
 from rfidsecuritysvc.exception import DuplicateAssociationError
-from rfidsecuritysvc.exception import PermissionNotFoundError
 from rfidsecuritysvc.exception import MediaNotFoundError
 from rfidsecuritysvc.model.association import Association as Model
 

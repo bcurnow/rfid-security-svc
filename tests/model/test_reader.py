@@ -25,7 +25,7 @@ def test_read(config, requests, app):
         assert model.read(timeout) == '08'
 
     config.get.assert_called_once_with(RFID_SERVICE_URL_CONFIG_KEY)
-    requests.get.assert_called_once_with('http://localhost:8080/get_uid', params={'timeout':timeout}, timeout=timeout *2)
+    requests.get.assert_called_once_with('http://localhost:8080/get_uid', params={'timeout': timeout}, timeout=timeout * 2)
 
 
 @patch('rfidsecuritysvc.model.reader.requests')
@@ -40,7 +40,7 @@ def test_read_204(config, requests, app):
         assert model.read(timeout) is None
 
     config.get.assert_called_once_with(RFID_SERVICE_URL_CONFIG_KEY)
-    requests.get.assert_called_once_with('http://localhost:8080/get_uid', params={'timeout':timeout}, timeout=timeout *2)
+    requests.get.assert_called_once_with('http://localhost:8080/get_uid', params={'timeout': timeout}, timeout=timeout * 2)
 
 
 @patch('rfidsecuritysvc.model.reader.config')

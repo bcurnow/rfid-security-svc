@@ -22,12 +22,14 @@ def get(media_id, perm_name):
     if mp:
         return Association(media_id, p.name)
 
+
 def by_media(media_id):
     result = []
     for row in association.by_media(media_id):
         result.append(Association(row['media_id'], row['perm_name']))
 
     return result
+
 
 def list():
     result = []

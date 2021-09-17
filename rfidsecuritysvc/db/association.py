@@ -16,6 +16,7 @@ def list(conn):
                                             ORDER BY media_perm.id
                                             ''').replace('\n', ' ')).fetchall()
 
+
 @with_dbconn
 def by_media(conn, media_id):
     with conn:

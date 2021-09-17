@@ -10,6 +10,7 @@ def get(media_id):
 
     return results
 
+
 def search():
     results = []
     for a in association.list():

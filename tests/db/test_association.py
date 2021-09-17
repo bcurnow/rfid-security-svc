@@ -15,6 +15,7 @@ def test_list(mockdb):
                                        ''').replace('\n', ' '), cursor_return=[])
     assert db.list() == []
 
+
 def test_by_media(mockdb):
     media_id = '12345'
     mockdb.add_execute(textwrap.dedent('''

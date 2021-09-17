@@ -13,14 +13,11 @@ def associations(media_perms, permissions):
     return associations
 
 
-
-
 @pytest.fixture(scope='session')
 def by_media_associations(open_door_media,
                           associations,
                           permissions):
 
-    perm_map = dict((p.id, p.name) for p in permissions)
     results = []
     for a in associations:
         if a.media_id == open_door_media.id:
