@@ -3,7 +3,6 @@ PRAGMA foreign_keys = OFF;
 DROP TABLE IF EXISTS config;
 DROP TABLE IF EXISTS guest;
 DROP TABLE IF EXISTS guest_media;
-DROP TABLE IF EXISTS guest_perm;
 DROP TABLE IF EXISTS guest_pref;
 DROP TABLE IF EXISTS media;
 DROP TABLE IF EXISTS permission;
@@ -43,21 +42,12 @@ CREATE TABLE permission (
   desc TEXT
 );
 
-CREATE TABLE guest_perm (
-  id INTEGER PRIMARY KEY,
-  guest_id INTEGER NOT NULL,
-  perm_id INTEGER NOT NULL,
-  FOREIGN KEY (guest_id) REFERENCES guest (id) ON DELETE CASCADE,
-  FOREIGN KEY (perm_id) REFERENCES permission (id) ON DELETE CASCADE,
-  CONSTRAINT unique_guest_perm UNIQUE (guest_id, perm_id)
-);
-
 CREATE TABLE guest_pref (
-  name TEXT PRIMARY KEY,
   guest_id INTEGER NOT NULL,
+  name TEXT PRIMARY KEY,
   value TEXT NOT NULL,
   FOREIGN KEY (guest_id) REFERENCES guest (id) ON DELETE CASCADE,
-  CONSTRAINT unique_guest_pref UNIQUE (name, guest_id)
+  CONSTRAINT unique_guest_pref UNIQUE (guest_id, name)
 );
 
 CREATE TABLE media_perm (
