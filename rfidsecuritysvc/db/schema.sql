@@ -61,7 +61,7 @@ CREATE TABLE media_perm (
 
 CREATE TABLE sound (
   id INTEGER PRIMARY KEY,
-  file_name TEXT NOT NULL,
+  name TEXT NOT NULL,
   content BLOB,
-  CONSTRAINT unique_file_name UNIQUE (file_name)
+  CONSTRAINT unique_name UNIQUE (name)
 );
