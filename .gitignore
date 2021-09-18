@@ -133,3 +133,4 @@ flask.pid
 flask.log
 *.swp
 test.apikey
+read.wav
