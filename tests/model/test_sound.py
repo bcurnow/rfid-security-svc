@@ -5,8 +5,8 @@ from rfidsecuritysvc.model.sound import Sound
 
 
 def test_Sound():
-    _assert_model(_model('id', 'file_name', 'binary content'), Sound('id', 'file_name', 'binary content'))
-    _assert_model(_model('id', 'file_name'), Sound('id', 'file_name'))
+    _assert_model(_model('id', 'name', 'binary content'), Sound('id', 'name', 'binary content'))
+    _assert_model(_model('id', 'name'), Sound('id', 'name'))
 
 
 @patch('rfidsecuritysvc.model.sound.table')
@@ -65,12 +65,12 @@ def test_update(table):
 
 def _assert_model(expected, actual):
     assert expected.id == actual.id
-    assert expected.file_name == actual.file_name
+    assert expected.name == actual.name
 
 
 def _default(index=1):
-    return _model(f'test id {index}', f'test file_name {index}')
+    return _model(f'test id {index}', f'test name {index}')
 
 
-def _model(id, file_name, content=None):
-    return Sound(id, file_name, content)
+def _model(id, name, content=None):
+    return Sound(id, name, content)

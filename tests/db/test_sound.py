@@ -12,18 +12,18 @@ def test_get(mockdb):
 
 
 def test_list(mockdb):
-    mockdb.add_execute('SELECT id, file_name FROM sound ORDER BY id', cursor_return=[])
+    mockdb.add_execute('SELECT id, name FROM sound ORDER BY id', cursor_return=[])
     assert db.list() == []
 
 
 def test_create(mockdb):
-    mockdb.add_execute('INSERT INTO sound (file_name, content) VALUES (?,?)', ('test', 'binary content'))
+    mockdb.add_execute('INSERT INTO sound (name, content) VALUES (?,?)', ('test', 'binary content'))
     mockdb.add_commit()
     assert db.create('test', 'binary content') is None
 
 
 def test_create_IntegrityError(mockdb):
-    mockdb.add_execute('INSERT INTO sound (file_name, content) VALUES (?,?)', ('test', 'binary content'))
+    mockdb.add_execute('INSERT INTO sound (name, content) VALUES (?,?)', ('test', 'binary content'))
     mockdb.add_commit(sqlite3.IntegrityError)
     mockdb.add_rollback()
     with pytest.raises(Duplicate) as e:
@@ -39,12 +39,12 @@ def test_delete(mockdb):
 
 
 def test_update(mockdb):
-    mockdb.add_execute('UPDATE sound SET file_name = ? WHERE id = ?', (1, 'test'), rowcount=1)
+    mockdb.add_execute('UPDATE sound SET name = ? WHERE id = ?', (1, 'test'), rowcount=1)
     mockdb.add_commit()
     assert db.update('test', 1) == 1
 
 
 def test_update_NotFoundError(mockdb):
-    mockdb.add_execute('UPDATE sound SET file_name = ? WHERE id = ?', (1, 'test'), rowcount=0)
+    mockdb.add_execute('UPDATE sound SET name = ? WHERE id = ?', (1, 'test'), rowcount=0)
     with pytest.raises(NotFound):
         db.update('test', 1)

@@ -30,16 +30,16 @@ def list():
 
 
 @group.command('create')
-@click.argument('file_name')
+@click.argument('name')
 @click.argument('input_file', type=click.File('rb'))
 @click.pass_context
-def create(ctx, file_name, input_file):
+def create(ctx, name, input_file):
     """Manually adds a record to the table."""
     try:
-        model.create(file_name, input_file.read())
+        model.create(name, input_file.read())
         ctx.invoke(list)
     except exception.DuplicateSoundError:
-        ctx.fail(click.style(f'Record with file name "{file_name}" already exists.', fg='red'))
+        ctx.fail(click.style(f'Record with file name "{name}" already exists.', fg='red'))
 
 
 @group.command('delete')
@@ -53,12 +53,12 @@ def delete(ctx, id):
 
 @group.command('update')
 @click.argument('id')
-@click.argument('file_name')
+@click.argument('name')
 @click.pass_context
-def update(ctx, id, file_name):
+def update(ctx, id, name):
     """Manually updates a record in the table."""
     try:
-        model.update(id, file_name)
+        model.update(id, name)
         click.echo(click.style('Record updated.', bg='green', fg='black'))
         ctx.invoke(list)
     except exception.SoundNotFoundError:

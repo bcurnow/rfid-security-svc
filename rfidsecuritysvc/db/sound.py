@@ -13,14 +13,14 @@ def get(conn, id):
 @with_dbconn
 def list(conn):
     with conn:
-        return conn.execute('SELECT id, file_name FROM sound ORDER BY id').fetchall()
+        return conn.execute('SELECT id, name FROM sound ORDER BY id').fetchall()
 
 
 @with_dbconn
-def create(conn, file_name, content):
+def create(conn, name, content):
     try:
         with conn as conn:
-            conn.execute('INSERT INTO sound (file_name, content) VALUES (?,?)', (file_name, content))
+            conn.execute('INSERT INTO sound (name, content) VALUES (?,?)', (name, content))
     except sqlite3.IntegrityError as e:
         raise exception.DuplicateSoundError from e
 
@@ -32,9 +32,9 @@ def delete(conn, id):
 
 
 @with_dbconn
-def update(conn, id, file_name):
+def update(conn, id, name):
     with conn:
-        count = conn.execute('UPDATE sound SET file_name = ? WHERE id = ?', (file_name, id)).rowcount
+        count = conn.execute('UPDATE sound SET name = ? WHERE id = ?', (name, id)).rowcount
     if count == 0:
         raise exception.SoundNotFoundError
 
