@@ -27,7 +27,7 @@ def test_get_notfound(model, runner, assert_output):
 
 
 def test_get_id_required():
-    with pytest.raises(MissingParameter, match='Missing parameter: id'):
+    with pytest.raises(MissingParameter, match='[M|m]issing parameter: id'):
         get.make_context('permission get', args=[])
 
 
@@ -60,7 +60,7 @@ def test_create_duplicate(model, runner, assert_output):
 
 
 def test_create_name_required():
-    with pytest.raises(MissingParameter, match='Missing parameter: name'):
+    with pytest.raises(MissingParameter, match='[M|m]issing parameter: name'):
         create.make_context('permission create', args=[])
 
 
@@ -81,7 +81,7 @@ def test_delete(model, runner, assert_output):
 
 
 def test_delete_id_required():
-    with pytest.raises(MissingParameter, match='Missing parameter: id'):
+    with pytest.raises(MissingParameter, match='[M|m]issing parameter: id'):
         delete.make_context('permission delete', args=[])
 
 

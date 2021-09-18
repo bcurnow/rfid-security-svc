@@ -28,7 +28,7 @@ def test_get_notfound(model, runner, assert_output):
 
 
 def test_get_key_required():
-    with pytest.raises(MissingParameter, match='Missing parameter: key'):
+    with pytest.raises(MissingParameter, match='[M|m]issing parameter: key'):
         get.make_context('config get', args=[])
 
 
@@ -61,12 +61,12 @@ def test_create_duplicate(model, runner, assert_output):
 
 
 def test_create_key_required():
-    with pytest.raises(MissingParameter, match='Missing parameter: key'):
+    with pytest.raises(MissingParameter, match='[M|m]issing parameter: key'):
         create.make_context('config create', args=[])
 
 
 def test_create_value_required():
-    with pytest.raises(MissingParameter, match='Missing parameter: value'):
+    with pytest.raises(MissingParameter, match='[M|m]issing parameter: value'):
         create.make_context('config create', args=[m.key])
 
 
@@ -79,7 +79,7 @@ def test_delete(model, runner, assert_output):
 
 
 def test_delete_key_required():
-    with pytest.raises(MissingParameter, match='Missing parameter: key'):
+    with pytest.raises(MissingParameter, match='[M|m]issing parameter: key'):
         delete.make_context('config delete', args=[])
 
 

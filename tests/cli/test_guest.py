@@ -28,7 +28,7 @@ def test_get_notfound(model, runner, assert_output):
 
 
 def test_get_id_required():
-    with pytest.raises(MissingParameter, match='Missing parameter: id'):
+    with pytest.raises(MissingParameter, match='[M|m]issing parameter: id'):
         get.make_context('guest get', args=[])
 
 
@@ -61,12 +61,12 @@ def test_create_duplicate(model, runner, assert_output):
 
 
 def test_create_first_name_required():
-    with pytest.raises(MissingParameter, match='Missing parameter: first_name'):
+    with pytest.raises(MissingParameter, match='[M|m]issing parameter: first_name'):
         create.make_context('guest create', args=[])
 
 
 def test_create_last_name_required():
-    with pytest.raises(MissingParameter, match='Missing parameter: last_name'):
+    with pytest.raises(MissingParameter, match='[M|m]issing parameter: last_name'):
         create.make_context('guest create', args=[m.first_name])
 
 
