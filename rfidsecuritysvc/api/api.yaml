@@ -32,7 +32,7 @@ tags:
 security:
   - ApiKey: []
 paths:
-  /association:
+  /associations:
     get:
       tags:
         - association
@@ -73,7 +73,7 @@ paths:
           description: Invalid request.
         '401':
           $ref: "#/components/responses/UnauthorizedError"
-  /association/media/{media_id}:
+  /associations/{media_id}:
     get:
       tags:
         - association
@@ -101,7 +101,7 @@ paths:
           description: Invalid request.
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-  /association/media/{media_id}/perm/{perm_name}:
+  /associations/{media_id}/{perm_name}:
     delete:
       tags:
         - association
@@ -135,7 +135,7 @@ paths:
           description: Invalid request.
         '401':
           $ref: "#/components/responses/UnauthorizedError"
-  /authorized/media/{media_id}/perm/{perm_name}:
+  /authorized/{media_id}/{perm_name}:
     get:
       tags:
         - authorized
@@ -166,7 +166,7 @@ paths:
           $ref: "#/components/responses/UnauthorizedError"
         '403':
           description: Media does not have the supplied permission
-  /config:
+  /configs:
     get:
       tags:
         - config
@@ -207,7 +207,7 @@ paths:
           $ref: "#/components/responses/UnauthorizedError"
         '409':
           description: Record already exists.
-  /config/{key}:
+  /configs/{key}:
     get:
       tags:
         - config
@@ -297,7 +297,7 @@ paths:
           description: Invalid request.
         '401':
           $ref: "#/components/responses/UnauthorizedError"
-  /guest:
+  /guests:
     get:
       tags:
         - guest
@@ -338,7 +338,7 @@ paths:
           description: Invalid request.
         '401':
           $ref: "#/components/responses/UnauthorizedError"
-  /guest/{id}:
+  /guests/{id}:
     get:
       tags:
         - guest
@@ -561,7 +561,7 @@ paths:
           description: Invalid request.
         '401':
           $ref: "#/components/responses/UnauthorizedError"
-  /media-perm:
+  /media-perms:
     get:
       tags:
         - media-perm
@@ -603,7 +603,7 @@ paths:
         '409':
           description: Record already exists.
           description: Record not found.
-  /media-perm/media/{media_id}/perm/{perm_id}:
+  /media-perms/{media_id}/{perm_id}:
     get:
       tags:
         - media-perm
@@ -706,7 +706,7 @@ paths:
           description: Invalid request.
         '401':
           $ref: "#/components/responses/UnauthorizedError"
-  /permission:
+  /permissions:
     get:
       tags:
         - permission
@@ -747,7 +747,7 @@ paths:
           $ref: "#/components/responses/UnauthorizedError"
         '409':
           description: Record already exists.
-  /permission/{name}:
+  /permissions/{name}:
     get:
       tags:
         - permission
@@ -869,6 +869,152 @@ paths:
           description: Invalid request.
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+  /sounds:
+    get:
+      tags:
+        - sound
+      summary: Retrieves all the sounds
+      description: |
+        Retrieves all the sound records. This implementation does not currently support pagination.
+      responses:
+        '200':
+          description: Array of Sound objects.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SimpleSound'
+        '400':
+          description: Invalid request.
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /sounds/{name}:
+    get:
+      tags:
+        - sound
+      summary: Retrieves sound by name
+      description: |
+        Takes a name and returns the sound.
+      parameters:
+      - name: name
+        in: path
+        description: The name of the requested sound.
+        required: true
+        schema:
+          type: string
+          example: read.wav
+      responses:
+        '200':
+          description: Sound object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sound'
+        '400':
+          description: Invalid request.
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: Record not found.
+    delete:
+      tags:
+        - sound
+      summary: Deletes sound by name
+      description: |
+        Takes a name and deletes that record. This method does not fail if the sound does not exist as this is considered success.
+      parameters:
+      - name: name
+        in: path
+        description: The name of the sound to delete.
+        required: true
+        schema:
+          type: string
+          example: read.wav
+      responses:
+        '200':
+          description: Record was either deleted or did not exist.
+          headers:
+            x-record-count:
+              schema:
+                type: integer
+              description: The actual number of records deleted, could be zero if the record did not exist.
+        '400':
+          description: Invalid request.
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+    post:
+      tags:
+        - sound
+      summary: Creates a new sound
+      description: |
+        Accepts a multi-part form upload of an audio/wav file creates a new sound record.
+      parameters:
+      - name: name
+        in: path
+        description: The name of the sound to create.
+        required: true
+        schema:
+          type: string
+          example: read.wav
+      requestBody:
+        required: true
+        content:
+          audio/wav:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '201':
+          description: New record created.
+        '400':
+          description: Invalid request.
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '409':
+          description: Record already exists.
+  /sounds/{id}:
+    put:
+      tags:
+        - sound
+      summary: Updates the sound by id
+      description: |
+        Accepts a JSON payload containing a full sound record and updates it. The id is optional in the payload and will be ignored if present.
+      parameters:
+      - name: id
+        in: path
+        description: The id of the sound to update.
+        required: true
+        schema:
+          type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: read.wav
+                content:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Record was updated.
+          headers:
+            x-record-count:
+              schema:
+                type: integer
+              description: The actual number of records updated or created
+        '201':
+          description: Record did not exist and was created.
+        '400':
+          description: Invalid request.
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
 components:
   schemas:
     Association:
@@ -897,7 +1043,7 @@ components:
       properties:
         id:
           type: integer
-          readOnly: True
+          readOnly: true
           example: 1
         first_name:
           type: string
@@ -919,7 +1065,7 @@ components:
       properties:
         id:
           type: integer
-          readOnly: True
+          readOnly: true
           example: 1
         media_id:
           type: string
@@ -933,6 +1079,14 @@ components:
         - type: object
           required:
           - name
+    Sound:
+      allOf:
+        - $ref: '#/components/schemas/SimpleSound'
+        - type: object
+          required:
+            - id
+            - name
+            - content
     SimpleConfig:
       required:
       - value
@@ -964,7 +1118,7 @@ components:
       properties:
         id:
           type: integer
-          readOnly: True
+          readOnly: true
           example: 1
         name:
           type: string
@@ -973,6 +1127,20 @@ components:
           type: string
           example: Opens the door
           nullable: true
+    SimpleSound:
+      required:
+        - name
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: read.wav
+        content:
+          type: string
+          format: binary
   securitySchemes:
     ApiKey:
       type: apiKey
