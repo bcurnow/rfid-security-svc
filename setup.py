@@ -15,8 +15,8 @@ setup(
     ],
     description='A Flask and Connexion-based REST API and database for managing RFID media and permissions.',
     install_requires=[
-        'Flask>=2.0.0,<3',
-        'connexion[swagger-ui]>=2.7.0,<3',
+        'Flask>=1.1.4,<3',
+        'connexion[swagger-ui]>=2.9.0,<3',
     ],
     long_description=long_description,
     long_description_content_type='text/markdown',
