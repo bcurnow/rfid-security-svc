@@ -7,8 +7,8 @@ from rfidsecuritysvc.exception import SoundNotFoundError as NotFound
 
 
 def test_get(mockdb):
-    mockdb.add_execute('SELECT * FROM sound WHERE id = ?', (1,), 1)
-    assert db.get(1) == 1
+    mockdb.add_execute('SELECT * FROM sound WHERE name = ?', ('test',), 1)
+    assert db.get("test") == 1
 
 
 def test_list(mockdb):
@@ -33,18 +33,18 @@ def test_create_IntegrityError(mockdb):
 
 
 def test_delete(mockdb):
-    mockdb.add_execute('DELETE FROM sound WHERE id = ?', (1,), rowcount=1)
+    mockdb.add_execute('DELETE FROM sound WHERE name = ?', ('test',), rowcount=1)
     mockdb.add_commit()
-    assert db.delete(1) == 1
+    assert db.delete('test') == 1
 
 
 def test_update(mockdb):
-    mockdb.add_execute('UPDATE sound SET name = ? WHERE id = ?', (1, 'test'), rowcount=1)
+    mockdb.add_execute('UPDATE sound SET name = ?, content = ? WHERE id = ?', ('test', 'binary content', 1), rowcount=1)
     mockdb.add_commit()
-    assert db.update('test', 1) == 1
+    assert db.update(1, 'test', 'binary content') == 1
 
 
 def test_update_NotFoundError(mockdb):
-    mockdb.add_execute('UPDATE sound SET name = ? WHERE id = ?', (1, 'test'), rowcount=0)
+    mockdb.add_execute('UPDATE sound SET name = ?, content = ? WHERE id = ?', ('test', 'binary content', 1), rowcount=0)
     with pytest.raises(NotFound):
-        db.update('test', 1)
+        db.update(1, 'test', 'binary content')
