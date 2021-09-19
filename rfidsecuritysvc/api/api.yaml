@@ -842,6 +842,7 @@ paths:
       tags:
         - sound
       summary: Retrieves a sound as an audio/wav stream to be used with various audio players.
+      security: []
       description: |
         Retrieves a sound as an audio/wav stream to be used with various audio players.
       parameters:
