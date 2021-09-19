@@ -837,6 +837,35 @@ paths:
           description: Invalid request.
         '401':
           $ref: "#/components/responses/UnauthorizedError"
+  /player/{name}:
+    get:
+      tags:
+        - sound
+      summary: Retrieves a sound as an audio/wav stream to be used with various audio players.
+      description: |
+        Retrieves a sound as an audio/wav stream to be used with various audio players.
+      parameters:
+      - name: name
+        in: path
+        description: The name of the requested sound.
+        required: true
+        schema:
+          type: string
+          example: read.wav
+      responses:
+        '200':
+          description: Sound object.
+          content:
+            audio/wav:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Invalid request.
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '404':
+          description: Record not found.
   /reader:
     get:
       tags:
