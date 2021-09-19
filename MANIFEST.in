@@ -1,3 +1,4 @@
 include rfidsecuritysvc/db/schema.sql
 include rfidsecuritysvc/api/api.yaml
+include tests/fixtures/test.wav
 global-exclude *.py[cod]
