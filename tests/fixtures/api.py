@@ -33,7 +33,7 @@ class ResponseHandler:
         builder = EnvironBuilder(
             path=self._api_base + api,
             method=method.upper(),
-            content_type='application/json',
+            content_type=content_type,
             headers=h,
             charset='utf-8',
             data=data,
@@ -104,7 +104,6 @@ def add_to_json_rw(monkeypatch_session):
     """
     Patches the rfidsecuritysvc.model.BaseModel class to add a to_json_rw method that returns
     only the keys that are not marked readonly in the API.
-    Adds implementation to Permission and MediaPerm
     """
 
     def to_json_rw(self):
@@ -120,6 +119,7 @@ def add_to_json_rw(monkeypatch_session):
         rfidsecuritysvc.model.permission.Permission: ['id'],
         rfidsecuritysvc.model.media_perm.MediaPerm: ['id'],
         rfidsecuritysvc.model.guest.Guest: ['id'],
+        rfidsecuritysvc.model.sound.Sound: ['id'],
     }
     monkeypatch_session.setattr(rfidsecuritysvc.model.BaseModel, '_read_only_keys', lambda _: [], raising=False)
     monkeypatch_session.setattr(rfidsecuritysvc.model.BaseModel, 'to_json_rw', to_json_rw, raising=False)
