@@ -32,6 +32,10 @@ def test_post(rh, creatable_sound, to_content):
     rh.assert_response(rh.open('get', f'{api}/{creatable_sound.name}'), 404)
 
 
+def test_post_no_content(rh, creatable_sound, to_content):
+    rh.assert_response(rh.open('post', f'{api}', {'name': 'test.wav'}, 'multipart/form-data'), 400)
+
+
 def test_post_duplicate(rh, sounds, to_content):
     rh.assert_response(rh.open('post', f'{api}', to_content(sounds[0]), 'multipart/form-data'), 409)
 
@@ -49,6 +53,10 @@ def test_delete_notfound(rh, creatable_sound):
 
 def test_put(rh, sounds, to_content):
     rh.assert_response(rh.open('put', f'{api}/{sounds[0].id}', to_content(sounds[0]), 'multipart/form-data'), 200, headers={RECORD_COUNT_HEADER: '1'})
+
+
+def test_put_no_content(rh, sounds, to_content):
+    rh.assert_response(rh.open('put', f'{api}/{sounds[0].id}', {'name': 'rename.wav'}, 'multipart/form-data'), 200, headers={RECORD_COUNT_HEADER: '1'})
 
 
 def test_put_notfound(rh, creatable_sound, to_content):

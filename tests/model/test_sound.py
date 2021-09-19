@@ -63,6 +63,13 @@ def test_update(table):
     table.update.assert_called_once_with(1, 'test', 'binary content')
 
 
+@patch('rfidsecuritysvc.model.sound.table')
+def test_update_no_content(table):
+    table.update.return_value = 1
+    assert model.update(1, 'test') == 1
+    table.update.assert_called_once_with(1, 'test', None)
+
+
 def _assert_model(expected, actual):
     assert expected.id == actual.id
     assert expected.name == actual.name

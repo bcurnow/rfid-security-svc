@@ -44,6 +44,12 @@ def test_update(mockdb):
     assert db.update(1, 'test', 'binary content') == 1
 
 
+def test_update_no_content(mockdb):
+    mockdb.add_execute('UPDATE sound SET name = ? WHERE id = ?', ('test', 1), rowcount=1)
+    mockdb.add_commit()
+    assert db.update(1, 'test') == 1
+
+
 def test_update_NotFoundError(mockdb):
     mockdb.add_execute('UPDATE sound SET name = ?, content = ? WHERE id = ?', ('test', 'binary content', 1), rowcount=0)
     with pytest.raises(NotFound):

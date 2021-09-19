@@ -32,9 +32,12 @@ def delete(conn, name):
 
 
 @with_dbconn
-def update(conn, id, name, content):
+def update(conn, id, name, content=None):
     with conn:
-        count = conn.execute('UPDATE sound SET name = ?, content = ? WHERE id = ?', (name, content, id)).rowcount
+        if content is None:
+            count = conn.execute('UPDATE sound SET name = ? WHERE id = ?', (name, id)).rowcount
+        else:
+            count = conn.execute('UPDATE sound SET name = ?, content = ? WHERE id = ?', (name, content, id)).rowcount
     if count == 0:
         raise exception.SoundNotFoundError
 

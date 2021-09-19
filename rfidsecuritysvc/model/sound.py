@@ -46,7 +46,7 @@ def delete(id):
     return table.delete(id)
 
 
-def update(id, name, content):
+def update(id, name, content=None):
     return table.update(id, name, content)
 
 

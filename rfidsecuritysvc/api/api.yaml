@@ -894,13 +894,16 @@ paths:
         - sound
       summary: Creates a new sound
       description: |
-        Accepts a multi-part form upload of an audio/wav file creates a new sound record.
+        Accepts a multi-part form upload of an audio/wav file and a name and creates a new sound record.
       requestBody:
         required: true
         content:
           multipart/form-data:
             schema:
               type: object
+              required:
+                - name
+                - content
               properties:
                 name:
                   type: string
@@ -995,6 +998,8 @@ paths:
           multipart/form-data:
             schema:
               type: object
+              required:
+                - name
               properties:
                 name:
                   type: string

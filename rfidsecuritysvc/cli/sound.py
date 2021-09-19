@@ -54,11 +54,15 @@ def delete(ctx, id):
 @group.command('update')
 @click.argument('id')
 @click.argument('name')
+@click.argument('input_file', type=click.File('rb'), required=False)
 @click.pass_context
-def update(ctx, id, name):
+def update(ctx, id, name, input_file):
     """Manually updates a record in the table."""
     try:
-        model.update(id, name)
+        if input_file is None:
+            model.update(id, name)
+        else:
+            model.update(id, name, input_file.read())
         click.echo(click.style('Record updated.', bg='green', fg='black'))
         ctx.invoke(list)
     except exception.SoundNotFoundError:

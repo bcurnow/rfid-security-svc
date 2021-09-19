@@ -88,7 +88,19 @@ def test_delete_id_required():
 
 
 @patch('rfidsecuritysvc.cli.sound.model')
-def test_update(model, runner, assert_output):
+def test_update(model, runner, assert_output, tmp_path):
+    f = tmp_path / "binary.file"
+    f.touch()
+    model.update.return_value = 1
+    model.list.return_value = [m]
+    result = runner.invoke(args=['sound', 'update', m.id, m.name, str(f)], color=True)
+    assert_output(result, 'Record updated.', bg='green', fg='black')
+    model.update.assert_called_once_with(m.id, m.name, b'')
+    model.list.assert_called_once()
+
+
+@patch('rfidsecuritysvc.cli.sound.model')
+def test_update_no_content(model, runner, assert_output):
     model.update.return_value = 1
     model.list.return_value = [m]
     result = runner.invoke(args=['sound', 'update', m.id, m.name], color=True)
