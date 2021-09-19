@@ -1,3 +1,5 @@
+import base64
+
 from rfidsecuritysvc.db import sound as table
 from rfidsecuritysvc.model import BaseModel
 
@@ -14,10 +16,18 @@ class Sound(BaseModel):
         del cp['content']
         return cp
 
+    def to_json_with_content(self):
+        """This method must be explicitly called to get the content"""
+        # In order to translate to JSON, this must be encoded first
+        cp = self.__dict__.copy()
+        # Why not UTF-8? Because Base64 uses only ASCII characters
+        # All ASCII characters are UTF-8
+        cp['content'] = base64.b64encode(cp['content']).decode('ascii')
+        return cp
 
 
-def get(id):
-    return __model(table.get(id))
+def get(name):
+    return __model(table.get(name))
 
 
 def list():
@@ -36,8 +46,8 @@ def delete(id):
     return table.delete(id)
 
 
-def update(id, name):
-    return table.update(id, name)
+def update(id, name, content):
+    return table.update(id, name, content)
 
 
 def __model(row):
@@ -46,6 +56,7 @@ def __model(row):
     c = __model_light(row)
     c.content = row['content']
     return c
+
 
 def __model_light(row):
     return Sound(row['id'], row['name'])
