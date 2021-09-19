@@ -9,6 +9,7 @@ def get(name):
     m = model.get(name)
     if m:
         return m.to_json_with_content()
+
     return f'Object with name "{name}" does not exist.', 404
 
 
