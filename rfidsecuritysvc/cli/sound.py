@@ -1,3 +1,5 @@
+import os
+
 import click
 from flask.cli import AppGroup
 import rfidsecuritysvc.exception as exception
@@ -11,15 +13,20 @@ def register(app):
 
 
 @group.command('get')
-@click.argument('id')
+@click.argument('name')
+@click.argument('output_file', type=click.File('wb'), required=False)
 @click.pass_context
-def get(ctx, id):
+def get(ctx, name, output_file):
     """Gets a single record from the table."""
-    record = model.get(id)
+    record = model.get(name)
     if not record:
-        ctx.fail(click.style(f'No record found with id "{id}".', fg='red'))
+        ctx.fail(click.style(f'No record found with name "{name}".', fg='red'))
 
-    click.echo(record.to_json())
+    if output_file:
+        output_file.write(record.content)
+        click.echo(f'{name} was saved to {os.path.abspath(output_file.name)}')
+    else:
+        click.echo(record.to_json())
 
 
 @group.command('list')
@@ -39,15 +46,15 @@ def create(ctx, name, input_file):
         model.create(name, input_file.read())
         ctx.invoke(list)
     except exception.DuplicateSoundError:
-        ctx.fail(click.style(f'Record with file name "{name}" already exists.', fg='red'))
+        ctx.fail(click.style(f'Record with name "{name}" already exists.', fg='red'))
 
 
 @group.command('delete')
-@click.argument('id')
+@click.argument('name')
 @click.pass_context
-def delete(ctx, id):
+def delete(ctx, name):
     """Manually deletes a record from the table."""
-    click.echo(click.style(f'{model.delete(id)} record(s) deleted.', bg='green', fg='black'))
+    click.echo(click.style(f'{model.delete(name)} record(s) deleted.', bg='green', fg='black'))
     ctx.invoke(list)
 
 

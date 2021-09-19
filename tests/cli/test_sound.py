@@ -1,3 +1,5 @@
+import os
+
 import pytest
 from unittest.mock import patch
 
@@ -14,21 +16,35 @@ m = Model('id', 'name')
 @patch('rfidsecuritysvc.cli.sound.model')
 def test_get(model, runner, assert_output):
     model.get.return_value = m
-    result = runner.invoke(args=['sound', 'get', m.id])
+    result = runner.invoke(args=['sound', 'get', m.name])
     assert_output(result, m.to_json())
-    model.get.assert_called_once_with(m.id)
+    model.get.assert_called_once_with(m.name)
+
+
+@patch('rfidsecuritysvc.cli.sound.model')
+def test_get_output_file(model, runner, assert_output, wav_content, tmp_path):
+    m.content = wav_content
+    f = tmp_path / "output_file.wav"
+    assert not f.exists()
+    model.get.return_value = m
+    result = runner.invoke(args=['sound', 'get', m.name, str(f)])
+    assert_output(result, f'{m.name} was saved to {os.path.abspath(str(f))}')
+    model.get.assert_called_once_with(m.name)
+    assert f.exists()
+    with open(f, 'rb') as output_file:
+        assert wav_content == output_file.read()
 
 
 @patch('rfidsecuritysvc.cli.sound.model')
 def test_get_notfound(model, runner, assert_output):
     model.get.return_value = None
-    result = runner.invoke(args=['sound', 'get', m.id], color=True)
-    assert_output(result, f'No record found with id "{m.id}".', 2, fg='red')
-    model.get.assert_called_once_with(m.id)
+    result = runner.invoke(args=['sound', 'get', m.name], color=True)
+    assert_output(result, f'No record found with name "{m.name}".', 2, fg='red')
+    model.get.assert_called_once_with(m.name)
 
 
 def test_get_id_required():
-    with pytest.raises(MissingParameter, match='[M|m]issing parameter: id'):
+    with pytest.raises(MissingParameter, match='[M|m]issing parameter: name'):
         get.make_context('sound get', args=[])
 
 
@@ -46,7 +62,7 @@ def test_list(model, runner, assert_output):
 def test_create(model, runner, assert_output, tmp_path):
     model.create.return_value = None
     model.list.return_value = [m]
-    f = tmp_path / "binary.file"
+    f = tmp_path / "input_file.wav"
     f.touch()
     result = runner.invoke(args=['sound', 'create', m.name, str(f)])
     assert_output(result, m.to_json())
@@ -57,10 +73,10 @@ def test_create(model, runner, assert_output, tmp_path):
 @patch('rfidsecuritysvc.cli.sound.model')
 def test_create_duplicate(model, runner, assert_output, tmp_path):
     model.create.side_effect = DuplicateError
-    f = tmp_path / "binary.file"
+    f = tmp_path / "input_file.wav"
     f.touch()
     result = runner.invoke(args=['sound', 'create', m.name, str(f)], color=True)
-    assert_output(result, f'Record with file name "{m.name}" already exists.', 2, fg='red')
+    assert_output(result, f'Record with name "{m.name}" already exists.', 2, fg='red')
     model.create.assert_called_once_with(m.name, b'')
 
 
@@ -77,13 +93,13 @@ def test_create_input_file_required():
 @patch('rfidsecuritysvc.cli.sound.model')
 def test_delete(model, runner, assert_output):
     model.delete.return_value = 1
-    result = runner.invoke(args=['sound', 'delete', m.id], color=True)
+    result = runner.invoke(args=['sound', 'delete', m.name], color=True)
     assert_output(result, '1 record(s) deleted.', bg='green', fg='black')
-    model.delete.assert_called_once_with(m.id)
+    model.delete.assert_called_once_with(m.name)
 
 
 def test_delete_id_required():
-    with pytest.raises(MissingParameter, match='[M|m]issing parameter: id'):
+    with pytest.raises(MissingParameter, match='[M|m]issing parameter: name'):
         delete.make_context('sound delete', args=[])
 
 
