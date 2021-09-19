@@ -59,8 +59,8 @@ def test_delete(table):
 @patch('rfidsecuritysvc.model.sound.table')
 def test_update(table):
     table.update.return_value = 1
-    assert model.update(1, 'test') == 1
-    table.update.assert_called_once_with(1, 'test')
+    assert model.update(1, 'test', 'binary content') == 1
+    table.update.assert_called_once_with(1, 'test', 'binary content')
 
 
 def _assert_model(expected, actual):
