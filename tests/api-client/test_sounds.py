@@ -56,7 +56,16 @@ def test_put(rh, sounds, to_content):
 
 
 def test_put_no_content(rh, sounds, to_content):
-    rh.assert_response(rh.open('put', f'{api}/{sounds[0].id}', {'name': 'rename.wav'}, 'multipart/form-data'), 200, headers={RECORD_COUNT_HEADER: '1'})
+    rh.assert_response(
+        rh.open(
+            'put',
+            f'{api}/{sounds[0].id}',
+            {'name': 'rename.wav'},
+            'multipart/form-data'
+            ),
+        200,
+        headers={RECORD_COUNT_HEADER: '1'}
+        )
 
 
 def test_put_notfound(rh, creatable_sound, to_content):
