@@ -50,7 +50,10 @@ class ResponseHandler:
         if expected is not None:
             assert response.data is not None
 
-            actual = json.loads(response.get_data(as_text=True))
+            if 'application/json' in response.content_type:
+                actual = json.loads(response.get_data(as_text=True))
+            else:
+                actual = response.get_data()
 
             if isinstance(expected, list):
                 # assert the lengths of the lists to account for zero-length lists
