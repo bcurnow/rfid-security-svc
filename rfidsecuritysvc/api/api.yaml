@@ -889,6 +889,37 @@ paths:
           description: Invalid request.
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+    post:
+      tags:
+        - sound
+      summary: Creates a new sound
+      description: |
+        Accepts a multi-part form upload of an audio/wav file creates a new sound record.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: read.wav
+                content:
+                  type: string
+                  format: binary
+            encoding:
+              content:
+                contentType: audio/wav
+      responses:
+        '201':
+          description: New record created.
+        '400':
+          description: Invalid request.
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '409':
+          description: Record already exists.
   /sounds/{name}:
     get:
       tags:
@@ -943,36 +974,6 @@ paths:
           description: Invalid request.
         '401':
           $ref: "#/components/responses/UnauthorizedError"
-    post:
-      tags:
-        - sound
-      summary: Creates a new sound
-      description: |
-        Accepts a multi-part form upload of an audio/wav file creates a new sound record.
-      parameters:
-      - name: name
-        in: path
-        description: The name of the sound to create.
-        required: true
-        schema:
-          type: string
-          example: read.wav
-      requestBody:
-        required: true
-        content:
-          audio/wav:
-            schema:
-              type: string
-              format: binary
-      responses:
-        '201':
-          description: New record created.
-        '400':
-          description: Invalid request.
-        '401':
-          $ref: "#/components/responses/UnauthorizedError"
-        '409':
-          description: Record already exists.
   /sounds/{id}:
     put:
       tags:
@@ -1001,6 +1002,9 @@ paths:
                 content:
                   type: string
                   format: binary
+            encoding:
+              content:
+                contentType: audio/wav
       responses:
         '200':
           description: Record was updated.
@@ -1135,12 +1139,13 @@ components:
         id:
           type: integer
           example: 1
+          readOnly: true
         name:
           type: string
           example: read.wav
         content:
           type: string
-          format: binary
+          format: bytes
   securitySchemes:
     ApiKey:
       type: apiKey
