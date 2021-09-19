@@ -3,12 +3,12 @@ import pytest
 import tempfile
 
 from rfidsecuritysvc import create_app
-from rfidsecuritysvc.db import config, guest, media, permission, media_perm
+from rfidsecuritysvc.db import config, guest, media, permission, media_perm, sound
 from rfidsecuritysvc.db.dbms import init_db, close_db
 
 
 @pytest.fixture(scope='session')
-def app(configs, guests, medias, permissions, media_perms):
+def app(configs, guests, medias, permissions, media_perms, sounds):
     """A Flask app class"""
     # Create a temporary director for this set of tests
     db_fd, db_path = tempfile.mkstemp()
@@ -29,6 +29,7 @@ def app(configs, guests, medias, permissions, media_perms):
             media: medias,
             permission: permissions,
             media_perm: media_perms,
+            sound: sounds,
         }.items():
             for o in objects:
                 model.create(**o.to_json_rw())
