@@ -5,9 +5,9 @@ import rfidsecuritysvc.exception as exception
 
 
 @with_dbconn
-def get(conn, id):
+def get(conn, name):
     with conn:
-        return conn.execute('SELECT * FROM sound WHERE id = ?', (id,)).fetchone()
+        return conn.execute('SELECT * FROM sound WHERE name = ?', (name,)).fetchone()
 
 
 @with_dbconn
@@ -26,15 +26,15 @@ def create(conn, name, content):
 
 
 @with_dbconn
-def delete(conn, id):
+def delete(conn, name):
     with conn:
-        return conn.execute('DELETE FROM sound WHERE id = ?', (id,)).rowcount
+        return conn.execute('DELETE FROM sound WHERE name = ?', (name,)).rowcount
 
 
 @with_dbconn
-def update(conn, id, name):
+def update(conn, id, name, content):
     with conn:
-        count = conn.execute('UPDATE sound SET name = ? WHERE id = ?', (name, id)).rowcount
+        count = conn.execute('UPDATE sound SET name = ?, content = ? WHERE id = ?', (name, content, id)).rowcount
     if count == 0:
         raise exception.SoundNotFoundError
 
