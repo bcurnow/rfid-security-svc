@@ -108,11 +108,10 @@ def add_to_json_rw(monkeypatch_session):
     Patches the rfidsecuritysvc.model.BaseModel class to add a to_json_rw method that returns
     only the keys that are not marked readonly in the API.
     """
-
     def to_json_rw(self):
         """ Returns a JSON compatible value stripped of keys which are defined read only at the API."""
         copy = self.__dict__.copy()
-        for key in self._read_only_keys():
+        for key in self._read_only_keys:
             del copy[key]
 
         return copy
@@ -122,10 +121,10 @@ def add_to_json_rw(monkeypatch_session):
         rfidsecuritysvc.model.permission.Permission: ['id'],
         rfidsecuritysvc.model.media_perm.MediaPerm: ['id'],
         rfidsecuritysvc.model.guest.Guest: ['id'],
-        rfidsecuritysvc.model.sound.Sound: ['id'],
+        rfidsecuritysvc.model.sound.Sound: ['id', 'last_update_timestamp'],
     }
-    monkeypatch_session.setattr(rfidsecuritysvc.model.BaseModel, '_read_only_keys', lambda _: [], raising=False)
+    monkeypatch_session.setattr(rfidsecuritysvc.model.BaseModel, '_read_only_keys', [], raising=False)
     monkeypatch_session.setattr(rfidsecuritysvc.model.BaseModel, 'to_json_rw', to_json_rw, raising=False)
 
     for c, read_only_attrs in models_to_patch.items():
-        monkeypatch_session.setattr(c, '_read_only_keys', lambda _: read_only_attrs, raising=False)
+        monkeypatch_session.setattr(c, '_read_only_keys', read_only_attrs, raising=False)
