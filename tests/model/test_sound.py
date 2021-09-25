@@ -81,5 +81,5 @@ def _default(index=1):
     return _model(f'test id {index}', f'test name {index}')
 
 
-def _model(id, name, last_update_timestamp = datetime.now().isoformat(timespec='seconds'), content=None):
+def _model(id, name, last_update_timestamp=datetime.now().isoformat(timespec='seconds'), content=None):
     return Sound(id, name, last_update_timestamp, content)
