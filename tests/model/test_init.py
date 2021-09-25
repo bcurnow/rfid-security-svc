@@ -16,7 +16,7 @@ def test_BaseModel_to_json_returns_copy_of_dict():
     em = ExampleModel('tojson', 'tojson2')
     assert em.field1 is not None
     d = em.to_json()
-    d.pop('field1')
+    del d['field1']
     assert em.field1 is not None
 
 
