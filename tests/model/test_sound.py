@@ -1,3 +1,4 @@
+from datetime import datetime
 from unittest.mock import patch
 
 import rfidsecuritysvc.model.sound as model
@@ -5,8 +6,9 @@ from rfidsecuritysvc.model.sound import Sound
 
 
 def test_Sound():
-    _assert_model(_model('id', 'name', 'binary content'), Sound('id', 'name', 'binary content'))
-    _assert_model(_model('id', 'name'), Sound('id', 'name'))
+    dt = datetime.now().isoformat(timespec='seconds')
+    _assert_model(_model('id', 'name', dt, 'binary content'), Sound('id', 'name', dt, 'binary content'))
+    _assert_model(_model('id', 'name', dt), Sound('id', 'name', dt))
 
 
 @patch('rfidsecuritysvc.model.sound.table')
@@ -79,5 +81,5 @@ def _default(index=1):
     return _model(f'test id {index}', f'test name {index}')
 
 
-def _model(id, name, content=None):
-    return Sound(id, name, content)
+def _model(id, name, last_update_timestamp = datetime.now().isoformat(timespec='seconds'), content=None):
+    return Sound(id, name, last_update_timestamp, content)

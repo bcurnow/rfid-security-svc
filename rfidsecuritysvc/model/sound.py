@@ -1,13 +1,15 @@
 import base64
+from datetime import datetime
 
 from rfidsecuritysvc.db import sound as table
 from rfidsecuritysvc.model import BaseModel
 
 
 class Sound(BaseModel):
-    def __init__(self, id, name, content=None):
+    def __init__(self, id, name, last_update_timestamp, content=None):
         self.id = id
         self.name = name
+        self.last_update_timestamp = last_update_timestamp
         self.content = content
 
     def to_json(self):
@@ -59,4 +61,5 @@ def __model(row):
 
 
 def __model_light(row):
-    return Sound(row['id'], row['name'])
+    print(row['last_update_timestamp'])
+    return Sound(row['id'], row['name'], datetime.fromisoformat(row['last_update_timestamp']).isoformat())

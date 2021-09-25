@@ -63,5 +63,11 @@ CREATE TABLE sound (
   id INTEGER PRIMARY KEY,
   name TEXT NOT NULL,
   content BLOB,
+  last_update_timestamp TEXT DEFAULT (datetime('now', 'localtime')) NOT NULL,
   CONSTRAINT unique_name UNIQUE (name)
 );
+
+CREATE TRIGGER UpdateLastUpdateTimestamp AFTER UPDATE ON sound
+BEGIN
+  UPDATE sound SET last_update_timestamp = datetime('now', 'localtime') WHERE id=NEW.id;
+END

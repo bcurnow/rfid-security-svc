@@ -12,7 +12,7 @@ def test_get(mockdb):
 
 
 def test_list(mockdb):
-    mockdb.add_execute('SELECT id, name FROM sound ORDER BY id', cursor_return=[])
+    mockdb.add_execute('SELECT id, name, last_update_timestamp FROM sound ORDER BY id', cursor_return=[])
     assert db.list() == []
 
 

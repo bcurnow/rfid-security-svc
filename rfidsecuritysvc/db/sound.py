@@ -13,7 +13,7 @@ def get(conn, name):
 @with_dbconn
 def list(conn):
     with conn:
-        return conn.execute('SELECT id, name FROM sound ORDER BY id').fetchall()
+        return conn.execute('SELECT id, name, last_update_timestamp FROM sound ORDER BY id').fetchall()
 
 
 @with_dbconn
