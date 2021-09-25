@@ -3,11 +3,11 @@ from rfidsecuritysvc.api import RECORD_COUNT_HEADER
 from rfidsecuritysvc.model import permission as model
 
 
-def get(name):
-    m = model.get_by_name(name)
+def get(id):
+    m = model.get(id)
     if m:
         return m.to_json()
-    return f'Object with name "{name}" does not exist.', 404
+    return f'Object with id "{id}" does not exist.', 404
 
 
 def search():
@@ -26,13 +26,13 @@ def post(body):
         return f'Object with name "{body["name"]}" already exists.', 409
 
 
-def delete(name):
-    return None, 200, {RECORD_COUNT_HEADER: model.delete_by_name(name)}
+def delete(id):
+    return None, 200, {RECORD_COUNT_HEADER: model.delete(id)}
 
 
-def put(name, body):
+def put(id, body):
     try:
-        return None, 200, {RECORD_COUNT_HEADER: model.update_by_name(name, body['desc'])}
+        return None, 200, {RECORD_COUNT_HEADER: model.update(id, body['name'], body['desc'])}
     except exception.PermissionNotFoundError:
-        model.create(name, body['desc'])
+        model.create(body['name'], body['desc'])
         return None, 201, {RECORD_COUNT_HEADER: 1}

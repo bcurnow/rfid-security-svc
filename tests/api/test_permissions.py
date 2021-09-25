@@ -11,16 +11,16 @@ m = Model(1, 'name', 'desc')
 
 @patch('rfidsecuritysvc.api.permissions.model')
 def test_get(model):
-    model.get_by_name.return_value = m
-    assert api.get(m.name) == m.to_json()
-    model.get_by_name.assert_called_once_with(m.name)
+    model.get.return_value = m
+    assert api.get(m.id) == m.to_json()
+    model.get.assert_called_once_with(m.id)
 
 
 @patch('rfidsecuritysvc.api.permissions.model')
 def test_get_notfound(model):
-    model.get_by_name.return_value = None
-    assert api.get(m.name) == (f'Object with name "{m.name}" does not exist.', 404)
-    model.get_by_name.assert_called_once_with(m.name)
+    model.get.return_value = None
+    assert api.get(m.id) == (f'Object with id "{m.id}" does not exist.', 404)
+    model.get.assert_called_once_with(m.id)
 
 
 @patch('rfidsecuritysvc.api.permissions.model')
@@ -54,28 +54,27 @@ def test_post_Duplicate(model):
 
 @patch('rfidsecuritysvc.api.permissions.model')
 def test_delete(model):
-    model.delete_by_name.return_value = 1
-    assert api.delete(m.name) == (None, 200, {RECORD_COUNT_HEADER: 1})
-    model.delete_by_name.assert_called_once_with(m.name)
+    model.delete.return_value = 1
+    assert api.delete(m.id) == (None, 200, {RECORD_COUNT_HEADER: 1})
+    model.delete.assert_called_once_with(m.id)
 
 
 @patch('rfidsecuritysvc.api.permissions.model')
 def test_put(model):
-    model.update_by_name.return_value = 1
-    assert api.put(m.name, _update(m)) == (None, 200, {RECORD_COUNT_HEADER: 1})
-    model.update_by_name.assert_called_once_with(m.name, m.desc)
+    model.update.return_value = 1
+    assert api.put(m.id, _update(m)) == (None, 200, {RECORD_COUNT_HEADER: 1})
+    model.update.assert_called_once_with(m.id, m.name, m.desc)
 
 
 @patch('rfidsecuritysvc.api.permissions.model')
 def test_put_does_not_exist(model):
-    model.update_by_name.side_effect = NotFoundError
-    assert api.put(m.name, _update(m)) == (None, 201, {RECORD_COUNT_HEADER: 1})
-    model.update_by_name.assert_called_once_with(m.name, m.desc)
+    model.update.side_effect = NotFoundError
+    assert api.put(m.id, _update(m)) == (None, 201, {RECORD_COUNT_HEADER: 1})
+    model.update.assert_called_once_with(m.id, m.name, m.desc)
     model.create.assert_called_once_with(m.name, m.desc)
 
 
 def _update(m):
     d = m.to_json().copy()
     d.pop('id')
-    d.pop('name')
     return d

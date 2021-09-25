@@ -747,21 +747,21 @@ paths:
           $ref: "#/components/responses/UnauthorizedError"
         '409':
           description: Record already exists.
-  /permissions/{name}:
+  /permissions/{id}:
     get:
       tags:
         - permission
-      summary: Retrieves permission by name
+      summary: Retrieves permission by id
       description: |
         Takes a name and returns the permission.
       parameters:
-      - name: name
+      - name: id
         in: path
-        description: The name of the requested permission.
+        description: The id of the requested permission.
         required: true
         schema:
-          type: string
-          example: Open Door
+          type: integer
+          example: 1
       responses:
         '200':
           description: Permission object.
@@ -778,17 +778,17 @@ paths:
     delete:
       tags:
         - permission
-      summary: Deletes permission by name
+      summary: Deletes permission by id
       description: |
-        Takes a name and deletes that record. This method does not fail if the permission does not exist as this is considered success.
+        Takes an id and deletes that record. This method does not fail if the permission does not exist as this is considered success.
       parameters:
-      - name: name
+      - name: id
         in: path
-        description: The name of the permission to delete.
+        description: The id of the permission to delete.
         required: true
         schema:
-          type: string
-          example: Open Door
+          type: integer
+          example: 1
       responses:
         '200':
           description: Record was either deleted or did not exist.
@@ -804,17 +804,17 @@ paths:
     put:
       tags:
         - permission
-      summary: Updates the permission by name
+      summary: Updates the permission by id
       description: |
-        Accepts a JSON payload containing a full permission record and updates it. The name is optional in the object and will be ignored.
+        Accepts a JSON payload containing a full permission record and updates it. The id is optional in the object and will be ignored.
       parameters:
-      - name: name
+      - name: id
         in: path
-        description: The name of the permission to update.
+        description: The id of the permission to update.
         required: true
         schema:
-          type: string
-          example: Open Door
+          type: integer
+          example: 1
       requestBody:
         required: true
         content:
