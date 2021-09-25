@@ -62,8 +62,8 @@ CREATE TABLE media_perm (
 CREATE TABLE sound (
   id INTEGER PRIMARY KEY,
   name TEXT NOT NULL,
-  content BLOB,
   last_update_timestamp TEXT DEFAULT (datetime('now', 'localtime')) NOT NULL,
+  content BLOB,
   CONSTRAINT unique_name UNIQUE (name)
 );
 
