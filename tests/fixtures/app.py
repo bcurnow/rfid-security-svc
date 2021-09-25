@@ -1,6 +1,7 @@
 import os
 import pytest
 import tempfile
+from datetime import datetime
 
 from rfidsecuritysvc import create_app
 from rfidsecuritysvc.db import config, guest, media, permission, media_perm, sound
@@ -23,7 +24,7 @@ def app(configs, guests, medias, permissions, media_perms, sounds):
     # Initialize a new database and load it with the test data
     with app.app_context():
         init_db()
-        for model, objects in {
+        for table, objects in {
             config: configs,
             guest: guests,
             media: medias,
@@ -32,7 +33,13 @@ def app(configs, guests, medias, permissions, media_perms, sounds):
             sound: sounds,
         }.items():
             for o in objects:
-                model.create(**o.to_json_rw())
+                table.create(**o.to_json_rw())
+
+        # Sounds have an automated last_update_timestamp, need to re-read the records we just inserted
+        # so the test data is consistent with what will be returned from the database
+        for s in sounds:
+            db_sound = sound.get(s.name)
+            s.last_update_timestamp = datetime.fromisoformat(db_sound['last_update_timestamp']).isoformat()
 
     # allow the tests to run
     yield app
