@@ -76,5 +76,5 @@ def test_put_does_not_exist(model):
 
 def _update(m):
     d = m.to_json().copy()
-    d.pop('id')
+    del d['id']
     return d

@@ -76,5 +76,5 @@ def test_put_already_exists(model):
 
 def _update(m):
     d = m.to_json().copy()
-    d.pop('key')
+    del d['key']
     return d
