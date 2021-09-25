@@ -6,7 +6,7 @@ from rfidsecuritysvc.model import BaseModel
 
 
 class Sound(BaseModel):
-    def __init__(self, id, name, last_update_timestamp, content=None):
+    def __init__(self, id, name, last_update_timestamp=None, content=None):
         self.id = id
         self.name = name
         self.last_update_timestamp = last_update_timestamp

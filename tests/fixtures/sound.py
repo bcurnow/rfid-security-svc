@@ -18,14 +18,14 @@ def wav_content():
 @pytest.fixture(scope='session')
 def sounds(wav_content):
     return [
-            Sound(1, 'test1.wav', datetime.now().isoformat(timespec='seconds'), wav_content),
-            Sound(2, 'test2.wav', datetime.now().isoformat(timespec='seconds'), wav_content),
+            Sound(1, 'test1.wav', content=wav_content),
+            Sound(2, 'test2.wav', content=wav_content),
            ]
 
 
 @pytest.fixture(scope='session')
 def creatable_sound(sounds, wav_content):
-    return Sound(len(sounds) + 1, 'creatable.wav', None, wav_content)
+    return Sound(len(sounds) + 1, 'creatable.wav', content=wav_content)
 
 
 @pytest.fixture(scope='session')
