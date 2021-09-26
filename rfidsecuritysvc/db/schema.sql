@@ -67,7 +67,7 @@ CREATE TABLE sound (
   CONSTRAINT unique_name UNIQUE (name)
 );
 
-CREATE TRIGGER UpdateLastUpdateTimestamp AFTER UPDATE ON sound
+CREATE TRIGGER UpdateLastUpdateTimestamp AFTER UPDATE OF name, content ON sound
 BEGIN
   UPDATE sound SET last_update_timestamp = datetime('now', 'utc') WHERE id=NEW.id;
 END
