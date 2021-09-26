@@ -1,5 +1,5 @@
 import base64
-from datetime import datetime
+from datetime import datetime, timezone
 
 from rfidsecuritysvc.db import sound as table
 from rfidsecuritysvc.model import BaseModel
@@ -61,5 +61,9 @@ def __model(row):
 
 
 def __model_light(row):
-    print(row['last_update_timestamp'])
-    return Sound(row['id'], row['name'], datetime.fromisoformat(row['last_update_timestamp']).isoformat())
+    # All time in the database is stored as a string in ISO8601 format in UTC,
+    # however, it doesn't store the offset/timezone in the string so we need to
+    # add that information in
+    t = datetime.fromisoformat(row['last_update_timestamp'])
+    t = t.replace(tzinfo=timezone.utc)
+    return Sound(row['id'], row['name'], t.isoformat(timespec='seconds'))

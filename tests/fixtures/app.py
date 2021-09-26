@@ -1,7 +1,7 @@
 import os
 import pytest
 import tempfile
-from datetime import datetime
+from datetime import datetime, timezone
 
 from rfidsecuritysvc import create_app
 from rfidsecuritysvc.db import config, guest, media, permission, media_perm, sound
@@ -39,7 +39,9 @@ def app(configs, guests, medias, permissions, media_perms, sounds):
         # so the test data is consistent with what will be returned from the database
         for s in sounds:
             db_sound = sound.get(s.name)
-            s.last_update_timestamp = datetime.fromisoformat(db_sound['last_update_timestamp']).isoformat()
+            t = datetime.fromisoformat(db_sound['last_update_timestamp'])
+            t = t.replace(tzinfo=timezone.utc)
+            s.last_update_timestamp = t.isoformat(timespec='seconds')
 
     # allow the tests to run
     yield app

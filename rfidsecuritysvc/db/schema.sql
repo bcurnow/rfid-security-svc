@@ -62,12 +62,12 @@ CREATE TABLE media_perm (
 CREATE TABLE sound (
   id INTEGER PRIMARY KEY,
   name TEXT NOT NULL,
-  last_update_timestamp TEXT DEFAULT (datetime('now', 'localtime')) NOT NULL,
+  last_update_timestamp TEXT DEFAULT (datetime('now', 'utc')) NOT NULL,
   content BLOB,
   CONSTRAINT unique_name UNIQUE (name)
 );
 
 CREATE TRIGGER UpdateLastUpdateTimestamp AFTER UPDATE ON sound
 BEGIN
-  UPDATE sound SET last_update_timestamp = datetime('now', 'localtime') WHERE id=NEW.id;
+  UPDATE sound SET last_update_timestamp = datetime('now', 'utc') WHERE id=NEW.id;
 END
