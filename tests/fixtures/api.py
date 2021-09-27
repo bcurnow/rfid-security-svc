@@ -14,10 +14,12 @@ class ResponseHandler:
         self._app = app
         self._assert_model = assert_model
 
-    def open(self, method, api, data=None, content_type='application/json'):
+    def open(self, method, api, data=None, content_type='application/json', headers={}):
         h = Headers()
         # Add the default testing authorization header so the calls succeed
         h.add_header('X-RFIDSECURITYSVC-API-KEY', 'testing')
+        for header, value in headers.items():
+            h.add_header(header, value)
 
         if data is not None and 'application/json' in content_type:
             if isinstance(data, BaseModel):

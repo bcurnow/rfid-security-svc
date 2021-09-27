@@ -22,13 +22,13 @@ def search():
 
 
 def post():
-    name = request.form['name']
     content = request.files['content']
     if content.content_type != 'audio/wav':
         return 'audio/wav data is required', 415
     file_content = content.read()
     if _content_length(content, file_content) <= 0:
         return 'audio/wav data is required', 400
+    name = request.form['name']
 
     try:
         model.create(name, file_content)
@@ -42,7 +42,6 @@ def delete(name):
 
 
 def put(id):
-    name = request.form['name']
     file_content = None
     if 'content' in request.files:
         content = request.files['content']
@@ -51,6 +50,7 @@ def put(id):
         file_content = content.read()
         if _content_length(content, file_content) <= 0:
             return 'audio/wav data is required', 400
+    name = request.form['name']
     try:
         return None, 200, {RECORD_COUNT_HEADER: model.update(id, name, file_content)}
     except exception.SoundNotFoundError:
