@@ -60,10 +60,3 @@ def test__content_length_use_file_length():
 
 def _model(wav_content=b'', index=1):
     return Model(1, f'test{index}.wav', datetime.now().isoformat(timespec='seconds'), wav_content)
-
-
-def _update(m):
-    d = m.to_json().copy()
-    del d['id']
-    del d['last_update_timestamp']
-    return d
