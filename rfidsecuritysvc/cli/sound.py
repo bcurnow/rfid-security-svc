@@ -59,7 +59,7 @@ def delete(ctx, name):
 
 
 @group.command('update')
-@click.argument('id')
+@click.argument('id', type=int)
 @click.argument('name')
 @click.argument('input_file', type=click.File('rb'), required=False)
 @click.pass_context

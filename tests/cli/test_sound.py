@@ -10,7 +10,7 @@ from rfidsecuritysvc.exception import DuplicateSoundError as DuplicateError
 from rfidsecuritysvc.exception import SoundNotFoundError as NotFoundError
 from rfidsecuritysvc.model.sound import Sound as Model
 
-m = Model('id', 'name')
+m = Model(1, 'name')
 
 
 @patch('rfidsecuritysvc.cli.sound.model')
@@ -109,7 +109,7 @@ def test_update(model, runner, assert_output, tmp_path):
     f.touch()
     model.update.return_value = 1
     model.list.return_value = [m]
-    result = runner.invoke(args=['sound', 'update', m.id, m.name, str(f)], color=True)
+    result = runner.invoke(args=['sound', 'update', str(m.id), m.name, str(f)], color=True)
     assert_output(result, 'Record updated.', bg='green', fg='black')
     model.update.assert_called_once_with(m.id, m.name, b'')
     model.list.assert_called_once()
@@ -119,7 +119,7 @@ def test_update(model, runner, assert_output, tmp_path):
 def test_update_no_content(model, runner, assert_output):
     model.update.return_value = 1
     model.list.return_value = [m]
-    result = runner.invoke(args=['sound', 'update', m.id, m.name], color=True)
+    result = runner.invoke(args=['sound', 'update', str(m.id), m.name], color=True)
     assert_output(result, 'Record updated.', bg='green', fg='black')
     model.update.assert_called_once_with(m.id, m.name)
     model.list.assert_called_once()
@@ -128,7 +128,7 @@ def test_update_no_content(model, runner, assert_output):
 @patch('rfidsecuritysvc.cli.sound.model')
 def test_update_notfound(model, runner, assert_output):
     model.update.side_effect = NotFoundError
-    result = runner.invoke(args=['sound', 'update', m.id, m.name], color=True)
+    result = runner.invoke(args=['sound', 'update', str(m.id), m.name], color=True)
     assert_output(result, f'Record with id "{m.id}" does not exist.', 2, fg='red')
     model.update.assert_called_once_with(m.id, m.name)
 
@@ -140,4 +140,4 @@ def test_update_id_required():
 
 def test_update_name_required():
     with pytest.raises(MissingParameter, match='[M|m]issing parameter: name'):
-        update.make_context('sound update', args=[m.id])
+        update.make_context('sound update', args=[str(m.id)])
