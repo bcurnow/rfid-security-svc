@@ -1148,9 +1148,11 @@ components:
         default_sound:
           type: integer
           example: 1
+          nullable: true
         default_color:
           type: integer
           example: 16777215
+          nullable: true
     SimpleMedia:
       required:
       - name
