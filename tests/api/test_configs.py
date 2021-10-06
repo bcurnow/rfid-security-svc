@@ -62,19 +62,13 @@ def test_delete(model):
 @patch('rfidsecuritysvc.api.configs.model')
 def test_put(model):
     model.update.return_value = 1
-    assert api.put(m.key, _update(m)) == (None, 200, {RECORD_COUNT_HEADER: 1})
+    assert api.put(m.key, m.to_json()) == (None, 200, {RECORD_COUNT_HEADER: 1})
     model.update.assert_called_once_with(m.key, m.value)
 
 
 @patch('rfidsecuritysvc.api.configs.model')
 def test_put_already_exists(model):
     model.update.side_effect = NotFoundError
-    assert api.put(m.key, _update(m)) == (None, 201, {RECORD_COUNT_HEADER: 1})
+    assert api.put(m.key, m.to_json()) == (None, 201, {RECORD_COUNT_HEADER: 1})
     model.update.assert_called_once_with(m.key, m.value)
     model.create.assert_called_once_with(m.key, m.value)
-
-
-def _update(m):
-    d = m.to_json().copy()
-    del d['key']
-    return d
