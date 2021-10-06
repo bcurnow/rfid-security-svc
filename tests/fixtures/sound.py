@@ -28,6 +28,11 @@ def creatable_sound(sounds, wav_content):
 
 
 @pytest.fixture(scope='session')
+def default_sound(sounds):
+    return sounds[0]
+
+
+@pytest.fixture(scope='session')
 def to_content():
     def _content(m, content_type='audio/wav'):
         fs = FileStorage(BytesIO(m.content), 'local file name.wav', m.name, content_type, len(m.content))
