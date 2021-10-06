@@ -1,5 +1,7 @@
 import pytest
 import sqlite3
+import textwrap
+
 
 from rfidsecuritysvc.db import guest as db
 from rfidsecuritysvc.exception import DuplicateGuestError as Duplicate
@@ -16,18 +18,26 @@ def test_list(mockdb):
     assert db.list() == []
 
 
-def test_create(mockdb):
-    mockdb.add_execute('INSERT INTO guest (first_name, last_name) VALUES (?,?)', ('first', 'last'))
+def test_create(mockdb, default_sound):
+    mockdb.add_execute(textwrap.dedent('''
+                                 INSERT INTO guest
+                                 (first_name, last_name, default_sound, default_color)
+                                 VALUES (?,?,?,?)
+                                 ''').replace('\n', ' '), ('first', 'last', default_sound.id, 0xFFFFFF))
     mockdb.add_commit()
-    assert db.create('first', 'last') is None
+    assert db.create('first', 'last', default_sound.id, 0xFFFFFF) is None
 
 
-def test_create_IntegrityError(mockdb):
-    mockdb.add_execute('INSERT INTO guest (first_name, last_name) VALUES (?,?)', ('first', 'last'))
+def test_create_IntegrityError(mockdb, default_sound):
+    mockdb.add_execute(textwrap.dedent('''
+                                 INSERT INTO guest
+                                 (first_name, last_name, default_sound, default_color)
+                                 VALUES (?,?,?,?)
+                                 ''').replace('\n', ' '), ('first', 'last', default_sound.id, 0xFFFFFF))
     mockdb.add_commit(sqlite3.IntegrityError)
     mockdb.add_rollback()
     with pytest.raises(Duplicate) as e:
-        db.create('first', 'last')
+        db.create('first', 'last', default_sound.id, 0xFFFFFF)
 
     assert type(e.value.__cause__) == sqlite3.IntegrityError
 
@@ -38,13 +48,21 @@ def test_delete(mockdb):
     assert db.delete(1) == 1
 
 
-def test_update(mockdb):
-    mockdb.add_execute('UPDATE guest SET first_name = ?, last_name = ? WHERE id = ?', ('first', 'last', 1), rowcount=1)
+def test_update(mockdb, default_sound):
+    mockdb.add_execute(textwrap.dedent('''
+                                         UPDATE guest
+                                         SET first_name = ?, last_name = ?, default_sound = ?, default_color = ?
+                                         WHERE id = ?
+                                         ''').replace('\n', ' '), ('first', 'last', default_sound.id, 0xFFFFFF, 1), rowcount=1)
     mockdb.add_commit()
-    assert db.update(1, 'first', 'last') == 1
+    assert db.update(1, 'first', 'last', default_sound.id, 0xFFFFFF) == 1
 
 
-def test_update_NotFoundError(mockdb):
-    mockdb.add_execute('UPDATE guest SET first_name = ?, last_name = ? WHERE id = ?', ('first', 'last', 1), rowcount=0)
+def test_update_NotFoundError(mockdb, default_sound):
+    mockdb.add_execute(textwrap.dedent('''
+                                         UPDATE guest
+                                         SET first_name = ?, last_name = ?, default_sound = ?, default_color = ?
+                                         WHERE id = ?
+                                         ''').replace('\n', ' '), ('first', 'last', default_sound.id, 0xFFFFFF, 1), rowcount=0)
     with pytest.raises(NotFound):
-        db.update(1, 'first', 'last')
+        db.update(1, 'first', 'last', default_sound.id, 0xFFFFFF)

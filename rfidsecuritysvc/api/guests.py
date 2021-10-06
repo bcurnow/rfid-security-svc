@@ -32,9 +32,7 @@ def delete(id):
 
 def put(id, body):
     try:
-        # Since there are no additional fields beyond first_name and last_name, assume this is a create
-        model.create(body['first_name'], body['last_name'])
+        return None, 200, {RECORD_COUNT_HEADER: model.update(id, body['first_name'], body['last_name'], body['default_sound'], body['default_color'])}
+    except exception.GuestNotFoundError:
+        model.create(**body)
         return None, 201, {RECORD_COUNT_HEADER: 1}
-    except exception.DuplicateGuestError:
-        # This already exists so simply return a 200 because there's nothing else to update
-        return None, 200, {RECORD_COUNT_HEADER: 0}

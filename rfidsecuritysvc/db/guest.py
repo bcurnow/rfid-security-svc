@@ -1,4 +1,5 @@
 import sqlite3
+import textwrap
 
 from rfidsecuritysvc.db.dbms import with_dbconn
 import rfidsecuritysvc.exception as exception
@@ -17,10 +18,14 @@ def list(conn):
 
 
 @with_dbconn
-def create(conn, first_name, last_name):
+def create(conn, first_name, last_name, default_sound=None, default_color=None):
     try:
         with conn as conn:
-            conn.execute('INSERT INTO guest (first_name, last_name) VALUES (?,?)', (first_name, last_name))
+            conn.execute(textwrap.dedent('''
+                                         INSERT INTO guest
+                                         (first_name, last_name, default_sound, default_color)
+                                         VALUES (?,?,?,?)
+                                         ''').replace('\n', ' '), (first_name, last_name, default_sound, default_color))
     except sqlite3.IntegrityError as e:
         raise exception.DuplicateGuestError from e
 
@@ -32,9 +37,13 @@ def delete(conn, id):
 
 
 @with_dbconn
-def update(conn, id, first_name, last_name):
+def update(conn, id, first_name, last_name, default_sound=None, default_color=None):
     with conn:
-        count = conn.execute('UPDATE guest SET first_name = ?, last_name = ? WHERE id = ?', (first_name, last_name, id)).rowcount
+        count = conn.execute(textwrap.dedent('''
+                                             UPDATE guest
+                                             SET first_name = ?, last_name = ?, default_sound = ?, default_color = ?
+                                             WHERE id = ?
+                                             ''').replace('\n', ' '), (first_name, last_name, default_sound, default_color, id)).rowcount
     if count == 0:
         raise exception.GuestNotFoundError
 

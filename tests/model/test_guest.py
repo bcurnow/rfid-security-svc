@@ -4,8 +4,8 @@ import rfidsecuritysvc.model.guest as model
 from rfidsecuritysvc.model.guest import Guest
 
 
-def test_Guest(assert_model):
-    assert_model(_model(1, 'first', 'last'), Guest(1, 'first', 'last'))
+def test_Guest(assert_model, default_sound):
+    assert_model(_model(1, 'first', 'last', default_sound.id, 0xFFFFFF), Guest(1, 'first', 'last', default_sound.id, 0xFFFFFF))
 
 
 @patch('rfidsecuritysvc.model.guest.table')
@@ -42,10 +42,10 @@ def test_list_noresults(table):
 
 
 @patch('rfidsecuritysvc.model.guest.table')
-def test_create(table):
+def test_create(table, default_sound):
     table.create.return_value = None
-    assert model.create('first', 'last') is None
-    table.create.assert_called_once_with('first', 'last')
+    assert model.create('first', 'last', default_sound.id, 0xFFFFFF) is None
+    table.create.assert_called_once_with('first', 'last', default_sound.id, 0xFFFFFF)
 
 
 @patch('rfidsecuritysvc.model.guest.table')
@@ -56,15 +56,15 @@ def test_delete(table):
 
 
 @patch('rfidsecuritysvc.model.guest.table')
-def test_update(table):
+def test_update(table, default_sound):
     table.update.return_value = 1
-    assert model.update(1, 'first', 'last') == 1
-    table.update.assert_called_once_with(1, 'first', 'last')
+    assert model.update(1, 'first', 'last', default_sound.id, 0xFFFFFF) == 1
+    table.update.assert_called_once_with(1, 'first', 'last', default_sound.id, 0xFFFFFF)
 
 
 def _default(index=1):
-    return _model(index, f'first {index}', f'last {index}')
+    return _model(index, f'first {index}', f'last {index}', index, 0xFFFFFF)
 
 
-def _model(id, first_name, last_name):
-    return Guest(id, first_name, last_name)
+def _model(id, first_name, last_name, default_sound, default_color):
+    return Guest(id, first_name, last_name, default_sound, default_color)

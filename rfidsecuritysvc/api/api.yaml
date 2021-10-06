@@ -328,7 +328,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Guest'
+              $ref: '#/components/schemas/SimpleGuest'
       responses:
         '201':
           description: New record created.
@@ -397,7 +397,7 @@ paths:
         - guest
       summary: Updates the guest by id
       description: |
-        Accepts a JSON payload containing a full guest record and updates it. The id is optional in the payload and will be ignored if present.
+        Accepts a JSON payload containing a guest record and updates it. The id must not be present in the payload.
       parameters:
       - name: id
         in: path
@@ -411,10 +411,12 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Guest'
+              $ref: '#/components/schemas/SimpleGuest'
             example:
               first_name: Mickey
               last_name: Mouse
+              default_sound: 1
+              default_color: 16777215
       responses:
         '200':
           description: Record was updated.
@@ -529,7 +531,7 @@ paths:
         - media
       summary: Updates the media by id
       description: |
-        Accepts a JSON payload containing a full media record and updates it. The id is optional in the payload and will be ignored if present.
+        Accepts a JSON payload containing a media record and updates it. The id is optional in the payload and will be ignored if present.
       parameters:
       - name: id
         in: path
@@ -676,7 +678,7 @@ paths:
         - media-perm
       summary: Updates the media permission by id
       description: |
-        Accepts a JSON payload containing a full media permission record and updates it. The id is optional in the object and will be ignored.
+        Creates the media perm record specified.
       parameters:
       - name: media_id
         in: path
@@ -806,7 +808,7 @@ paths:
         - permission
       summary: Updates the permission by id
       description: |
-        Accepts a JSON payload containing a full permission record and updates it. The id is optional in the object and will be ignored.
+        Accepts a JSON payload containing a permission record and updates it. The id must not be present in the payload.
       parameters:
       - name: id
         in: path
@@ -1013,7 +1015,7 @@ paths:
         - sound
       summary: Updates the sound by id
       description: |
-        Accepts a JSON payload containing a full sound record and updates it. The id is optional in the payload and will be ignored if present.
+        Accepts a multi-part form upload of an audio/wav file and a name and updates it.
       parameters:
       - name: id
         in: path
@@ -1075,21 +1077,11 @@ components:
           required:
           - key
     Guest:
-      required:
-      - first_name
-      - last_name
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-          example: 1
-        first_name:
-          type: string
-          example: Mickey
-        last_name:
-          type: string
-          example: Mouse
+      allOf:
+        - $ref: '#/components/schemas/SimpleGuest'
+        - type: object
+          required:
+          - id
     Media:
       allOf:
         - $ref: '#/components/schemas/SimpleMedia'
@@ -1137,6 +1129,28 @@ components:
         value:
           type: string
           example: admin
+    SimpleGuest:
+      required:
+      - first_name
+      - last_name
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          example: 1
+        first_name:
+          type: string
+          example: Mickey
+        last_name:
+          type: string
+          example: Mouse
+        default_sound:
+          type: integer
+          example: 1
+        default_color:
+          type: integer
+          example: 16777215
     SimpleMedia:
       required:
       - name

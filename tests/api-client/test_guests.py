@@ -48,7 +48,7 @@ def test_delete_notfound(rh, creatable_guest):
 
 
 def test_put(rh, guests):
-    rh.assert_response(rh.open('put', f'{api}/{guests[0].id}', guests[0]), 200, headers={RECORD_COUNT_HEADER: '0'})
+    rh.assert_response(rh.open('put', f'{api}/{guests[0].id}', guests[0]), 200, headers={RECORD_COUNT_HEADER: '1'})
 
 
 def test_put_notfound(rh, creatable_guest):
