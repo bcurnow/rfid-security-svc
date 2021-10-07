@@ -7,8 +7,13 @@ from rfidsecuritysvc.exception import SoundNotFoundError as NotFound
 
 
 def test_get(mockdb):
+    mockdb.add_execute('SELECT * FROM sound WHERE id = ?', (1,), 1)
+    assert db.get(1) == 1
+
+
+def test_get_by_name(mockdb):
     mockdb.add_execute('SELECT * FROM sound WHERE name = ?', ('test',), 1)
-    assert db.get("test") == 1
+    assert db.get_by_name('test') == 1
 
 
 def test_list(mockdb):
@@ -33,9 +38,9 @@ def test_create_IntegrityError(mockdb):
 
 
 def test_delete(mockdb):
-    mockdb.add_execute('DELETE FROM sound WHERE name = ?', ('test',), rowcount=1)
+    mockdb.add_execute('DELETE FROM sound WHERE id = ?', (1,), rowcount=1)
     mockdb.add_commit()
-    assert db.delete('test') == 1
+    assert db.delete(1) == 1
 
 
 def test_update(mockdb):

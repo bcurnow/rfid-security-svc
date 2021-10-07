@@ -5,12 +5,12 @@ from rfidsecuritysvc.api import RECORD_COUNT_HEADER
 from rfidsecuritysvc.model import sound as model
 
 
-def get(name):
-    m = model.get(name)
+def get(id):
+    m = model.get(id)
     if m:
         return m.to_json_with_content()
 
-    return f'Object with name "{name}" does not exist.', 404
+    return f'Object with id "{id}" does not exist.', 404
 
 
 def search():
@@ -37,8 +37,8 @@ def post():
         return f'Object with name "{name}" already exists.', 409
 
 
-def delete(name):
-    return None, 200, {RECORD_COUNT_HEADER: model.delete(name)}
+def delete(id):
+    return None, 200, {RECORD_COUNT_HEADER: model.delete(id)}
 
 
 def put(id):

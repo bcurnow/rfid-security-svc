@@ -10,7 +10,20 @@ from rfidsecuritysvc.model.permission import Permission
 
 
 def test_MediaPerm():
-    _assert_model(_model(1, 'test', 1), MediaPerm(1, 'test', 1))
+    _assert_model(_model(1,
+                         'media_id',
+                         'media_name',
+                         'media_desc',
+                         1,
+                         'permission_name',
+                         'permission_desc'),
+                  MediaPerm(1,
+                            'media_id',
+                            'media_name',
+                            'media_desc',
+                            1,
+                            'permission_name',
+                            'permission_desc'))
 
 
 @patch('rfidsecuritysvc.model.media_perm.table')
@@ -21,16 +34,9 @@ def test_get(table):
 
 
 @patch('rfidsecuritysvc.model.media_perm.table')
-def test_get_by_media_and_perm(table):
+def test_get_by_media_and_permission(table):
     table.get_by_media_and_perm.return_value = _default().__dict__
     assert model.get_by_media_and_perm('test', 1) == _default()
-    table.get_by_media_and_perm.assert_called_once_with('test', 1)
-
-
-@patch('rfidsecuritysvc.model.media_perm.table')
-def test_get_by_media_and_perm_notfound(table):
-    table.get_by_media_and_perm.return_value = None
-    assert model.get_by_media_and_perm('test', 1) is None
     table.get_by_media_and_perm.assert_called_once_with('test', 1)
 
 
@@ -98,37 +104,11 @@ def test_create_no_permission(table, permission, media):
     table.assert_not_called()
 
 
-@patch('rfidsecuritysvc.model.media_perm.permission')
-@patch('rfidsecuritysvc.model.media_perm.table')
-def test_create_by_perm_name(table, permission):
-    permission.get_by_name.return_value = Permission(1, 'test_perm')
-    table.create.return_value = None
-    assert model.create_by_perm_name('test', 'test_perm') is None
-    table.create.assert_called_once_with('test', 1)
-
-
-@patch('rfidsecuritysvc.model.media_perm.permission')
-@patch('rfidsecuritysvc.model.media_perm.table')
-def test_create_by_perm_name_no_permission(table, permission):
-    permission.get_by_name.return_value = None
-    with pytest.raises(PermissionNotFoundError):
-        model.create_by_perm_name('test', 'test_perm')
-    table.assert_not_called()
-    permission.get_by_name.assert_called_once_with('test_perm')
-
-
 @patch('rfidsecuritysvc.model.media_perm.table')
 def test_delete(table):
     table.delete.return_value = 1
     assert model.delete(1) == 1
     table.delete.assert_called_with(1)
-
-
-@patch('rfidsecuritysvc.model.media_perm.table')
-def test_delete_by_media_and_perm(table):
-    table.delete_by_media_and_perm.return_value = 1
-    assert model.delete_by_media_and_perm('test', 1) == 1
-    table.delete_by_media_and_perm.assert_called_with('test', 1)
 
 
 @patch('rfidsecuritysvc.model.media_perm.table')
@@ -138,34 +118,21 @@ def test_update(table):
     table.update.assert_called_once_with(1, 'test', 1)
 
 
-@patch('rfidsecuritysvc.model.media_perm.permission')
-@patch('rfidsecuritysvc.model.media_perm.table')
-def test_update_by_perm_name(table, permission):
-    permission.get_by_name.return_value = Permission(1, 'test_perm')
-    table.update.return_value = 1
-    assert model.update_by_perm_name('test', 'test_perm') == 1
-    table.update.assert_called_once_with('test', 1)
-
-
-@patch('rfidsecuritysvc.model.media_perm.permission')
-@patch('rfidsecuritysvc.model.media_perm.table')
-def test_update_by_perm_name_no_permission(table, permission):
-    permission.get_by_name.return_value = None
-    with pytest.raises(PermissionNotFoundError):
-        model.update_by_perm_name('test', 'test_perm')
-    table.assert_not_called()
-    permission.get_by_name.assert_called_once_with('test_perm')
-
-
 def _assert_model(expected, actual):
     assert expected.id == actual.id
     assert expected.media_id == actual.media_id
-    assert expected.perm_id == actual.perm_id
+    assert expected.permission_id == actual.permission_id
 
 
 def _default(index=1):
-    return _model(index, f'test media_id {index}', f'test perm_id {index}')
+    return _model(index,
+                  f'test media_id {index}',
+                  f'test media_name {index}',
+                  f'test media_desc {index}',
+                  f'test permission_id {index}',
+                  f'test permission_name {index}',
+                  f'test permission_desc {index}')
 
 
-def _model(id, media_id, perm_id):
-    return MediaPerm(id, media_id, perm_id)
+def _model(id, media_id, media_name, media_desc, permission_id, permission_name, permission_desc):
+    return MediaPerm(id, media_id, media_name, media_desc, permission_id, permission_name, permission_desc)

@@ -17,8 +17,8 @@ def test_get(model):
 @patch('rfidsecuritysvc.api.sounds.model')
 def test_get_notfound(model):
     model.get.return_value = None
-    assert api.get('notfound') == ('Object with name "notfound" does not exist.', 404)
-    model.get.assert_called_once_with('notfound')
+    assert api.get(-1) == ('Object with id "-1" does not exist.', 404)
+    model.get.assert_called_once_with(-1)
 
 
 @patch('rfidsecuritysvc.api.sounds.model')

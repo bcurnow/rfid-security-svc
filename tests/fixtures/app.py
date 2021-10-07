@@ -38,7 +38,7 @@ def app(configs, guests, medias, permissions, media_perms, sounds):
         # Sounds have an automated last_update_timestamp, need to re-read the records we just inserted
         # so the test data is consistent with what will be returned from the database
         for s in sounds:
-            db_sound = sound.get(s.name)
+            db_sound = sound.get(s.id)
             t = datetime.fromisoformat(db_sound['last_update_timestamp'])
             t = t.replace(tzinfo=timezone.utc)
             s.last_update_timestamp = t.isoformat(timespec='seconds')

@@ -25,12 +25,12 @@ def creatable_media():
 
 @pytest.fixture(scope='session')
 def no_desc_media(medias):
-    return medias[6]
+    return medias[7]
 
 
 @pytest.fixture(scope='session')
 def open_door_media(medias):
-    return medias[5]
+    return medias[6]
 
 
 @pytest.fixture(scope='session')

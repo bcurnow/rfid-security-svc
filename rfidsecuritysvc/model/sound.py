@@ -28,8 +28,12 @@ class Sound(BaseModel):
         return cp
 
 
-def get(name):
-    return __model(table.get(name))
+def get(id):
+    return __model(table.get(id))
+
+
+def get_by_name(name):
+    return __model(table.get_by_name(name))
 
 
 def list():

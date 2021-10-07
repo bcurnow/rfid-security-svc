@@ -13,18 +13,18 @@ def register(app):
 
 
 @group.command('get')
-@click.argument('name')
+@click.argument('id', type=int)
 @click.argument('output_file', type=click.File('wb'), required=False)
 @click.pass_context
-def get(ctx, name, output_file):
+def get(ctx, id, output_file):
     """Gets a single record from the table."""
-    record = model.get(name)
+    record = model.get(id)
     if not record:
-        ctx.fail(click.style(f'No record found with name "{name}".', fg='red'))
+        ctx.fail(click.style(f'No record found with id "{id}".', fg='red'))
 
     if output_file:
         output_file.write(record.content)
-        click.echo(f'{name} was saved to {os.path.abspath(output_file.name)}')
+        click.echo(f'{record.name} was saved to {os.path.abspath(output_file.name)}')
     else:
         click.echo(record.to_json())
 
@@ -50,11 +50,11 @@ def create(ctx, name, input_file):
 
 
 @group.command('delete')
-@click.argument('name')
+@click.argument('id', type=int)
 @click.pass_context
-def delete(ctx, name):
+def delete(ctx, id):
     """Manually deletes a record from the table."""
-    click.echo(click.style(f'{model.delete(name)} record(s) deleted.', bg='green', fg='black'))
+    click.echo(click.style(f'{model.delete(id)} record(s) deleted.', bg='green', fg='black'))
     ctx.invoke(list)
 
 

@@ -72,6 +72,7 @@ def test_put_does_not_exist(model):
     model.update.assert_called_once_with(m.id, m.first_name, m.last_name, m.default_sound, m.default_color)
     model.create.assert_called_once_with(**_update(m))
 
+
 def _update(m):
     d = m.to_json().copy()
     del d['id']

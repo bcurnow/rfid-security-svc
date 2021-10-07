@@ -31,19 +31,19 @@ def list():
 
 @group.command('create')
 @click.argument('media_id')
-@click.argument('perm_id', type=int)
+@click.argument('permission_id', type=int)
 @click.pass_context
-def create(ctx, media_id, perm_id):
+def create(ctx, media_id, permission_id):
     """Manually adds a record to the table."""
     try:
-        model.create(media_id, perm_id)
+        model.create(media_id, permission_id)
         ctx.invoke(list)
     except exception.DuplicateMediaPermError:
-        ctx.fail(click.style(f'Record with media_id "{media_id}" and perm_id "{perm_id}" already exists.', fg='red'))
+        ctx.fail(click.style(f'Record with media_id "{media_id}" and permission_id "{permission_id}" already exists.', fg='red'))
     except exception.MediaNotFoundError:
         ctx.fail(click.style(f'No media found with id "{media_id}".', fg='red'))
     except exception.PermissionNotFoundError:
-        ctx.fail(click.style(f'No permission found with id "{perm_id}".', fg='red'))
+        ctx.fail(click.style(f'No permission found with id "{permission_id}".', fg='red'))
 
 
 @group.command('delete')
@@ -58,13 +58,13 @@ def delete(ctx, id):
 @group.command('update')
 @click.argument('id', type=int)
 @click.argument('media_id')
-@click.argument('perm_id', type=int)
+@click.argument('permission_id', type=int)
 @click.pass_context
-def update(ctx, id, media_id, perm_id):
+def update(ctx, id, media_id, permission_id):
     """Manually updates a record in the table."""
     try:
-        model.update(id, media_id, perm_id)
+        model.update(id, media_id, permission_id)
         click.echo(click.style('Record updated.', bg='green', fg='black'))
         ctx.invoke(list)
     except exception.MediaPermNotFoundError:
-        ctx.fail(click.style(f'Record with id "{id}", media_id "{media_id}" and perm_id "{perm_id}" does not exist.', fg='red'))
+        ctx.fail(click.style(f'Record with id "{id}", media_id "{media_id}" and permission_id "{permission_id}" does not exist.', fg='red'))

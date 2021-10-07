@@ -5,7 +5,13 @@ import rfidsecuritysvc.exception as exception
 
 
 @with_dbconn
-def get(conn, name):
+def get(conn, id):
+    with conn:
+        return conn.execute('SELECT * FROM sound WHERE id = ?', (id,)).fetchone()
+
+
+@with_dbconn
+def get_by_name(conn, name):
     with conn:
         return conn.execute('SELECT * FROM sound WHERE name = ?', (name,)).fetchone()
 
@@ -26,9 +32,9 @@ def create(conn, name, content):
 
 
 @with_dbconn
-def delete(conn, name):
+def delete(conn, id):
     with conn:
-        return conn.execute('DELETE FROM sound WHERE name = ?', (name,)).rowcount
+        return conn.execute('DELETE FROM sound WHERE id = ?', (id,)).rowcount
 
 
 @with_dbconn

@@ -13,8 +13,6 @@ servers:
 - url: /api/v1.0
   description: Version 1.0.
 tags:
-  - name: association
-    description: Association APIs
   - name: authorized
     description: Authorization APIs
   - name: config
@@ -32,109 +30,6 @@ tags:
 security:
   - ApiKey: []
 paths:
-  /associations:
-    get:
-      tags:
-        - association
-      summary: Retrieves a list of all associations
-      description: |
-        Retrieves an array of all the media_id to permission name associations. This implementation does not currently support pagination.
-      responses:
-        '200':
-          description: Array of Association objects.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Association'
-        '400':
-          description: Invalid request.
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-    post:
-      tags:
-        - association
-      summary: Associates media with a permission
-      description: |
-        Business interface which takes a media_id and a permission name and creates an association.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Association'
-      responses:
-        '201':
-          description: New record created.
-        '409':
-          description: Record already exists.
-        '400':
-          description: Invalid request.
-        '401':
-          $ref: "#/components/responses/UnauthorizedError"
-  /associations/{media_id}:
-    get:
-      tags:
-        - association
-      summary: Retrieves all the associations for the specified media
-      description: |
-        Retrieves an array of all the media_id to permission name associations for the specified media.
-      parameters:
-        - name: media_id
-          in: path
-          description: The media_id to lookup the associations for
-          required: true
-          schema:
-            type: string
-            example: 80558ABA5C3504
-      responses:
-        '200':
-          description: Array of permission names.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Association'
-        '400':
-          description: Invalid request.
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-  /associations/{media_id}/{perm_name}:
-    delete:
-      tags:
-        - association
-      summary: Deletes an association
-      description: |
-        Business interface which takes a media_id and a permision name and deletes the associate.
-      parameters:
-      - name: media_id
-        in: path
-        description: The media_id of the association.
-        required: true
-        schema:
-          type: string
-          example: 80558ABA5C3504
-      - name: perm_name
-        in: path
-        description: The permmission name of the association.
-        required: true
-        schema:
-          type: string
-          example: Open Door
-      responses:
-        '200':
-          description: Record was either deleted or did not exist.
-          headers:
-            x-record-count:
-              schema:
-                type: integer
-              description: The actual number of records deleted, could be zero if the record did not exist.
-        '400':
-          description: Invalid request.
-        '401':
-          $ref: "#/components/responses/UnauthorizedError"
   /authorized/{media_id}/{perm_name}:
     get:
       tags:
@@ -160,6 +55,10 @@ paths:
       responses:
         '200':
           description: Media has the supplied permission.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaConfig"
         '400':
           description: Invalid request.
         '401':
@@ -594,7 +493,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MediaPerm'
+              $ref: '#/components/schemas/SimpleMediaPerm'
       responses:
         '201':
           description: New record created.
@@ -605,24 +504,17 @@ paths:
         '409':
           description: Record already exists.
           description: Record not found.
-  /media-perms/{media_id}/{perm_id}:
+  /media-perms/{id}:
     get:
       tags:
         - media-perm
-      summary: Retrieves media permission by media_id and perm_id
+      summary: Retrieves media permission by id
       description: |
-        Takes a media_id and a perm_id and returns the media permission.
+        Takes an id and returns the media permission.
       parameters:
-      - name: media_id
+      - name: id
         in: path
-        description: The media_id of the requested media permission.
-        required: true
-        schema:
-          type: string
-          example: 80558ABA5C3504
-      - name: perm_id
-        in: path
-        description: The perm_id of the requested media permission.
+        description: The id of the requested media permission.
         required: true
         schema:
           type: integer
@@ -647,16 +539,9 @@ paths:
       description: |
         Takes an id and deletes that record. This method does not fail if the media permission does not exist as this is considered success.
       parameters:
-      - name: media_id
+      - name: id
         in: path
-        description: The media_id of the requested media permission.
-        required: true
-        schema:
-          type: string
-          example: 80558ABA5C3504
-      - name: perm_id
-        in: path
-        description: The perm_id of the requested media permission.
+        description: The id of the requested media permission.
         required: true
         schema:
           type: integer
@@ -678,22 +563,21 @@ paths:
         - media-perm
       summary: Updates the media permission by id
       description: |
-        Creates the media perm record specified.
+        Updates the media perm record specified.
       parameters:
-      - name: media_id
+      - name: id
         in: path
-        description: The media_id of the requested media permission.
-        required: true
-        schema:
-          type: string
-          example: 80558ABA5C3504
-      - name: perm_id
-        in: path
-        description: The perm_id of the requested media permission.
+        description: The id of the requested media permission.
         required: true
         schema:
           type: integer
           example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SimpleMediaPerm'
       responses:
         '200':
           description: Record was updated.
@@ -823,8 +707,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SimplePermission'
-            example:
-              desc: Opens the door
       responses:
         '200':
           description: Record was updated.
@@ -955,21 +837,21 @@ paths:
           $ref: "#/components/responses/UnauthorizedError"
         '409':
           description: Record already exists.
-  /sounds/{name}:
+  /sounds/{id}:
     get:
       tags:
         - sound
-      summary: Retrieves sound by name
+      summary: Retrieves sound by id
       description: |
-        Takes a name and returns the sound.
+        Takes an id and returns the sound.
       parameters:
-      - name: name
+      - name: id
         in: path
-        description: The name of the requested sound.
+        description: The id of the requested sound.
         required: true
         schema:
-          type: string
-          example: read.wav
+          type: integer
+          example: 1
       responses:
         '200':
           description: Sound object.
@@ -986,17 +868,17 @@ paths:
     delete:
       tags:
         - sound
-      summary: Deletes sound by name
+      summary: Deletes sound by id
       description: |
-        Takes a name and deletes that record. This method does not fail if the sound does not exist as this is considered success.
+        Takes an id and deletes that record. This method does not fail if the sound does not exist as this is considered success.
       parameters:
-      - name: name
+      - name: id
         in: path
-        description: The name of the sound to delete.
+        description: The id of the sound to delete.
         required: true
         schema:
-          type: string
-          example: read.wav
+          type: integer
+          example: 1
       responses:
         '200':
           description: Record was either deleted or did not exist.
@@ -1009,7 +891,6 @@ paths:
           description: Invalid request.
         '401':
           $ref: "#/components/responses/UnauthorizedError"
-  /sounds/{id}:
     put:
       tags:
         - sound
@@ -1058,18 +939,79 @@ paths:
           $ref: "#/components/responses/UnauthorizedError"
 components:
   schemas:
-    Association:
+    MediaConfig:
       required:
       - media_id
-      - perm_name
+      - media_name
+      - media_desc
+      - permission_id
+      - permission_name
+      - permission_desc
+      - guest_id
+      - guest_first_name
+      - guest_last_name
+      - sound_id
+      - sound_name
+      - color
       type: object
       properties:
         media_id:
           type: string
           example: 80558ABA5C3504
-        perm_name:
+          readOnly: true
+        media_name:
+          type: string
+          example: Anna's MagicBand
+          readOnly: true
+        media_desc:
+          type: string
+          example: This is the MagicBand that Anna got from Elsa
+          nullable: true
+          readOnly: true
+        permission_id:
+          type: integer
+          example: 1
+          readOnly: true
+        permission_name:
           type: string
           example: Open Door
+          readOnly: true
+        permission_desc:
+          type: string
+          example: Opens the door
+          nullable: true
+          readOnly: true
+        guest_id:
+          type: integer
+          example: 1
+          nullable: true
+          readOnly: true
+        guest_first_name:
+          type: string
+          example: Mickey
+          nullable: true
+          readOnly: true
+        guest_last_name:
+          type: string
+          example: Mouse
+          nullable: true
+          readOnly: true
+        sound_id:
+          type: integer
+          example: 1
+          readOnly: true
+          nullable: true
+          readOnly: true
+        sound_name:
+          type: string
+          example: read.wav
+          nullable: true
+          readOnly: true
+        color:
+          type: integer
+          example: 16777215
+          nullable: true
+          readOnly: true
     Config:
       allOf:
         - $ref: '#/components/schemas/SimpleConfig'
@@ -1089,21 +1031,17 @@ components:
           required:
           - id
     MediaPerm:
-      type: object
-      required:
-      - media_id
-      - perm_id
-      properties:
-        id:
-          type: integer
-          readOnly: true
-          example: 1
-        media_id:
-          type: string
-          example: 80558ABA5C3504
-        perm_id:
-          type: integer
-          example: 1
+      allOf:
+        - $ref: "#/components/schemas/SimpleMediaPerm"
+        - type: object
+          required:
+            - id
+            - media_id
+            - media_name
+            - media_desc
+            - permission_id
+            - permission_name
+            - permission_desc
     Permission:
       allOf:
         - $ref: '#/components/schemas/SimplePermission'
@@ -1168,6 +1106,40 @@ components:
           type: string
           example: This is the MagicBand that Anna got from Elsa
           nullable: true
+    SimpleMediaPerm:
+      type: object
+      required:
+      - media_id
+      - permission_id
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          example: 1
+        media_id:
+          type: string
+          example: 80558ABA5C3504
+        media_name:
+          type: string
+          example: Anna's MagicBand
+          readOnly: true
+        media_desc:
+          type: string
+          example: This is the MagicBand that Anna got from Elsa
+          nullable: true
+          readOnly: true
+        permission_id:
+          type: integer
+          example: 1
+        permission_name:
+          type: string
+          example: Open Door
+          readOnly: true
+        permission_desc:
+          type: string
+          example: Opens the door
+          nullable: true
+          readOnly: true
     SimplePermission:
       type: object
       properties:

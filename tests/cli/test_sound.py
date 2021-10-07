@@ -16,9 +16,9 @@ m = Model(1, 'name')
 @patch('rfidsecuritysvc.cli.sound.model')
 def test_get(model, runner, assert_output):
     model.get.return_value = m
-    result = runner.invoke(args=['sound', 'get', m.name])
+    result = runner.invoke(args=['sound', 'get', str(m.id)])
     assert_output(result, m.to_json())
-    model.get.assert_called_once_with(m.name)
+    model.get.assert_called_once_with(m.id)
 
 
 @patch('rfidsecuritysvc.cli.sound.model')
@@ -27,9 +27,9 @@ def test_get_output_file(model, runner, assert_output, wav_content, tmp_path):
     f = tmp_path / "output_file.wav"
     assert not f.exists()
     model.get.return_value = m
-    result = runner.invoke(args=['sound', 'get', m.name, str(f)])
+    result = runner.invoke(args=['sound', 'get', str(m.id), str(f)])
     assert_output(result, f'{m.name} was saved to {os.path.abspath(str(f))}')
-    model.get.assert_called_once_with(m.name)
+    model.get.assert_called_once_with(m.id)
     assert f.exists()
     with open(f, 'rb') as output_file:
         assert wav_content == output_file.read()
@@ -38,13 +38,13 @@ def test_get_output_file(model, runner, assert_output, wav_content, tmp_path):
 @patch('rfidsecuritysvc.cli.sound.model')
 def test_get_notfound(model, runner, assert_output):
     model.get.return_value = None
-    result = runner.invoke(args=['sound', 'get', m.name], color=True)
-    assert_output(result, f'No record found with name "{m.name}".', 2, fg='red')
-    model.get.assert_called_once_with(m.name)
+    result = runner.invoke(args=['sound', 'get', str(m.id)], color=True)
+    assert_output(result, f'No record found with id "{m.id}".', 2, fg='red')
+    model.get.assert_called_once_with(m.id)
 
 
 def test_get_id_required():
-    with pytest.raises(MissingParameter, match='[M|m]issing parameter: name'):
+    with pytest.raises(MissingParameter, match='[M|m]issing parameter: id'):
         get.make_context('sound get', args=[])
 
 
@@ -93,13 +93,13 @@ def test_create_input_file_required():
 @patch('rfidsecuritysvc.cli.sound.model')
 def test_delete(model, runner, assert_output):
     model.delete.return_value = 1
-    result = runner.invoke(args=['sound', 'delete', m.name], color=True)
+    result = runner.invoke(args=['sound', 'delete', str(m.id)], color=True)
     assert_output(result, '1 record(s) deleted.', bg='green', fg='black')
-    model.delete.assert_called_once_with(m.name)
+    model.delete.assert_called_once_with(m.id)
 
 
 def test_delete_id_required():
-    with pytest.raises(MissingParameter, match='[M|m]issing parameter: name'):
+    with pytest.raises(MissingParameter, match='[M|m]issing parameter: id'):
         delete.make_context('sound delete', args=[])
 
 

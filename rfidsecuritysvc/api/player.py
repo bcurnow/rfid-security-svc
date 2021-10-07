@@ -4,7 +4,7 @@ from rfidsecuritysvc.model import sound as model
 
 
 def get(name):
-    m = model.get(name)
+    m = model.get_by_name(name)
     if m:
         # IOS (and maybe others) require that the server support Range requests
         # and the Content-Range header in order to play audio/video content

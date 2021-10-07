@@ -19,6 +19,13 @@ def test_get(table):
 
 
 @patch('rfidsecuritysvc.model.sound.table')
+def test_get_by_name(table):
+    table.get_by_name.return_value = _default().__dict__
+    assert model.get_by_name('test') == _default()
+    table.get_by_name.assert_called_once_with('test')
+
+
+@patch('rfidsecuritysvc.model.sound.table')
 def test_get_notfound(table):
     table.get.return_value = None
     assert model.get(1) is None
