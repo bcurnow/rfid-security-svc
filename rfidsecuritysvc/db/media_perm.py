@@ -48,23 +48,41 @@ def get_by_media_and_perm(conn, media_id, permission_name):
 
 
 @with_dbconn
-def list(conn):
+def list(conn, media_id=None):
     with conn:
-        return conn.execute(textwrap.dedent('''
-                                            SELECT
-                                            media_perm.id,
-                                            media_id,
-                                            media.name as media_name,
-                                            media.desc as media_desc,
-                                            permission_id,
-                                            permission.name as permission_name,
-                                            permission.desc as permission_desc
-                                            FROM
-                                            media_perm
-                                            INNER JOIN media on media.id = media_perm.media_id
-                                            INNER JOIN permission ON permission.id = media_perm.permission_id
-                                            ORDER BY media_perm.id
-                                            ''').replace('\n', ' ')).fetchall()
+        if media_id:
+            return conn.execute(textwrap.dedent('''
+                                                SELECT
+                                                media_perm.id,
+                                                media_id,
+                                                media.name as media_name,
+                                                media.desc as media_desc,
+                                                permission_id,
+                                                permission.name as permission_name,
+                                                permission.desc as permission_desc
+                                                FROM
+                                                media_perm
+                                                INNER JOIN media on media.id = media_perm.media_id
+                                                INNER JOIN permission ON permission.id = media_perm.permission_id
+                                                WHERE media_id = ?
+                                                ORDER BY media_perm.id
+                                                ''').replace('\n', ' '), (media_id,)).fetchall()
+        else:
+            return conn.execute(textwrap.dedent('''
+                                                SELECT
+                                                media_perm.id,
+                                                media_id,
+                                                media.name as media_name,
+                                                media.desc as media_desc,
+                                                permission_id,
+                                                permission.name as permission_name,
+                                                permission.desc as permission_desc
+                                                FROM
+                                                media_perm
+                                                INNER JOIN media on media.id = media_perm.media_id
+                                                INNER JOIN permission ON permission.id = media_perm.permission_id
+                                                ORDER BY media_perm.id
+                                                ''').replace('\n', ' ')).fetchall()
 
 
 @with_dbconn

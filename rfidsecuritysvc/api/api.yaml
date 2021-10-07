@@ -469,6 +469,13 @@ paths:
       summary: Retrieves all the media permisions
       description: |
         Retrieves all the media permission records. This implementation does not currently support pagination.
+      parameters:
+        - name: media_id
+          in: query
+          description: If present, will only list the MediaPerms for the specified media_id
+          schema:
+            type: string
+            example: 80558ABA5C3504
       responses:
         '200':
           description: Array of MediaPerm objects.

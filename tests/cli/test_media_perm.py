@@ -45,6 +45,16 @@ def test_list(model, runner, assert_output):
 
 
 @patch('rfidsecuritysvc.cli.media_perm.model')
+def test_list_with_media_id(model, runner, assert_output):
+    m2 = Model(3, 'media_id2', 'media_name2', 'media_desc2', 4, 'permission_name2', 'permission_desc2')
+    model.list.return_value = [m, m2]
+    result = runner.invoke(args=['media-perm', 'list', 'test'])
+    assert_output(result, m.to_json())
+    assert_output(result, m2.to_json())
+    model.list.assert_called_once_with('test')
+
+
+@patch('rfidsecuritysvc.cli.media_perm.model')
 def test_create(model, runner, assert_output):
     model.create.return_value = None
     model.list.return_value = [m]

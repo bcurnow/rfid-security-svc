@@ -66,6 +66,26 @@ def test_list(mockdb):
     assert db.list() == []
 
 
+def test_list_with_media_id(mockdb):
+    mockdb.add_execute(textwrap.dedent('''
+                                        SELECT
+                                        media_perm.id,
+                                        media_id,
+                                        media.name as media_name,
+                                        media.desc as media_desc,
+                                        permission_id,
+                                        permission.name as permission_name,
+                                        permission.desc as permission_desc
+                                        FROM
+                                        media_perm
+                                        INNER JOIN media on media.id = media_perm.media_id
+                                        INNER JOIN permission ON permission.id = media_perm.permission_id
+                                        WHERE media_id = ?
+                                        ORDER BY media_perm.id
+                                        ''').replace('\n', ' '), ('test',), cursor_return=[])
+    assert db.list('test') == []
+
+
 def test_create(mockdb):
     mockdb.add_execute('INSERT INTO media_perm (media_id, permission_id) VALUES (?,?)', ('test', 1))
     mockdb.add_commit()

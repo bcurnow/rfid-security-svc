@@ -2,6 +2,7 @@ from rfidsecuritysvc import exception as exception
 from rfidsecuritysvc.model import BaseModel, media_perm
 from rfidsecuritysvc.model.guest import Guest
 
+
 class MediaConfig(BaseModel):
     def __init__(self, media_perm, guest, sound_id, sound_name, color):
         self.media_id = media_perm.media_id

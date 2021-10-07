@@ -18,6 +18,10 @@ def test_search(rh, media_perms):
     rh.assert_response(rh.open('get', f'{api}'), 200, media_perms)
 
 
+def test_search_with_media_id(rh, media_perms):
+    rh.assert_response(rh.open('get', f'{api}?media_id={media_perms[0].media_id}'), 200, [media_perms[0]])
+
+
 @patch('rfidsecuritysvc.api.media_perms.model')
 def test_search_noresults(model, rh):
     """ The table is already populated so we need to patch instead """

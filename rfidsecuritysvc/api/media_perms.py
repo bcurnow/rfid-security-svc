@@ -10,9 +10,9 @@ def get(id):
     return f'Object with id "{id}" does not exist.', 404
 
 
-def search():
+def search(media_id=None):
     results = []
-    for m in model.list():
+    for m in model.list(media_id):
         results.append(m.to_json())
 
     return results

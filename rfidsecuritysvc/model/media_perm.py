@@ -24,9 +24,9 @@ def get_by_media_and_perm(media_id, permission_name):
     return __model(table.get_by_media_and_perm(media_id, permission_name))
 
 
-def list():
+def list(media_id=None):
     result = []
-    for row in table.list():
+    for row in table.list(media_id):
         result.append(__model(row))
 
     return result

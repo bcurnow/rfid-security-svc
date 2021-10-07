@@ -34,6 +34,14 @@ def test_search(model):
 
 
 @patch('rfidsecuritysvc.api.media_perms.model')
+def test_search_with_media_id(model):
+    m2 = Model(3, 'media_id2', 'media_name2', 'media_desc2', 4, 'permission_name2', 'permission_desc2')
+    model.list.return_value = [m, m2]
+    assert api.search('test') == [m.to_json(), m2.to_json()]
+    model.list.assert_called_once_with('test')
+
+
+@patch('rfidsecuritysvc.api.media_perms.model')
 def test_search_noresults(model):
     model.list.return_value = []
     assert api.search() == []

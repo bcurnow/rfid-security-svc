@@ -59,6 +59,17 @@ def test_list(table):
 
 
 @patch('rfidsecuritysvc.model.media_perm.table')
+def test_list_with_media_id(table):
+    table.list.return_value = [
+        _default().__dict__,
+        _default(2).__dict__,
+    ]
+    models = model.list('test')
+    table.list.assert_called_once_with('test')
+    assert models == [_default(), _default(2)]
+
+
+@patch('rfidsecuritysvc.model.media_perm.table')
 def test_list_noresults(table):
     table.list.return_value = []
     models = model.list()

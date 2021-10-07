@@ -23,9 +23,15 @@ def get(ctx, id):
 
 
 @group.command('list')
-def list():
+@click.argument('media_id', required=False)
+def list(media_id):
     """List all the records in the table."""
-    for i in model.list():
+    if media_id:
+        results = model.list(media_id)
+    else:
+        results = model.list()
+
+    for i in results:
         click.echo(i.to_json())
 
 
