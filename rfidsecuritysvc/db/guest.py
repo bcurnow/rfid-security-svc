@@ -8,13 +8,38 @@ import rfidsecuritysvc.exception as exception
 @with_dbconn
 def get(conn, id):
     with conn:
-        return conn.execute('SELECT * FROM guest WHERE id = ?', (id,)).fetchone()
+        return conn.execute(textwrap.dedent('''
+                                            SELECT
+                                            guest.id,
+                                            guest.first_name,
+                                            guest.last_name,
+                                            guest.default_sound,
+                                            sound.name as default_sound_name,
+                                            guest.default_color
+                                            FROM
+                                            guest
+                                            INNER JOIN sound on guest.default_sound = sound.id
+                                            WHERE guest.id = ?
+                                            ORDER BY guest.id
+                                            ''').replace('\n', ' '), (id,)).fetchone()
 
 
 @with_dbconn
 def list(conn):
     with conn:
-        return conn.execute('SELECT * FROM guest ORDER BY id').fetchall()
+        return conn.execute(textwrap.dedent('''
+                                            SELECT
+                                            guest.id,
+                                            guest.first_name,
+                                            guest.last_name,
+                                            guest.default_sound,
+                                            sound.name as default_sound_name,
+                                            guest.default_color
+                                            FROM
+                                            guest
+                                            INNER JOIN sound on guest.default_sound = sound.id
+                                            ORDER BY guest.id
+                                            ''').replace('\n', ' ')).fetchall()
 
 
 @with_dbconn

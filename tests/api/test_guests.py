@@ -5,7 +5,7 @@ from rfidsecuritysvc.api import guests as api
 from rfidsecuritysvc.exception import GuestNotFoundError as NotFoundError, DuplicateGuestError as DuplicateError
 from rfidsecuritysvc.model.guest import Guest as Model
 
-m = Model(1, 'first_name', 'last_name')
+m = Model(1, 'first_name', 'last_name', 1, 'default_sound_name', 0x000000)
 
 
 @patch('rfidsecuritysvc.api.guests.model')
@@ -61,19 +61,13 @@ def test_delete(model):
 @patch('rfidsecuritysvc.api.guests.model')
 def test_put(model):
     model.update.return_value = 1
-    assert api.put(1, _update(m)) == (None, 200, {RECORD_COUNT_HEADER: 1})
-    model.update.assert_called_once_with(m.id, m.first_name, m.last_name, m.default_sound, m.default_color)
+    assert api.put(1, m.to_json_rw()) == (None, 200, {RECORD_COUNT_HEADER: 1})
+    model.update.assert_called_once_with(1, **m.to_json_rw())
 
 
 @patch('rfidsecuritysvc.api.guests.model')
 def test_put_does_not_exist(model):
     model.update.side_effect = NotFoundError
-    assert api.put(1, _update(m)) == (None, 201, {RECORD_COUNT_HEADER: 1})
-    model.update.assert_called_once_with(m.id, m.first_name, m.last_name, m.default_sound, m.default_color)
-    model.create.assert_called_once_with(**_update(m))
-
-
-def _update(m):
-    d = m.to_json().copy()
-    del d['id']
-    return d
+    assert api.put(1, m.to_json_rw()) == (None, 201, {RECORD_COUNT_HEADER: 1})
+    model.update.assert_called_once_with(1, **m.to_json_rw())
+    model.create.assert_called_once_with(**m.to_json_rw())

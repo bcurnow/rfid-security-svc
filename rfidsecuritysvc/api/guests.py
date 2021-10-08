@@ -32,7 +32,7 @@ def delete(id):
 
 def put(id, body):
     try:
-        return None, 200, {RECORD_COUNT_HEADER: model.update(id, body['first_name'], body['last_name'], body['default_sound'], body['default_color'])}
+        return None, 200, {RECORD_COUNT_HEADER: model.update(id, **body)}
     except exception.GuestNotFoundError:
         model.create(**body)
         return None, 201, {RECORD_COUNT_HEADER: 1}

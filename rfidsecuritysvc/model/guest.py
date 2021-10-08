@@ -3,11 +3,12 @@ from rfidsecuritysvc.model import BaseModel
 
 
 class Guest(BaseModel):
-    def __init__(self, id, first_name, last_name, default_sound=None, default_color=None):
+    def __init__(self, id, first_name, last_name, default_sound=None, default_sound_name=None, default_color=None):
         self.id = id
         self.first_name = first_name
         self.last_name = last_name
         self.default_sound = default_sound
+        self.default_sound_name = default_sound_name
         self.default_color = default_color
 
 
@@ -43,5 +44,6 @@ def __model(row):
         row['first_name'],
         row['last_name'],
         row['default_sound'],
-        row['default_color']
+        row['default_sound_name'],
+        row['default_color'],
         )

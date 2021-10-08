@@ -5,7 +5,8 @@ from rfidsecuritysvc.model.guest import Guest
 
 
 def test_Guest(assert_model, default_sound):
-    assert_model(_model(1, 'first', 'last', default_sound.id, 0xFFFFFF), Guest(1, 'first', 'last', default_sound.id, 0xFFFFFF))
+    assert_model(_model(1, 'first', 'last', default_sound.id, default_sound.name, 0xFFFFFF),
+                 Guest(1, 'first', 'last', default_sound.id, default_sound.name, 0xFFFFFF))
 
 
 @patch('rfidsecuritysvc.model.guest.table')
@@ -63,8 +64,8 @@ def test_update(table, default_sound):
 
 
 def _default(index=1):
-    return _model(index, f'first {index}', f'last {index}', index, 0xFFFFFF)
+    return _model(index, f'first {index}', f'last {index}', index, f'sound_name {index}', 0xFFFFFF)
 
 
-def _model(id, first_name, last_name, default_sound, default_color):
-    return Guest(id, first_name, last_name, default_sound, default_color)
+def _model(id, first_name, last_name, default_sound, default_sound_name, default_color):
+    return Guest(id, first_name, last_name, default_sound, default_sound_name, default_color)

@@ -9,12 +9,37 @@ from rfidsecuritysvc.exception import GuestNotFoundError as NotFound
 
 
 def test_get(mockdb):
-    mockdb.add_execute('SELECT * FROM guest WHERE id = ?', (1,), 1)
+    mockdb.add_execute(textwrap.dedent('''
+                                        SELECT
+                                        guest.id,
+                                        guest.first_name,
+                                        guest.last_name,
+                                        guest.default_sound,
+                                        sound.name as default_sound_name,
+                                        guest.default_color
+                                        FROM
+                                        guest
+                                        INNER JOIN sound on guest.default_sound = sound.id
+                                        WHERE guest.id = ?
+                                        ORDER BY guest.id
+                                        ''').replace('\n', ' '), (1,), 1)
     assert db.get(1) == 1
 
 
 def test_list(mockdb):
-    mockdb.add_execute('SELECT * FROM guest ORDER BY id', cursor_return=[])
+    mockdb.add_execute(textwrap.dedent('''
+                                        SELECT
+                                        guest.id,
+                                        guest.first_name,
+                                        guest.last_name,
+                                        guest.default_sound,
+                                        sound.name as default_sound_name,
+                                        guest.default_color
+                                        FROM
+                                        guest
+                                        INNER JOIN sound on guest.default_sound = sound.id
+                                        ORDER BY guest.id
+                                        ''').replace('\n', ' '), cursor_return=[])
     assert db.list() == []
 
 
