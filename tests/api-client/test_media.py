@@ -52,9 +52,20 @@ def test_delete_notfound(rh, creatable_media):
 
 
 def test_put(rh, medias):
-    rh.assert_response(rh.open('put', f'{api}/{medias[0].id}', medias[0]), 200, headers={RECORD_COUNT_HEADER: '1'})
+    rh.assert_response(rh.open('put', f'{api}/{medias[0].id}', _update(medias[0])), 200, headers={RECORD_COUNT_HEADER: '1'})
 
 
 def test_put_notfound(rh, creatable_media):
-    rh.assert_response(rh.open('put', f'{api}/{creatable_media.id}', creatable_media), 201, headers={RECORD_COUNT_HEADER: '1'})
+    rh.assert_response(rh.open('put', f'{api}/{creatable_media.id}', _update(creatable_media)), 201, headers={RECORD_COUNT_HEADER: '1'})
     rh.assert_response(rh.open('delete', f'{api}/{creatable_media.id}', creatable_media), 200, headers={RECORD_COUNT_HEADER: '1'})
+
+
+def _update(m):
+    """
+    This is only needed for the Media object because it's the only one that has a non-generated id.
+    It can't be marked read-only in the schema because it has to be allowed in the post/create flow.
+    So, we need to drop the ID when doing an update.
+    """
+    json = m.to_json().copy()
+    del json['id']
+    return json
