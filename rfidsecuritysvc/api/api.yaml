@@ -430,7 +430,7 @@ paths:
         - media
       summary: Updates the media by id
       description: |
-        Accepts a JSON payload containing a media record and updates it. The id is optional in the payload and will be ignored if present.
+        Accepts a JSON payload containing a media record and updates it. The id must not be present in the payload.
       parameters:
       - name: id
         in: path
@@ -444,7 +444,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SimpleMedia'
+              $ref: '#/components/schemas/UpdateMedia'
             example:
               name: Anna's MagicBand
               desc: This is the MagicBand that Anna got from Elsa
@@ -1074,6 +1074,7 @@ components:
         value:
           type: string
           example: admin
+      additionalProperties: false
     SimpleGuest:
       required:
       - first_name
@@ -1094,10 +1095,16 @@ components:
           type: integer
           example: 1
           nullable: true
+        default_sound_name:
+          type: string
+          example: read.wav
+          readOnly: true
+          nullable: true
         default_color:
           type: integer
           example: 16777215
           nullable: true
+      additionalProperties: false
     SimpleMedia:
       required:
       - name
@@ -1113,6 +1120,7 @@ components:
           type: string
           example: This is the MagicBand that Anna got from Elsa
           nullable: true
+      additionalProperties: false
     SimpleMediaPerm:
       type: object
       required:
@@ -1147,6 +1155,7 @@ components:
           example: Opens the door
           nullable: true
           readOnly: true
+      additionalProperties: false
     SimplePermission:
       type: object
       properties:
@@ -1161,6 +1170,7 @@ components:
           type: string
           example: Opens the door
           nullable: true
+      additionalProperties: false
     SimpleSound:
       required:
         - name
@@ -1181,6 +1191,20 @@ components:
         content:
           type: string
           format: bytes
+      additionalProperties: false
+    UpdateMedia:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+          example: Anna's MagicBand
+        desc:
+          type: string
+          example: This is the MagicBand that Anna got from Elsa
+          nullable: true
+      additionalProperties: false
   securitySchemes:
     ApiKey:
       type: apiKey
