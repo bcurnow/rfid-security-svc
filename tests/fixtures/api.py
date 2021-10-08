@@ -122,7 +122,7 @@ def add_to_json_rw(monkeypatch_session):
     models_to_patch = {
         rfidsecuritysvc.model.permission.Permission: ['id'],
         rfidsecuritysvc.model.media_perm.MediaPerm: ['id', 'media_name', 'media_desc', 'permission_name', 'permission_desc'],
-        rfidsecuritysvc.model.guest.Guest: ['id'],
+        rfidsecuritysvc.model.guest.Guest: ['id', 'default_sound_name'],
         rfidsecuritysvc.model.sound.Sound: ['id', 'last_update_timestamp'],
     }
     monkeypatch_session.setattr(rfidsecuritysvc.model.BaseModel, '_read_only_keys', [], raising=False)
