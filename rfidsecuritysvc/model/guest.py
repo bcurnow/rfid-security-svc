@@ -10,6 +10,22 @@ class Guest(BaseModel):
         self.default_sound = default_sound
         self.default_sound_name = default_sound_name
         self.default_color = default_color
+        if default_color:
+            # The default_color is stored as an integer, convert it to a hex string (e.g. FFFFFF)
+            # and an HTML hex string (e.g. #ffffff) for use in various contexts
+            self.default_color_hex = self.__to_hex(default_color).upper()
+            self.default_color_html = f'#{self.__to_hex(default_color)}'
+        else:
+            self.default_color_hex = None
+            self.default_color_html = None
+
+
+    def __to_hex(self, value):
+        if value is None:
+            return ''
+        return hex(value).lstrip('0x').rstrip('L')
+
+
 
 
 def get(id):

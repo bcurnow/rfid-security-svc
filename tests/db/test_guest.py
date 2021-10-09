@@ -19,7 +19,7 @@ def test_get(mockdb):
                                         guest.default_color
                                         FROM
                                         guest
-                                        INNER JOIN sound on guest.default_sound = sound.id
+                                        LEFT JOIN sound on guest.default_sound = sound.id
                                         WHERE guest.id = ?
                                         ORDER BY guest.id
                                         ''').replace('\n', ' '), (1,), 1)
@@ -37,7 +37,7 @@ def test_list(mockdb):
                                         guest.default_color
                                         FROM
                                         guest
-                                        INNER JOIN sound on guest.default_sound = sound.id
+                                        LEFT JOIN sound on guest.default_sound = sound.id
                                         ORDER BY guest.id
                                         ''').replace('\n', ' '), cursor_return=[])
     assert db.list() == []

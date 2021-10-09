@@ -18,7 +18,7 @@ def get(conn, id):
                                             guest.default_color
                                             FROM
                                             guest
-                                            INNER JOIN sound on guest.default_sound = sound.id
+                                            LEFT JOIN sound on guest.default_sound = sound.id
                                             WHERE guest.id = ?
                                             ORDER BY guest.id
                                             ''').replace('\n', ' '), (id,)).fetchone()
@@ -37,7 +37,7 @@ def list(conn):
                                             guest.default_color
                                             FROM
                                             guest
-                                            INNER JOIN sound on guest.default_sound = sound.id
+                                            LEFT JOIN sound on guest.default_sound = sound.id
                                             ORDER BY guest.id
                                             ''').replace('\n', ' ')).fetchall()
 

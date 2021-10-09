@@ -1104,6 +1104,14 @@ components:
           type: integer
           example: 16777215
           nullable: true
+        default_color_hex:
+          type: string
+          example: FFFFFF
+          nullable: true
+        default_color_html:
+          type: string
+          example: '#ffffff'
+          nullable: true
       additionalProperties: false
     SimpleMedia:
       required:
