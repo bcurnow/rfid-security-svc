@@ -16,6 +16,13 @@ def test_Guest___init__(assert_model, default_sound):
     assert g.default_color_html == '#ffffff'
 
 
+def test_Guest___init___no_color(assert_model, default_sound):
+    g = Guest(1, 'first', 'last', default_sound.id, default_sound.name, None)
+    assert g.default_color is None
+    assert g.default_color_hex is None
+    assert g.default_color_html is None
+
+
 @patch('rfidsecuritysvc.model.guest.table')
 def test_get(table):
     table.get.return_value = _default().__dict__

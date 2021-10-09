@@ -21,8 +21,6 @@ class Guest(BaseModel):
 
 
     def __to_hex(self, value):
-        if value is None:
-            return ''
         return hex(value).lstrip('0x').rstrip('L')
 
 
