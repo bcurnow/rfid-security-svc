@@ -2,7 +2,7 @@ from unittest.mock import patch
 
 from rfidsecuritysvc.api import RECORD_COUNT_HEADER
 from rfidsecuritysvc.api import guests as api
-from rfidsecuritysvc.exception import GuestNotFoundError as NotFoundError, DuplicateGuestError as DuplicateError
+from rfidsecuritysvc.exception import GuestNotFoundError as NotFoundError, DuplicateGuestError as DuplicateError, SoundNotFoundError
 from rfidsecuritysvc.model.guest import Guest as Model
 
 m = Model(1, 'first_name', 'last_name', 1, 'default_sound_name', 0x000000)
@@ -52,6 +52,13 @@ def test_post_Duplicate(model):
 
 
 @patch('rfidsecuritysvc.api.guests.model')
+def test_post_SoundNotFoundError(model):
+    model.create.side_effect = SoundNotFoundError
+    assert api.post(m.to_json()) == (f'Sound with id "{m.default_sound}" does not exist.', 400)
+    model.create.assert_called_once_with(**m.to_json())
+
+
+@patch('rfidsecuritysvc.api.guests.model')
 def test_delete(model):
     model.delete.return_value = 1
     assert api.delete(m.id) == (None, 200, {RECORD_COUNT_HEADER: 1})
@@ -69,5 +76,21 @@ def test_put(model):
 def test_put_does_not_exist(model):
     model.update.side_effect = NotFoundError
     assert api.put(1, m.test_update()) == (None, 201, {RECORD_COUNT_HEADER: 1})
+    model.update.assert_called_once_with(1, **m.test_update())
+    model.create.assert_called_once_with(**m.test_update())
+
+
+@patch('rfidsecuritysvc.api.guests.model')
+def test_put_SoundNotFoundError(model):
+    model.update.side_effect = SoundNotFoundError
+    assert api.put(1, m.test_update()) == (f'Sound with id "{m.default_sound}" does not exist.', 400)
+    model.update.assert_called_once_with(1, **m.test_update())
+
+
+@patch('rfidsecuritysvc.api.guests.model')
+def test_put_does_not_exist_SoundNotFound(model):
+    model.update.side_effect = NotFoundError
+    model.create.side_effect = SoundNotFoundError
+    assert api.put(1, m.test_update()) == (f'Sound with id "{m.default_sound}" does not exist.', 400)
     model.update.assert_called_once_with(1, **m.test_update())
     model.create.assert_called_once_with(**m.test_update())

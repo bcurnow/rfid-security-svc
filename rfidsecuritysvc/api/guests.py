@@ -22,6 +22,8 @@ def post(body):
     try:
         model.create(**body)
         return None, 201
+    except exception.SoundNotFoundError:
+        return f'Sound with id "{body["default_sound"]}" does not exist.', 400
     except exception.DuplicateGuestError:
         return f'Object with first_name "{body["first_name"]}" and last_name "{body["last_name"]}" already exists.', 409
 
@@ -33,6 +35,11 @@ def delete(id):
 def put(id, body):
     try:
         return None, 200, {RECORD_COUNT_HEADER: model.update(id, **body)}
+    except exception.SoundNotFoundError:
+        return f'Sound with id "{body["default_sound"]}" does not exist.', 400
     except exception.GuestNotFoundError:
-        model.create(**body)
-        return None, 201, {RECORD_COUNT_HEADER: 1}
+        try:
+            model.create(**body)
+            return None, 201, {RECORD_COUNT_HEADER: 1}
+        except exception.SoundNotFoundError:
+            return f'Sound with id "{body["default_sound"]}" does not exist.', 400
