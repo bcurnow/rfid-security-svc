@@ -1,17 +1,20 @@
 from unittest.mock import patch
 
 from rfidsecuritysvc.api import authorized as api
+from rfidsecuritysvc.model.authorized import MediaConfig
+from rfidsecuritysvc import exception
 
 
 @patch('rfidsecuritysvc.api.authorized.authorized')
-def test_get_authorized(model, media_perms):
-    model.authorized.return_value = media_perms[0]
-    assert api.get('test', 1) == (media_perms[0].to_json(), 200)
+def test_get(model, media_perms):
+    mc = MediaConfig(media_perms[0], None, None, None, None)
+    model.authorized.return_value = mc
+    assert api.get('test', 1) == mc.to_json()
     model.authorized.assert_called_once_with('test', 1)
 
 
 @patch('rfidsecuritysvc.api.authorized.authorized')
-def test_get_not_authorized(model):
+def test_get_not_found(model, media_perms):
     model.authorized.return_value = None
     assert api.get('test', 1) == (None, 403)
     model.authorized.assert_called_once_with('test', 1)
