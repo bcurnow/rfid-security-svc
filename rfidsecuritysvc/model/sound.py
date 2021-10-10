@@ -21,11 +21,11 @@ class Sound(BaseModel):
     def to_json_with_content(self):
         """This method must be explicitly called to get the content"""
         # In order to translate to JSON, this must be encoded first
-        cp = self.__dict__.copy()
+        json = self.to_json()
         # Why not UTF-8? Because Base64 uses only ASCII characters
         # All ASCII characters are UTF-8
-        cp['content'] = base64.b64encode(cp['content']).decode('ascii')
-        return cp
+        json['content'] = base64.b64encode(self.content).decode('ascii')
+        return json
 
 
 def get(id):
