@@ -16,7 +16,7 @@ def test_authorized(media_perm, media_perms):
 @patch('rfidsecuritysvc.model.authorized.media_perm')
 def test_authorized_not_found(media_perm, media_perms):
     media_perm.get_by_media_and_perm.return_value = None
-    assert model.authorized('test', 'test_perm') == None
+    assert model.authorized('test', 'test_perm') is None
     media_perm.get_by_media_and_perm.assert_called_once_with('test', 'test_perm')
 
 
@@ -42,13 +42,13 @@ def test_MediaConfig_no_color(media_perms):
 
 def test_MediaConfig_no_sound(media_perms):
     mc = MediaConfig(media_perms[0], None, None, None, None)
-    assert mc.sound_id == None
-    assert mc.sound_name == None
+    assert mc.sound_id is None
+    assert mc.sound_name is None
 
 
 def test_MediaConfig_no_guest(media_perms):
     mc = MediaConfig(media_perms[0], None, None, None, None)
-    assert mc.guest == None
+    assert mc.guest is None
 
 
 def test_MediaConfig_to_json(media_perms):

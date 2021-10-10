@@ -1,4 +1,3 @@
-from rfidsecuritysvc import exception
 from rfidsecuritysvc.model import authorized
 
 

@@ -2,7 +2,6 @@ from unittest.mock import patch
 
 from rfidsecuritysvc.api import authorized as api
 from rfidsecuritysvc.model.authorized import MediaConfig
-from rfidsecuritysvc import exception
 
 
 @patch('rfidsecuritysvc.api.authorized.authorized')
