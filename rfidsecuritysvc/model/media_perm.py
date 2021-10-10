@@ -13,8 +13,8 @@ class MediaPerm(BaseModel):
 
     def to_json(self):
         copy = self.__dict__.copy()
-        copy['media'] = self.media.__dict__.copy()
-        copy['permission'] = self.permission.__dict__.copy()
+        copy['media'] = self.media.to_json()
+        copy['permission'] = self.permission.to_json()
         return copy
 
 
