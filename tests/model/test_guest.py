@@ -5,6 +5,7 @@ import rfidsecuritysvc.model.guest as model
 from rfidsecuritysvc.model.guest import Guest
 from rfidsecuritysvc.exception import SoundNotFoundError
 
+
 def test_Guest(assert_model, default_sound):
     assert_model(_model(1, 'first', 'last', default_sound.id, default_sound.name, 0xFFFFFF),
                  Guest(1, 'first', 'last', default_sound.id, default_sound.name, 0xFFFFFF))
