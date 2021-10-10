@@ -4,12 +4,12 @@ import tempfile
 from datetime import datetime, timezone
 
 from rfidsecuritysvc import create_app
-from rfidsecuritysvc.db import config, guest, media, permission, media_perm, sound
+from rfidsecuritysvc.db import config, guest, guest_media, media, permission, media_perm, sound
 from rfidsecuritysvc.db.dbms import init_db, close_db
 
 
 @pytest.fixture(scope='session')
-def app(configs, guests, medias, permissions, media_perms, sounds):
+def app(configs, guests, guest_medias, medias, permissions, media_perms, sounds):
     """A Flask app class"""
     # Create a temporary director for this set of tests
     db_fd, db_path = tempfile.mkstemp()
@@ -27,6 +27,7 @@ def app(configs, guests, medias, permissions, media_perms, sounds):
         for table, objects in {
             config: configs,
             guest: guests,
+            guest_media: guest_medias,
             media: medias,
             permission: permissions,
             media_perm: media_perms,
