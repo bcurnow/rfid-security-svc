@@ -42,3 +42,14 @@ def default_permission(permissions):
 def permission_for_creatable_media_perm(permissions):
     """ This is the permission that should be used to create a creatable media_perm record."""
     return permissions[4]
+
+
+@pytest.fixture(autouse=True, scope='session')
+def add_permission_helpers(monkeypatch_session):
+    def convert(self):
+        copy = self.__dict__.copy()
+        del copy['id']
+        return copy
+
+    monkeypatch_session.setattr(Permission, 'test_create', convert, raising=False)
+    monkeypatch_session.setattr(Permission, 'test_update', convert, raising=False)
