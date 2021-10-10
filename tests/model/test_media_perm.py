@@ -9,33 +9,20 @@ from rfidsecuritysvc.model.media import Media
 from rfidsecuritysvc.model.permission import Permission
 
 
-def test_MediaPerm():
-    _assert_model(_model(1,
-                         'media_id',
-                         'media_name',
-                         'media_desc',
-                         1,
-                         'permission_name',
-                         'permission_desc'),
-                  MediaPerm(1,
-                            'media_id',
-                            'media_name',
-                            'media_desc',
-                            1,
-                            'permission_name',
-                            'permission_desc'))
+def test_MediaPerm(open_door_media, open_door_permission):
+    _assert_model(_model(1, open_door_media, open_door_permission), MediaPerm(1, open_door_media, open_door_permission))
 
 
 @patch('rfidsecuritysvc.model.media_perm.table')
-def test_get(table):
-    table.get.return_value = _default().__dict__
+def test_get(table, media_perm_to_row):
+    table.get.return_value = media_perm_to_row(_default())
     assert model.get(1) == _default()
     table.get.assert_called_once_with(1)
 
 
 @patch('rfidsecuritysvc.model.media_perm.table')
-def test_get_by_media_and_permission(table):
-    table.get_by_media_and_perm.return_value = _default().__dict__
+def test_get_by_media_and_permission(table, media_perm_to_row):
+    table.get_by_media_and_perm.return_value = media_perm_to_row(_default())
     assert model.get_by_media_and_perm('test', 1) == _default()
     table.get_by_media_and_perm.assert_called_once_with('test', 1)
 
@@ -48,10 +35,10 @@ def test_get_notfound(table):
 
 
 @patch('rfidsecuritysvc.model.media_perm.table')
-def test_list(table):
+def test_list(table, media_perm_to_row):
     table.list.return_value = [
-        _default().__dict__,
-        _default(2).__dict__,
+        media_perm_to_row(_default()),
+        media_perm_to_row(_default(2)),
     ]
     models = model.list()
     table.list.assert_called_once()
@@ -59,10 +46,10 @@ def test_list(table):
 
 
 @patch('rfidsecuritysvc.model.media_perm.table')
-def test_list_with_media_id(table):
+def test_list_with_media_id(table, media_perm_to_row):
     table.list.return_value = [
-        _default().__dict__,
-        _default(2).__dict__,
+        media_perm_to_row(_default()),
+        media_perm_to_row(_default(2)),
     ]
     models = model.list('test')
     table.list.assert_called_once_with('test')
@@ -131,19 +118,15 @@ def test_update(table):
 
 def _assert_model(expected, actual):
     assert expected.id == actual.id
-    assert expected.media_id == actual.media_id
-    assert expected.permission_id == actual.permission_id
+    assert expected.media == actual.media
+    assert expected.permission == actual.permission
 
 
 def _default(index=1):
-    return _model(index,
-                  f'test media_id {index}',
-                  f'test media_name {index}',
-                  f'test media_desc {index}',
-                  f'test permission_id {index}',
-                  f'test permission_name {index}',
-                  f'test permission_desc {index}')
+    m = Media(f'test media_id {index}', f'test media_name {index}', f'test media_desc {index}')
+    p = Permission(f'test permission_id {index}', f'test permission_name {index}', f'test permission_desc {index}')
+    return _model(index, m, p)
 
 
-def _model(id, media_id, media_name, media_desc, permission_id, permission_name, permission_desc):
-    return MediaPerm(id, media_id, media_name, media_desc, permission_id, permission_name, permission_desc)
+def _model(id, media, permission):
+    return MediaPerm(id, media, permission)
