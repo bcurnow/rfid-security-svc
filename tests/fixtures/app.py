@@ -33,7 +33,7 @@ def app(configs, guests, medias, permissions, media_perms, sounds):
             sound: sounds,
         }.items():
             for o in objects:
-                table.create(**o.to_json_rw())
+                table.create(**o.test_create())
 
         # Sounds have an automated last_update_timestamp, need to re-read the records we just inserted
         # so the test data is consistent with what will be returned from the database
