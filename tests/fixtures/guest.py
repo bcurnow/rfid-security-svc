@@ -21,6 +21,29 @@ def creatable_guest(guests, default_sound):
     return Guest(len(guests) + 1, 'New', 'Guest', default_sound.id, default_sound.name, 0xFFFFFF)
 
 
+@pytest.fixture(scope='session')
+def not_authorized_media_guest(guests):
+    return guests[4]
+
+
+@pytest.fixture(scope='session')
+def open_door_media_guest(guests):
+    return guests[0]
+
+
+@pytest.fixture(scope='session')
+def guest_for_creatable_guest_media(guests):
+    """ This guest should be used when creating a guest_media record."""
+    return guests[0]
+
+
+@pytest.fixture(scope='session')
+def no_prefs_media_guest(guests):
+    """ For use when building GuestMedia records """
+    # Use Anna
+    return guests[5]
+
+
 @pytest.fixture(autouse=True, scope='session')
 def add_guest_helpers(monkeypatch_session):
     def convert(self):
