@@ -1,7 +1,9 @@
 from unittest.mock import patch
 
 from rfidsecuritysvc.api import RECORD_COUNT_HEADER
+from rfidsecuritysvc.model.media import Media
 from rfidsecuritysvc.model.media_perm import MediaPerm as Model
+from rfidsecuritysvc.model.permission import Permission
 
 api = 'media-perms'
 
@@ -19,7 +21,7 @@ def test_search(rh, media_perms):
 
 
 def test_search_with_media_id(rh, media_perms):
-    rh.assert_response(rh.open('get', f'{api}?media_id={media_perms[0].media_id}'), 200, [media_perms[0]])
+    rh.assert_response(rh.open('get', f'{api}?media_id={media_perms[0].media.id}'), 200, [media_perms[0]])
 
 
 @patch('rfidsecuritysvc.api.media_perms.model')
@@ -43,14 +45,22 @@ def test_post_duplicate(rh, media_perms):
 
 
 def test_post_media_notfound(rh, creatable_media_perm):
+    media = Media(**creatable_media_perm.media.__dict__)
+    permission = Permission(**creatable_media_perm.permission.__dict__)
     m = Model(**creatable_media_perm.__dict__)
-    m.media_id = 'bogus'
+    m.media = media
+    m.permission = permission
+    media.id = 'bogus'
     rh.assert_response(rh.open('post', f'{api}', m), 400)
 
 
 def test_post_permission_notfound(rh, creatable_media_perm, permissions):
+    media = Media(**creatable_media_perm.media.__dict__)
+    permission = Permission(**creatable_media_perm.permission.__dict__)
     m = Model(**creatable_media_perm.__dict__)
-    m.permission_id = len(permissions) * 1000
+    m.media = media
+    m.permission = permission
+    permission.id = len(permissions) * 1000
     rh.assert_response(rh.open('post', f'{api}', m), 400)
 
 
@@ -68,24 +78,16 @@ def test_delete_notfound(rh, creatable_media_perm):
 
 def test_put(rh, creatable_media_perm, medias, permissions):
     p = creatable_media_perm
-    assert p.media_id != medias[2].id
-    assert p.permission_id != permissions[2].id
+    assert p.media.id != medias[2].id
+    assert p.permission.id != permissions[2].id
 
     updated_p = Model(**creatable_media_perm.__dict__)
-    updated_p.media_id = medias[2].id
-    updated_p.media_name = medias[2].name
-    updated_p.media_desc = medias[2].desc
-    updated_p.permission_id = permissions[2].id
-    updated_p.permission_name = permissions[2].name
-    updated_p.permission_desc = permissions[2].desc
-    update = {
-        'media_id': updated_p.media_id,
-        'permission_id': updated_p.permission_id,
-    }
-
+    updated_p.media = medias[2]
+    updated_p.permission = permissions[2]
+    print(updated_p.test_update())
     rh.assert_response(rh.open('post', f'{api}', p), 201)
     rh.assert_response(rh.open('get', f'{api}/{p.id}'), 200)
-    rh.assert_response(rh.open('put', f'{api}/{p.id}', update), 200, headers={RECORD_COUNT_HEADER: '1'})
+    rh.assert_response(rh.open('put', f'{api}/{p.id}', updated_p), 200, headers={RECORD_COUNT_HEADER: '1'})
     rh.assert_response(rh.open('get', f'{api}/{p.id}'), 200, updated_p)
     rh.assert_response(rh.open('delete', f'{api}/{creatable_media_perm.id}'), 200, headers={RECORD_COUNT_HEADER: '1'})
 
