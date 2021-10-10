@@ -13,17 +13,11 @@ class Guest(BaseModel):
         if default_color:
             # The default_color is stored as an integer, convert it to a hex string (e.g. FFFFFF)
             # and an HTML hex string (e.g. #ffffff) for use in various contexts
-            self.default_color_hex = self.__to_hex(default_color).upper()
-            self.default_color_html = f'#{self.__to_hex(default_color)}'
+            self.default_color_hex = format(default_color, 'X')
+            self.default_color_html = f'#{format(default_color, "x")}'
         else:
             self.default_color_hex = None
             self.default_color_html = None
-
-
-    def __to_hex(self, value):
-        return hex(value).lstrip('0x').rstrip('L')
-
-
 
 
 def get(id):
