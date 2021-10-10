@@ -42,3 +42,12 @@ def not_authorized_media(medias):
 def media_for_creatable_media_perm(medias):
     """ This media should be used when creating a creable media_perm record."""
     return medias[4]
+
+
+@pytest.fixture(autouse=True, scope='session')
+def add_media_helpers(monkeypatch_session):
+    def convert(self):
+        return self.__dict__.copy()
+
+    monkeypatch_session.setattr(Media, 'test_create', convert, raising=False)
+    monkeypatch_session.setattr(Media, 'test_update', convert, raising=False)
