@@ -23,11 +23,15 @@ class ResponseHandler:
 
         if data is not None and 'application/json' in content_type:
             if isinstance(data, BaseModel):
-                if method in ('post', 'put'):
-                    # This is special scenario where there are readonly fields on the model
-                    # To avoid errors, call the to_json_rw method which is monkeypatched in
-                    data = json.dumps(data.to_json_rw())
+                # BaseModel has to methods monkeypatched in:
+                # - test_update - Removes the attributes that are readOnly
+                # - test_create - Performs any conversion necessary to call create
+                if method == 'put':
+                    data = json.dumps(data.test_update())
+                elif method == 'post':
+                    data = json.dumps(data.test_create())
                 else:
+                    print("in the else:", type(data), data)
                     data = json.dumps(data.to_json())
             else:
                 data = json.dumps(data)
@@ -102,31 +106,3 @@ def monkeypatch_session():
     m = MonkeyPatch()
     yield m
     m.undo()
-
-
-@pytest.fixture(autouse=True, scope='session')
-def add_to_json_rw(monkeypatch_session):
-    """
-    Patches the rfidsecuritysvc.model.BaseModel class to add a to_json_rw method that returns
-    only the keys that are not marked readonly in the API.
-    """
-    def to_json_rw(self):
-        """ Returns a JSON compatible value stripped of keys which are defined read only at the API."""
-        copy = self.__dict__.copy()
-        for key in self._read_only_keys:
-            del copy[key]
-
-        return copy
-
-    import rfidsecuritysvc
-    models_to_patch = {
-        rfidsecuritysvc.model.permission.Permission: ['id'],
-        rfidsecuritysvc.model.media_perm.MediaPerm: ['id', 'media_name', 'media_desc', 'permission_name', 'permission_desc'],
-        rfidsecuritysvc.model.guest.Guest: ['id', 'default_sound_name', 'default_color_hex', 'default_color_html'],
-        rfidsecuritysvc.model.sound.Sound: ['id', 'last_update_timestamp'],
-    }
-    monkeypatch_session.setattr(rfidsecuritysvc.model.BaseModel, '_read_only_keys', [], raising=False)
-    monkeypatch_session.setattr(rfidsecuritysvc.model.BaseModel, 'to_json_rw', to_json_rw, raising=False)
-
-    for c, read_only_attrs in models_to_patch.items():
-        monkeypatch_session.setattr(c, '_read_only_keys', read_only_attrs, raising=False)
