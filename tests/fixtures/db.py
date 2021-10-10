@@ -7,6 +7,10 @@ from unittest.mock import Mock, PropertyMock
 from rfidsecuritysvc.db import dbms
 
 
+class SQLStringNotFound(Exception):
+    pass
+
+
 class MockDb(object):
     def __init__(self):
         # Create a mock for the overall database connection
@@ -46,6 +50,9 @@ class MockDb(object):
 
     def get_return_value_for_execute(self, *args, **kwargs):
         key = hashlib.sha256(bytes(args[0], 'utf-8')).hexdigest()
+        if key not in self._executes:
+            raise SQLStringNotFound(f'"{args[0]}"')
+
         # If we get a call and we're out of return values, just return a Mock, this will return a better error message because we'll get to assert
         if self._conn_execute_return_value_index > (len(self._executes[key]) - 1):
             return Mock()
