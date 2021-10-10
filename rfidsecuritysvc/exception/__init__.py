@@ -58,23 +58,7 @@ class DuplicateGuestMediaError(BaseError):
     pass
 
 
-class GuestMeiaNotFoundError(BaseError):
-    pass
-
-
-class DuplicateGuestPrefError(BaseError):
-    pass
-
-
-class GuestPrefNotFoundError(BaseError):
-    pass
-
-
-class DuplicateGuestPermError(BaseError):
-    pass
-
-
-class GuestPermNotFoundError(BaseError):
+class GuestMediaNotFoundError(BaseError):
     pass
 
 
