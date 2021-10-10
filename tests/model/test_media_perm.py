@@ -9,8 +9,8 @@ from rfidsecuritysvc.model.media import Media
 from rfidsecuritysvc.model.permission import Permission
 
 
-def test_MediaPerm(open_door_media, open_door_permission):
-    _assert_model(_model(1, open_door_media, open_door_permission), MediaPerm(1, open_door_media, open_door_permission))
+def test_MediaPerm(assert_model, open_door_media, open_door_permission):
+    assert_model(_model(1, open_door_media, open_door_permission), MediaPerm(1, open_door_media, open_door_permission))
 
 
 @patch('rfidsecuritysvc.model.media_perm.table')
@@ -114,12 +114,6 @@ def test_update(table):
     table.update.return_value = 1
     assert model.update(1, 'test', 1) == 1
     table.update.assert_called_once_with(1, 'test', 1)
-
-
-def _assert_model(expected, actual):
-    assert expected.id == actual.id
-    assert expected.media == actual.media
-    assert expected.permission == actual.permission
 
 
 def _default(index=1):

@@ -4,8 +4,8 @@ import rfidsecuritysvc.model.config as model
 from rfidsecuritysvc.model.config import Config
 
 
-def test_Config():
-    _assert_model(_model('key', 'value'), Config('key', 'value'))
+def test_Config(assert_model):
+    assert_model(_model('key', 'value'), Config('key', 'value'))
 
 
 @patch('rfidsecuritysvc.model.config.table')
@@ -60,11 +60,6 @@ def test_update(table):
     table.update.return_value = 1
     assert model.update('test', 'test') == 1
     table.update.assert_called_once_with('test', 'test')
-
-
-def _assert_model(expected, actual):
-    assert expected.key == actual.key
-    assert expected.value == actual.value
 
 
 def _default(index=1):

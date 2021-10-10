@@ -4,12 +4,12 @@ import rfidsecuritysvc.model.permission as model
 from rfidsecuritysvc.model.permission import Permission
 
 
-def test_Permission():
-    _assert_model(_model(1, 'name', 'desc'), Permission(1, 'name', 'desc'))
+def test_Permission(assert_model):
+    assert_model(_model(1, 'name', 'desc'), Permission(1, 'name', 'desc'))
 
 
-def test_Permission_desc_optional():
-    _assert_model(_model(1, 'name'), Permission(1, 'name'))
+def test_Permission_desc_optional(assert_model):
+    assert_model(_model(1, 'name'), Permission(1, 'name'))
 
 
 @patch('rfidsecuritysvc.model.permission.table')
@@ -106,12 +106,6 @@ def test_update_by_name_optional_desc(table):
     table.update_by_name.return_value = 1
     assert model.update_by_name('test') == 1
     table.update_by_name.assert_called_once_with('test', None)
-
-
-def _assert_model(expected, actual):
-    assert expected.id == actual.id
-    assert expected.name == actual.name
-    assert expected.desc == actual.desc
 
 
 def _default(index=1):

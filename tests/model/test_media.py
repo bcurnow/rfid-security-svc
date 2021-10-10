@@ -4,12 +4,12 @@ import rfidsecuritysvc.model.media as model
 from rfidsecuritysvc.model.media import Media
 
 
-def test_Media():
-    _assert_model(_model('id', 'name', 'desc'), Media('id', 'name', 'desc'))
+def test_Media(assert_model):
+    assert_model(_model('id', 'name', 'desc'), Media('id', 'name', 'desc'))
 
 
-def test_Media_desc_optional():
-    _assert_model(_model('id', 'name'), Media('id', 'name'))
+def test_Media_desc_optional(assert_model):
+    assert_model(_model('id', 'name'), Media('id', 'name'))
 
 
 @patch('rfidsecuritysvc.model.media.table')
@@ -78,12 +78,6 @@ def test_update_optional_desc(table):
     table.update.return_value = 1
     assert model.update('test', 'test') == 1
     table.update.assert_called_once_with('test', 'test', None)
-
-
-def _assert_model(expected, actual):
-    assert expected.id == actual.id
-    assert expected.name == actual.name
-    assert expected.desc == actual.desc
 
 
 def _default(index=1):
