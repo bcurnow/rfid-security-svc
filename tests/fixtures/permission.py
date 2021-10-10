@@ -13,13 +13,16 @@ def permissions():
         Permission(4, 'Perm 3', 'Permission 3'),
         Permission(5, 'Perm 4', 'Permission 4'),
         Permission(6, 'Perm 5', 'Permission 5'),
-        Permission(7, 'No Desc', None)
+        Permission(7, 'No Desc', None),
+        Permission(8, 'Default', None),
     ]
 
 
 @pytest.fixture(scope='session')
 def no_desc_permission(permissions):
-    return permissions[6]
+    for p in permissions:
+        if p.name == 'No Desc':
+            return p
 
 
 @pytest.fixture(scope='session')
@@ -29,19 +32,25 @@ def creatable_permission(permissions):
 
 @pytest.fixture(scope='session')
 def open_door_permission(permissions):
-    return permissions[0]
+    for p in permissions:
+        if p.name == 'Open Door':
+            return p
 
 
 @pytest.fixture(scope='session')
 def default_permission(permissions):
     """ This permission should be used as the default (e.g. all guest, all media)"""
-    return permissions[3]
+    for p in permissions:
+        if p.name == 'Default':
+            return p
 
 
 @pytest.fixture(scope='session')
 def permission_for_creatable_media_perm(permissions):
     """ This is the permission that should be used to create a creatable media_perm record."""
-    return permissions[4]
+    for p in permissions:
+        if p.name == 'Perm 5':
+            return p
 
 
 @pytest.fixture(autouse=True, scope='session')

@@ -23,25 +23,32 @@ def creatable_guest(guests, default_sound):
 
 @pytest.fixture(scope='session')
 def not_authorized_media_guest(guests):
-    return guests[4]
+    for g in guests:
+        if g.first_name == 'Dippy' and g.last_name == 'Dawg':
+            return g
 
 
 @pytest.fixture(scope='session')
 def open_door_guest(guests):
-    return guests[0]
+    for g in guests:
+        if g.first_name == 'Mickey' and g.last_name == 'Mouse':
+            return g
 
 
 @pytest.fixture(scope='session')
 def guest_for_creatable_guest_media(guests):
     """ This guest should be used when creating a guest_media record."""
-    return guests[0]
+    for g in guests:
+        if g.first_name == 'Mickey' and g.last_name == 'Mouse':
+            return g
 
 
 @pytest.fixture(scope='session')
 def no_prefs_media_guest(guests):
     """ For use when building GuestMedia records """
-    # Use Anna
-    return guests[5]
+    for g in guests:
+        if g.first_name == 'Princess' and g.last_name == 'Anna':
+            return g
 
 
 @pytest.fixture(autouse=True, scope='session')
