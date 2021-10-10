@@ -19,7 +19,7 @@ CREATE TABLE guest (
   last_name TEXT NOT NULL,
   default_sound INTEGER,
   default_color INTEGER,
-  FOREIGN KEY (default_sound) REFERENCES sound (id)
+  FOREIGN KEY (default_sound) REFERENCES sound (id) ON DELETE SET NULL,
   CONSTRAINT unique_full_name UNIQUE (first_name, last_name)
 );
 
@@ -31,7 +31,7 @@ CREATE TABLE guest_media (
   color INTEGER,
   FOREIGN KEY (guest_id) REFERENCES guest (id) ON DELETE CASCADE,
   FOREIGN KEY (media_id) REFERENCES media (id) ON DELETE CASCADE,
-  FOREIGN KEY (sound) REFERENCES sound (id)
+  FOREIGN KEY (sound) REFERENCES sound (id) ON DELETE SET NULL,
   CONSTRAINT only_one_guest_for_media UNIQUE(media_id)
 );
 
