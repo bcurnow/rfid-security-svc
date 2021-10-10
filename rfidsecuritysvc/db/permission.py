@@ -38,25 +38,9 @@ def delete(conn, id):
 
 
 @with_dbconn
-def delete_by_name(conn, name):
-    with conn:
-        return conn.execute('DELETE FROM permission WHERE name = ?', (name,)).rowcount
-
-
-@with_dbconn
 def update(conn, id, name, desc):
     with conn:
         count = conn.execute('UPDATE permission SET name = ?, desc = ? WHERE id = ?', (name, desc, id)).rowcount
-    if count == 0:
-        raise exception.PermissionNotFoundError
-
-    return count
-
-
-@with_dbconn
-def update_by_name(conn, name, desc):
-    with conn:
-        count = conn.execute('UPDATE permission SET desc = ? WHERE name = ?', (desc, name)).rowcount
     if count == 0:
         raise exception.PermissionNotFoundError
 
