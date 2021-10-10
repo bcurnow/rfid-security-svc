@@ -1088,11 +1088,11 @@ components:
       required:
       - guest
       - media
-      - default_sound
-      - default_sound_name
-      - default_color
-      - default_color_hex
-      - default_color_html
+      - sound
+      - sound_name
+      - color
+      - color_hex
+      - color_html
       type: object
       properties:
         id:
@@ -1103,24 +1103,24 @@ components:
           $ref: "#/components/schemas/Guest"
         media:
           $ref: "#/components/schemas/Media"
-        default_sound:
+        sound:
           type: integer
           example: 1
           nullable: true
-        default_sound_name:
+        sound_name:
           type: string
           example: read.wav
           readOnly: true
           nullable: true
-        default_color:
+        color:
           type: integer
           example: 16777215
           nullable: true
-        default_color_hex:
+        color_hex:
           type: string
           example: FFFFFF
           nullable: true
-        default_color_html:
+        color_html:
           type: string
           example: "#ffffff"
           nullable: true
