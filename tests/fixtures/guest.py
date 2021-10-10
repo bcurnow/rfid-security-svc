@@ -27,7 +27,7 @@ def not_authorized_media_guest(guests):
 
 
 @pytest.fixture(scope='session')
-def open_door_media_guest(guests):
+def open_door_guest(guests):
     return guests[0]
 
 
