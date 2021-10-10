@@ -53,17 +53,17 @@ paths:
           type: string
           example: Open Door
       responses:
-        '200':
+        "200":
           description: Media has the supplied permission.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/MediaConfig"
-        '400':
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
-        '403':
+        "403":
           description: Media does not have the supplied permission
   /configs:
     get:
@@ -73,17 +73,17 @@ paths:
       description: |
         Retrieves all the config records. This implementation does not currently support pagination.
       responses:
-        '200':
+        "200":
           description: Array of Config objects.
           content:
            application/json:
              schema:
                type: array
                items:
-                 $ref: '#/components/schemas/Config'
-        '400':
+                 $ref: "#/components/schemas/Config"
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
     post:
       tags:
@@ -96,15 +96,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Config'
+              $ref: "#/components/schemas/Config"
       responses:
-        '201':
+        "201":
           description: New record created.
-        '400':
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
-        '409':
+        "409":
           description: Record already exists.
   /configs/{key}:
     get:
@@ -122,17 +122,17 @@ paths:
           type: string
           example: Admin User
       responses:
-        '200':
+        "200":
           description: Config object.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Config'
-        '400':
+                $ref: "#/components/schemas/Config"
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
-        '404':
+        "404":
           description: Record not found.
     delete:
       tags:
@@ -149,16 +149,16 @@ paths:
           type: string
           example: Admin User
       responses:
-        '200':
+        "200":
           description: Record was either deleted or did not exist.
           headers:
             x-record-count:
               schema:
                 type: integer
               description: The actual number of records deleted, could be zero if the record did not exist.
-        '400':
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
     put:
       tags:
@@ -179,22 +179,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SimpleConfig'
+              $ref: "#/components/schemas/SimpleConfig"
             example:
               value: admin
       responses:
-        '200':
+        "200":
           description: Record was updated.
           headers:
             x-record-count:
               schema:
                 type: integer
               description: The actual number of records updated or created
-        '201':
+        "201":
           description: Record did not exist and was created.
-        '400':
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
   /guests:
     get:
@@ -204,17 +204,17 @@ paths:
       description: |
         Retrieves all the guest records. This implementation does not currently support pagination.
       responses:
-        '200':
+        "200":
           description: Array of Guest objects.
           content:
            application/json:
              schema:
                type: array
                items:
-                 $ref: '#/components/schemas/Guest'
-        '400':
+                 $ref: "#/components/schemas/Guest"
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
     post:
       tags:
@@ -227,15 +227,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SimpleGuest'
+              $ref: "#/components/schemas/SimpleGuest"
       responses:
-        '201':
+        "201":
           description: New record created.
-        '409':
+        "409":
           description: Record already exists.
-        '400':
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
   /guests/{id}:
     get:
@@ -253,17 +253,17 @@ paths:
           type: integer
           example: 1
       responses:
-        '200':
+        "200":
           description: Guest object.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Guest'
-        '400':
+                $ref: "#/components/schemas/Guest"
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
-        '404':
+        "404":
           description: Record not found.
     delete:
       tags:
@@ -280,16 +280,16 @@ paths:
           type: integer
           example: 1
       responses:
-        '200':
+        "200":
           description: Record was either deleted or did not exist.
           headers:
             x-record-count:
               schema:
                 type: integer
               description: The actual number of records deleted, could be zero if the record did not exist.
-        '400':
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
     put:
       tags:
@@ -310,25 +310,25 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SimpleGuest'
+              $ref: "#/components/schemas/SimpleGuest"
             example:
               first_name: Mickey
               last_name: Mouse
               default_sound: 1
               default_color: 16777215
       responses:
-        '200':
+        "200":
           description: Record was updated.
           headers:
             x-record-count:
               schema:
                 type: integer
               description: The actual number of records updated or created
-        '201':
+        "201":
           description: Record did not exist and was created.
-        '400':
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
   /media:
     get:
@@ -338,17 +338,17 @@ paths:
       description: |
         Retrieves all the media records. This implementation does not currently support pagination.
       responses:
-        '200':
+        "200":
           description: Array of Media objects.
           content:
            application/json:
              schema:
                type: array
                items:
-                 $ref: '#/components/schemas/Media'
-        '400':
+                 $ref: "#/components/schemas/Media"
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
     post:
       tags:
@@ -361,15 +361,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Media'
+              $ref: "#/components/schemas/Media"
       responses:
-        '201':
+        "201":
           description: New record created.
-        '409':
+        "409":
           description: Record already exists.
-        '400':
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
   /media/{id}:
     get:
@@ -387,17 +387,17 @@ paths:
           type: string
           example: 80558ABA5C3504
       responses:
-        '200':
+        "200":
           description: Media object.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Media'
-        '400':
+                $ref: "#/components/schemas/Media"
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
-        '404':
+        "404":
           description: Record not found.
     delete:
       tags:
@@ -414,16 +414,16 @@ paths:
           type: string
           example: 80558ABA5C3504
       responses:
-        '200':
+        "200":
           description: Record was either deleted or did not exist.
           headers:
             x-record-count:
               schema:
                 type: integer
               description: The actual number of records deleted, could be zero if the record did not exist.
-        '400':
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
     put:
       tags:
@@ -444,23 +444,23 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateMedia'
+              $ref: "#/components/schemas/UpdateMedia"
             example:
               name: Anna's MagicBand
               desc: This is the MagicBand that Anna got from Elsa
       responses:
-        '200':
+        "200":
           description: Record was updated.
           headers:
             x-record-count:
               schema:
                 type: integer
               description: The actual number of records updated or created
-        '201':
+        "201":
           description: Record did not exist and was created.
-        '400':
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
   /media-perms:
     get:
@@ -477,17 +477,17 @@ paths:
             type: string
             example: 80558ABA5C3504
       responses:
-        '200':
+        "200":
           description: Array of MediaPerm objects.
           content:
            application/json:
              schema:
                type: array
                items:
-                 $ref: '#/components/schemas/MediaPerm'
-        '400':
+                 $ref: "#/components/schemas/MediaPerm"
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
     post:
       tags:
@@ -500,15 +500,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SimpleMediaPerm'
+              $ref: "#/components/schemas/UpdateMediaPerm"
       responses:
-        '201':
+        "201":
           description: New record created.
-        '400':
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
-        '409':
+        "409":
           description: Record already exists.
           description: Record not found.
   /media-perms/{id}:
@@ -527,17 +527,17 @@ paths:
           type: integer
           example: 1
       responses:
-        '200':
+        "200":
           description: MediaPerm object.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MediaPerm'
-        '400':
+                $ref: "#/components/schemas/MediaPerm"
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
-        '404':
+        "404":
           description: Record not found.
     delete:
       tags:
@@ -554,16 +554,16 @@ paths:
           type: integer
           example: 1
       responses:
-        '200':
+        "200":
           description: Record was either deleted or did not exist.
           headers:
             x-record-count:
               schema:
                 type: integer
               description: The actual number of records deleted, could be zero if the record did not exist.
-        '400':
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
     put:
       tags:
@@ -584,20 +584,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SimpleMediaPerm'
+              $ref: "#/components/schemas/UpdateMediaPerm"
       responses:
-        '200':
+        "200":
           description: Record was updated.
           headers:
             x-record-count:
               schema:
                 type: integer
               description: The actual number of records updated or created
-        '201':
+        "201":
           description: Record did not exist and was created.
-        '400':
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
   /permissions:
     get:
@@ -607,17 +607,17 @@ paths:
       description: |
         Retrieves all the permission records. This implementation does not currently support pagination.
       responses:
-        '200':
+        "200":
           description: Array of Permission objects.
           content:
            application/json:
              schema:
                type: array
                items:
-                 $ref: '#/components/schemas/Permission'
-        '400':
+                 $ref: "#/components/schemas/Permission"
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
     post:
       tags:
@@ -630,15 +630,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Permission'
+              $ref: "#/components/schemas/Permission"
       responses:
-        '201':
+        "201":
           description: New record created.
-        '400':
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
-        '409':
+        "409":
           description: Record already exists.
   /permissions/{id}:
     get:
@@ -656,17 +656,17 @@ paths:
           type: integer
           example: 1
       responses:
-        '200':
+        "200":
           description: Permission object.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Permission'
-        '400':
+                $ref: "#/components/schemas/Permission"
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
-        '404':
+        "404":
           description: Record not found.
     delete:
       tags:
@@ -683,16 +683,16 @@ paths:
           type: integer
           example: 1
       responses:
-        '200':
+        "200":
           description: Record was either deleted or did not exist.
           headers:
             x-record-count:
               schema:
                 type: integer
               description: The actual number of records deleted, could be zero if the record did not exist.
-        '400':
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
     put:
       tags:
@@ -713,20 +713,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SimplePermission'
+              $ref: "#/components/schemas/SimplePermission"
       responses:
-        '200':
+        "200":
           description: Record was updated.
           headers:
             x-record-count:
               schema:
                 type: integer
               description: The actual number of records updated or created
-        '201':
+        "201":
           description: Record did not exist and was created.
-        '400':
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
   /player/{name}:
     get:
@@ -745,18 +745,18 @@ paths:
           type: string
           example: read.wav
       responses:
-        '200':
+        "200":
           description: Sound object.
           content:
             audio/wav:
               schema:
                 type: string
                 format: binary
-        '400':
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
-        '404':
+        "404":
           description: Record not found.
   /reader:
     get:
@@ -777,18 +777,18 @@ paths:
             maximum: 30
             example: 20
       responses:
-        '200':
+        "200":
           description: RFID
           content:
             application/json:
               schema:
                 type: string
                 example: 80558ABA5C3504
-        '204':
+        "204":
           description: No data read from reader, it is recommended to try again, possibly with a longer timeout.
-        '400':
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
   /sounds:
     get:
@@ -798,18 +798,18 @@ paths:
       description: |
         Retrieves all the sound records. This implementation does not currently support pagination.
       responses:
-        '200':
+        "200":
           description: Array of Sound objects.
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/SimpleSound'
-        '400':
+                  $ref: "#/components/schemas/SimpleSound"
+        "400":
           description: Invalid request.
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
     post:
       tags:
         - sound
@@ -836,13 +836,13 @@ paths:
               content:
                 contentType: audio/wav
       responses:
-        '201':
+        "201":
           description: New record created.
-        '400':
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
-        '409':
+        "409":
           description: Record already exists.
   /sounds/{id}:
     get:
@@ -860,17 +860,17 @@ paths:
           type: integer
           example: 1
       responses:
-        '200':
+        "200":
           description: Sound object.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Sound'
-        '400':
+                $ref: "#/components/schemas/Sound"
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
-        '404':
+        "404":
           description: Record not found.
     delete:
       tags:
@@ -887,16 +887,16 @@ paths:
           type: integer
           example: 1
       responses:
-        '200':
+        "200":
           description: Record was either deleted or did not exist.
           headers:
             x-record-count:
               schema:
                 type: integer
               description: The actual number of records deleted, could be zero if the record did not exist.
-        '400':
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
     put:
       tags:
@@ -931,84 +931,68 @@ paths:
               content:
                 contentType: audio/wav
       responses:
-        '200':
+        "200":
           description: Record was updated.
           headers:
             x-record-count:
               schema:
                 type: integer
               description: The actual number of records updated or created
-        '201':
+        "201":
           description: Record did not exist and was created.
-        '400':
+        "400":
           description: Invalid request.
-        '401':
+        "401":
           $ref: "#/components/responses/UnauthorizedError"
 components:
   schemas:
+    Config:
+      allOf:
+        - $ref: "#/components/schemas/SimpleConfig"
+        - type: object
+          required:
+          - key
+    Guest:
+      allOf:
+        - $ref: "#/components/schemas/SimpleGuest"
+        - type: object
+          required:
+          - id
+    GuestMedia:
+      allOf:
+        - $ref: "#/components/schemas/SimpleGuestMedia"
+        - type: object
+          required:
+          - id
+    Media:
+      allOf:
+        - $ref: "#/components/schemas/SimpleMedia"
+        - type: object
+          required:
+          - id
     MediaConfig:
       required:
-      - media_id
-      - media_name
-      - media_desc
-      - permission_id
-      - permission_name
-      - permission_desc
-      - guest_id
-      - guest_first_name
-      - guest_last_name
-      - sound_id
-      - sound_name
-      - color
+      - media
+      - permission
       type: object
       properties:
-        media_id:
-          type: string
-          example: 80558ABA5C3504
+        media:
+          $ref: "#/components/schemas/Media"
           readOnly: true
-        media_name:
-          type: string
-          example: Anna's MagicBand
+        permission:
+          $ref: "#/components/schemas/Permission"
           readOnly: true
-        media_desc:
-          type: string
-          example: This is the MagicBand that Anna got from Elsa
-          nullable: true
-          readOnly: true
-        permission_id:
-          type: integer
-          example: 1
-          readOnly: true
-        permission_name:
-          type: string
-          example: Open Door
-          readOnly: true
-        permission_desc:
-          type: string
-          example: Opens the door
-          nullable: true
-          readOnly: true
-        guest_id:
-          type: integer
-          example: 1
-          nullable: true
-          readOnly: true
-        guest_first_name:
-          type: string
-          example: Mickey
-          nullable: true
-          readOnly: true
-        guest_last_name:
-          type: string
-          example: Mouse
-          nullable: true
+        guest:
+          oneOf:
+            - $ref: "#/components/schemas/Guest"
+            - type: object
+              nullable: true
           readOnly: true
         sound_id:
           type: integer
           example: 1
           readOnly: true
           nullable: true
-          readOnly: true
         sound_name:
           type: string
           example: read.wav
@@ -1019,45 +1003,32 @@ components:
           example: 16777215
           nullable: true
           readOnly: true
-    Config:
-      allOf:
-        - $ref: '#/components/schemas/SimpleConfig'
-        - type: object
-          required:
-          - key
-    Guest:
-      allOf:
-        - $ref: '#/components/schemas/SimpleGuest'
-        - type: object
-          required:
-          - id
-    Media:
-      allOf:
-        - $ref: '#/components/schemas/SimpleMedia'
-        - type: object
-          required:
-          - id
+        color_hex:
+          type: string
+          example: FFFFFF
+          nullable: true
+          readOnly: true
+        color_html:
+          type: string
+          example: "#ffffff"
+          nullable: true
+          readOnly: true
+      additionalProperties: false
     MediaPerm:
       allOf:
         - $ref: "#/components/schemas/SimpleMediaPerm"
         - type: object
           required:
             - id
-            - media_id
-            - media_name
-            - media_desc
-            - permission_id
-            - permission_name
-            - permission_desc
     Permission:
       allOf:
-        - $ref: '#/components/schemas/SimplePermission'
+        - $ref: "#/components/schemas/SimplePermission"
         - type: object
           required:
           - name
     Sound:
       allOf:
-        - $ref: '#/components/schemas/SimpleSound'
+        - $ref: "#/components/schemas/SimpleSound"
         - type: object
           required:
             - id
@@ -1110,7 +1081,48 @@ components:
           nullable: true
         default_color_html:
           type: string
-          example: '#ffffff'
+          example: "#ffffff"
+          nullable: true
+      additionalProperties: false
+    SimpleGuestMedia:
+      required:
+      - guest
+      - media
+      - default_sound
+      - default_sound_name
+      - default_color
+      - default_color_hex
+      - default_color_html
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          example: 1
+        guest:
+          $ref: "#/components/schemas/Guest"
+        media:
+          $ref: "#/components/schemas/Media"
+        default_sound:
+          type: integer
+          example: 1
+          nullable: true
+        default_sound_name:
+          type: string
+          example: read.wav
+          readOnly: true
+          nullable: true
+        default_color:
+          type: integer
+          example: 16777215
+          nullable: true
+        default_color_hex:
+          type: string
+          example: FFFFFF
+          nullable: true
+        default_color_html:
+          type: string
+          example: "#ffffff"
           nullable: true
       additionalProperties: false
     SimpleMedia:
@@ -1132,37 +1144,17 @@ components:
     SimpleMediaPerm:
       type: object
       required:
-      - media_id
-      - permission_id
+      - media
+      - permission
       properties:
         id:
           type: integer
           readOnly: true
           example: 1
-        media_id:
-          type: string
-          example: 80558ABA5C3504
-        media_name:
-          type: string
-          example: Anna's MagicBand
-          readOnly: true
-        media_desc:
-          type: string
-          example: This is the MagicBand that Anna got from Elsa
-          nullable: true
-          readOnly: true
-        permission_id:
-          type: integer
-          example: 1
-        permission_name:
-          type: string
-          example: Open Door
-          readOnly: true
-        permission_desc:
-          type: string
-          example: Opens the door
-          nullable: true
-          readOnly: true
+        media:
+          $ref: "#/components/schemas/Media"
+        permission:
+          $ref: "#/components/schemas/Permission"
       additionalProperties: false
     SimplePermission:
       type: object
@@ -1212,6 +1204,19 @@ components:
           type: string
           example: This is the MagicBand that Anna got from Elsa
           nullable: true
+      additionalProperties: false
+    UpdateMediaPerm:
+      required:
+        - media_id
+        - permission_id
+      type: object
+      properties:
+        media_id:
+          type: string
+          example: 80558ABA5C3504
+        permission_id:
+          type: integer
+          example: 1
       additionalProperties: false
   securitySchemes:
     ApiKey:
