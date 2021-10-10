@@ -20,10 +20,10 @@ class MediaConfig(BaseModel):
 
     def to_json(self):
         copy = self.__dict__.copy()
-        copy['media'] = self.media.__dict__.copy()
-        copy['permission'] = self.permission.__dict__.copy()
+        copy['media'] = self.media.to_json()
+        copy['permission'] = self.permission.to_json()
         if self.guest is not None:
-            copy['guest'] = self.guest.__dict__.copy()
+            copy['guest'] = self.guest.to_json()
         return copy
 
 
