@@ -1221,10 +1221,12 @@ components:
         default_color_hex:
           type: string
           example: FFFFFF
+          readOnly: true
           nullable: true
         default_color_html:
           type: string
           example: "#ffffff"
+          readOnly: true
           nullable: true
       additionalProperties: false
     SimpleGuestMedia:

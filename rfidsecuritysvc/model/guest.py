@@ -34,9 +34,10 @@ def list():
 
 
 def create(first_name, last_name, default_sound=None, default_color=None):
-    s = sound.get(default_sound)
-    if not s:
-        raise exception.SoundNotFoundError
+    if default_sound:
+        s = sound.get(default_sound)
+        if not s:
+            raise exception.SoundNotFoundError
     return table.create(first_name, last_name, default_sound, default_color)
 
 
@@ -45,9 +46,10 @@ def delete(id):
 
 
 def update(id, first_name, last_name, default_sound=None, default_color=None):
-    s = sound.get(default_sound)
-    if not s:
-        raise exception.SoundNotFoundError
+    if default_sound:
+        s = sound.get(default_sound)
+        if not s:
+            raise exception.SoundNotFoundError
     return table.update(id, first_name, last_name, default_sound, default_color)
 
 

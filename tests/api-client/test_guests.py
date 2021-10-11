@@ -1,6 +1,8 @@
 from unittest.mock import patch
 
 from rfidsecuritysvc.api import RECORD_COUNT_HEADER
+from rfidsecuritysvc.model.guest import Guest
+
 
 api = 'guests'
 
@@ -32,6 +34,14 @@ def test_post(rh, creatable_guest):
     rh.assert_response(rh.open('get', f'{api}/{creatable_guest.id}'), 404)
 
 
+def test_post_no_prefs(rh, creatable_guest):
+    no_prefs = Guest(creatable_guest.id, creatable_guest.first_name, creatable_guest.last_name, None, None)
+    rh.assert_response(rh.open('post', f'{api}', no_prefs), 201)
+    rh.assert_response(rh.open('get', f'{api}/{no_prefs.id}'), 200)
+    rh.assert_response(rh.open('delete', f'{api}/{no_prefs.id}'), 200, headers={RECORD_COUNT_HEADER: '1'})
+    rh.assert_response(rh.open('get', f'{api}/{no_prefs.id}'), 404)
+
+
 def test_post_duplicate(rh, guests):
     rh.assert_response(rh.open('post', f'{api}', guests[0]), 409)
 
@@ -45,6 +55,12 @@ def test_delete(rh, creatable_guest):
 
 def test_delete_notfound(rh, creatable_guest):
     rh.assert_response(rh.open('delete', f'{api}/{creatable_guest.id}'), 200, headers={RECORD_COUNT_HEADER: '0'})
+
+
+def test_put_no_prefs(rh, creatable_guest):
+    updated = Guest(creatable_guest.id, creatable_guest.first_name, creatable_guest.last_name, None, None)
+    rh.assert_response(rh.open('put', f'{api}/{updated.id}', updated), 201, headers={RECORD_COUNT_HEADER: '1'})
+    rh.assert_response(rh.open('delete', f'{api}/{updated.id}'), 200, headers={RECORD_COUNT_HEADER: '1'})
 
 
 def test_put(rh, guests):

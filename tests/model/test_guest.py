@@ -78,6 +78,16 @@ def test_create_SoundNotFoundError(table, sound, default_sound):
     table.create.assert_not_called()
 
 
+
+@patch('rfidsecuritysvc.model.guest.sound')
+@patch('rfidsecuritysvc.model.guest.table')
+def test_create_no_prefs(table, sound, default_sound):
+    table.create.return_value = None
+    assert model.create('first', 'last', None, None) is None
+    sound.get.assert_not_called()
+    table.create.assert_called_once_with('first', 'last', None, None)
+
+
 @patch('rfidsecuritysvc.model.guest.table')
 def test_delete(table):
     table.delete.return_value = 1
@@ -93,6 +103,15 @@ def test_update(table, sound, default_sound):
     assert model.update(1, 'first', 'last', default_sound.id, 0xFFFFFF) == 1
     sound.get.assert_called_once_with(default_sound.id)
     table.update.assert_called_once_with(1, 'first', 'last', default_sound.id, 0xFFFFFF)
+
+
+@patch('rfidsecuritysvc.model.guest.sound')
+@patch('rfidsecuritysvc.model.guest.table')
+def test_update_no_prefs(table, sound, default_sound):
+    table.update.return_value = 1
+    assert model.update(1, 'first', 'last', None, None) == 1
+    sound.get.assert_not_called()
+    table.update.assert_called_once_with(1, 'first', 'last', None, None)
 
 
 @patch('rfidsecuritysvc.model.guest.sound')
