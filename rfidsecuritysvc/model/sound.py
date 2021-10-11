@@ -14,14 +14,14 @@ class Sound(BaseModel):
 
     def to_json(self):
         """Override the base method to ensure that we don't show binary content everywhere"""
-        cp = self.__dict__.copy()
+        cp = super().to_json()
         del cp['content']
         return cp
 
     def to_json_with_content(self):
         """This method must be explicitly called to get the content"""
         # In order to translate to JSON, this must be encoded first
-        json = self.to_json()
+        json = super().to_json()
         # Why not UTF-8? Because Base64 uses only ASCII characters
         # All ASCII characters are UTF-8
         json['content'] = base64.b64encode(self.content).decode('ascii')
