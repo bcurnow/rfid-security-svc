@@ -54,7 +54,7 @@ def no_prefs_media_guest(guests):
 @pytest.fixture(autouse=True, scope='session')
 def add_guest_helpers(monkeypatch_session):
     def convert(self):
-        copy = self.__dict__.copy()
+        copy = self.to_json()
         del copy['id']
         del copy['default_sound_name']
         del copy['default_color_hex']
