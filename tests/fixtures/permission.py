@@ -56,7 +56,7 @@ def permission_for_creatable_media_perm(permissions):
 @pytest.fixture(autouse=True, scope='session')
 def add_permission_helpers(monkeypatch_session):
     def convert(self):
-        copy = self.__dict__.copy()
+        copy = self.to_json()
         del copy['id']
         return copy
 
