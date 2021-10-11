@@ -62,24 +62,13 @@ def test_delete(model):
 @patch('rfidsecuritysvc.api.media.model')
 def test_put(model):
     model.update.return_value = 1
-    assert api.put(m.id, _update(m)) == (None, 200, {RECORD_COUNT_HEADER: 1})
-    model.update.assert_called_once_with(m.id, **_update(m))
+    assert api.put(m.id, m.test_update()) == (None, 200, {RECORD_COUNT_HEADER: 1})
+    model.update.assert_called_once_with(m.id, **m.test_update())
 
 
 @patch('rfidsecuritysvc.api.media.model')
 def test_put_does_not_exist(model):
     model.update.side_effect = NotFoundError
-    assert api.put(m.id, _update(m)) == (None, 201, {RECORD_COUNT_HEADER: 1})
-    model.update.assert_called_once_with(m.id, **_update(m))
-    model.create.assert_called_once_with(m.id, **_update(m))
-
-
-def _update(m):
-    """
-    This is only needed for the Media object because it's the only one that has a non-generated id.
-    It can't be marked read-only in the schema because it has to be allowed in the post/create flow.
-    So, we need to drop the ID when doing an update.
-    """
-    json = m.to_json().copy()
-    del json['id']
-    return json
+    assert api.put(m.id, m.test_update()) == (None, 201, {RECORD_COUNT_HEADER: 1})
+    model.update.assert_called_once_with(m.id, **m.test_update())
+    model.create.assert_called_once_with(m.id, **m.test_update())
