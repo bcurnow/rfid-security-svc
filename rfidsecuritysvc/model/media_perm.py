@@ -12,7 +12,7 @@ class MediaPerm(BaseModel):
         self.permission = permission
 
     def to_json(self):
-        copy = self.__dict__.copy()
+        copy = super().to_json()
         copy['media'] = self.media.to_json()
         copy['permission'] = self.permission.to_json()
         return copy
