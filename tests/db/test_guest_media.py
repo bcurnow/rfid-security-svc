@@ -112,10 +112,10 @@ def test_list_with_media_id(mockdb):
                                        INNER JOIN guest ON guest.id = guest_media.guest_id
                                        LEFT JOIN sound gms ON gms.id = guest_media.sound
                                        LEFT JOIN sound gs ON gs.id = guest.default_sound
-                                       WHERE guest_media.media_id = ?
+                                       WHERE guest_media.guest_id = ?
                                        ORDER BY guest_media.id
-                                        ''').replace('\n', ' '), ('test',), cursor_return=[])
-    assert db.list('test') == []
+                                        ''').replace('\n', ' '), (1,), cursor_return=[])
+    assert db.list(1) == []
 
 
 def test_create(mockdb):

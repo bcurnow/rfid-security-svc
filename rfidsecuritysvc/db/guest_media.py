@@ -88,7 +88,7 @@ def list(conn, guest_id=None):
                                                 INNER JOIN guest ON guest.id = guest_media.guest_id
                                                 LEFT JOIN sound gms ON gms.id = guest_media.sound
                                                 LEFT JOIN sound gs ON gs.id = guest.default_sound
-                                                WHERE guest_media.media_id = ?
+                                                WHERE guest_media.guest_id = ?
                                                 ORDER BY guest_media.id
                                                 ''').replace('\n', ' '), (guest_id,)).fetchall()
         else:
