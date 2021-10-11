@@ -19,6 +19,8 @@ tags:
     description: Config APIs
   - name: guest
     description: Guest APIs
+  - name: guest-media
+    description: Guest Media APIs
   - name: media
     description: Media APIs
   - name: media-perm
@@ -330,6 +332,147 @@ paths:
           description: Invalid request.
         "401":
           $ref: "#/components/responses/UnauthorizedError"
+  /guest-media:
+    get:
+      tags:
+        - guest-media
+      summary: Retrieves all the guest media
+      description: |
+        Retrieves all the guest media records. This implementation does not currently support pagination.
+      parameters:
+        - name: guest_id
+          in: query
+          description: If present, will only list the GuestMedia for the specified guest
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          description: Array of GuestMedia objects.
+          content:
+           application/json:
+             schema:
+               type: array
+               items:
+                 $ref: "#/components/schemas/GuestMedia"
+        "400":
+          description: Invalid request.
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+    post:
+      tags:
+        - guest-media
+      summary: Creates a new guest media
+      description: |
+        Accepts a JSON payload containing a full guest media record and creates it.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InputGuestMedia"
+      responses:
+        "201":
+          description: New record created.
+        "409":
+          description: Record already exists.
+        "400":
+          description: Invalid request.
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+  /guest-media/{id}:
+    get:
+      tags:
+        - guest-media
+      summary: Retrieves guest media by id
+      description: |
+        Takes a id and returns the guest media.
+      parameters:
+      - name: id
+        in: path
+        description: The id of the requested guest media.
+        required: true
+        schema:
+          type: integer
+          example: 1
+      responses:
+        "200":
+          description: GuestMedia object.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GuestMedia"
+        "400":
+          description: Invalid request.
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: Record not found.
+    delete:
+      tags:
+        - guest-media
+      summary: Deletes guest media by id
+      description: |
+        Takes a id and deletes that record. This method does not fail if the guest media does not exist as this is considered success.
+      parameters:
+      - name: id
+        in: path
+        description: The id of the guest media to delete.
+        required: true
+        schema:
+          type: integer
+          example: 1
+      responses:
+        "200":
+          description: Record was either deleted or did not exist.
+          headers:
+            x-record-count:
+              schema:
+                type: integer
+              description: The actual number of records deleted, could be zero if the record did not exist.
+        "400":
+          description: Invalid request.
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+    put:
+      tags:
+        - guest-media
+      summary: Updates the guest media by id
+      description: |
+        Accepts a JSON payload containing a guest media record and updates it. The id must not be present in the payload.
+      parameters:
+      - name: id
+        in: path
+        description: The id of the guest to update.
+        required: true
+        schema:
+          type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InputGuestMedia"
+            example:
+              guest_id: 1
+              media_id: 80558ABA5C3504
+              sound_id: 1
+              color: 16777215
+      responses:
+        "200":
+          description: Record was updated.
+          headers:
+            x-record-count:
+              schema:
+                type: integer
+              description: The actual number of records updated or created
+        "201":
+          description: Record did not exist and was created.
+        "400":
+          description: Invalid request.
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
   /media:
     get:
       tags:
@@ -500,7 +643,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateMediaPerm"
+              $ref: "#/components/schemas/InputMediaPerm"
       responses:
         "201":
           description: New record created.
@@ -584,7 +727,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateMediaPerm"
+              $ref: "#/components/schemas/InputMediaPerm"
       responses:
         "200":
           description: Record was updated.
@@ -1088,11 +1231,6 @@ components:
       required:
       - guest
       - media
-      - sound
-      - sound_name
-      - color
-      - color_hex
-      - color_html
       type: object
       properties:
         id:
@@ -1103,7 +1241,7 @@ components:
           $ref: "#/components/schemas/Guest"
         media:
           $ref: "#/components/schemas/Media"
-        sound:
+        sound_id:
           type: integer
           example: 1
           nullable: true
@@ -1205,7 +1343,28 @@ components:
           example: This is the MagicBand that Anna got from Elsa
           nullable: true
       additionalProperties: false
-    UpdateMediaPerm:
+    InputGuestMedia:
+      required:
+        - guest_id
+        - media_id
+      type: object
+      properties:
+        guest_id:
+          type: integer
+          example: 1
+        media_id:
+          type: string
+          example: 80558ABA5C3504
+        sound_id:
+          type: integer
+          example: 1
+          nullable: true
+        color:
+          type: integer
+          example: 16777215
+          nullable: true
+      additionalProperties: false
+    InputMediaPerm:
       required:
         - media_id
         - permission_id
