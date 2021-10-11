@@ -19,7 +19,7 @@ class MediaConfig(BaseModel):
             self.color_html = None
 
     def to_json(self):
-        copy = self.__dict__.copy()
+        copy = super().to_json()
         copy['media'] = self.media.to_json()
         copy['permission'] = self.permission.to_json()
         if self.guest is not None:
