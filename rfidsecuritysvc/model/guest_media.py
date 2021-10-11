@@ -22,7 +22,7 @@ class GuestMedia(BaseModel):
             self.color_html = None
 
     def to_json(self):
-        copy = self.__dict__.copy()
+        copy = super().to_json()
         copy['guest'] = self.guest.to_json()
         copy['media'] = self.media.to_json()
         return copy
