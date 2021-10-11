@@ -14,7 +14,7 @@ def test_Permission_desc_optional(assert_model):
 
 @patch('rfidsecuritysvc.model.permission.table')
 def test_get(table):
-    table.get.return_value = _default().__dict__
+    table.get.return_value = _default().to_json()
     assert model.get('test') == _default()
     table.get.assert_called_once_with('test')
 
@@ -28,7 +28,7 @@ def test_get_notfound(table):
 
 @patch('rfidsecuritysvc.model.permission.table')
 def test_get_by_name(table):
-    table.get_by_name.return_value = _default().__dict__
+    table.get_by_name.return_value = _default().to_json()
     assert model.get_by_name('test') == _default()
     table.get_by_name.assert_called_once_with('test')
 
@@ -36,8 +36,8 @@ def test_get_by_name(table):
 @patch('rfidsecuritysvc.model.permission.table')
 def test_list(table):
     table.list.return_value = [
-        _default().__dict__,
-        _default(2).__dict__,
+        _default().to_json(),
+        _default(2).to_json(),
     ]
     models = model.list()
     table.list.assert_called_once()

@@ -13,14 +13,14 @@ def test_Sound(assert_model):
 
 @patch('rfidsecuritysvc.model.sound.table')
 def test_get(table):
-    table.get.return_value = _default().__dict__
+    table.get.return_value = _default().test_to_row()
     assert model.get(1) == _default()
     table.get.assert_called_once_with(1)
 
 
 @patch('rfidsecuritysvc.model.sound.table')
 def test_get_by_name(table):
-    table.get_by_name.return_value = _default().__dict__
+    table.get_by_name.return_value = _default().test_to_row()
     assert model.get_by_name('test') == _default()
     table.get_by_name.assert_called_once_with('test')
 
@@ -35,8 +35,8 @@ def test_get_notfound(table):
 @patch('rfidsecuritysvc.model.sound.table')
 def test_list(table):
     table.list.return_value = [
-        _default().__dict__,
-        _default(2).__dict__,
+        _default().to_json(),
+        _default(2).to_json(),
     ]
     models = model.list()
     table.list.assert_called_once()
