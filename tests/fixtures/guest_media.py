@@ -3,20 +3,6 @@ import pytest
 from rfidsecuritysvc.model.guest_media import GuestMedia
 
 
-@pytest.fixture(autouse=True, scope='session')
-def add_guest_media_helpers(monkeypatch_session):
-    def convert(self):
-        return {
-            'guest_id': self.guest.id,
-            'media_id': self.media.id,
-            'sound': self.sound_id,
-            'color': self.color,
-        }
-
-    monkeypatch_session.setattr(GuestMedia, 'test_create', convert, raising=False)
-    monkeypatch_session.setattr(GuestMedia, 'test_update', convert, raising=False)
-
-
 @pytest.fixture(scope='session')
 def guest_medias(media_for_guests,
                  guests,
@@ -28,34 +14,34 @@ def guest_medias(media_for_guests,
                  no_prefs_media,
                  default_sound):
     # The DB will return these ordered by id, please build the list accordingly
-    guest_media = []
+    guest_medias = []
     # Make sure we have enough guests for the media provided
     # If this fails, you need to look at the media fixture
     assert len(media_for_guests) <= len(guests)
 
     for i in range(len(media_for_guests)):
-        guest_media.append(GuestMedia(i,
+        guest_medias.append(GuestMedia(i + 1,
                                       guests[i],
                                       media_for_guests[i],
                                       default_sound.id,
                                       default_sound.name,
                                       0xABCDEF))
 
-    guest_media.append(GuestMedia(len(guest_media),
+    guest_medias.append(GuestMedia(len(guest_medias) + 1,
                                   open_door_guest,
                                   open_door_media,
                                   default_sound.id,
                                   default_sound.name,
                                   0xABCDEF))
 
-    guest_media.append(GuestMedia(len(guest_media),
+    guest_medias.append(GuestMedia(len(guest_medias) + 1,
                                   no_prefs_media_guest,
                                   no_prefs_media,
                                   None,
                                   None,
                                   None))
 
-    return guest_media
+    return guest_medias
 
 
 @pytest.fixture(scope='session')
@@ -88,3 +74,17 @@ def guest_media_to_row():
         return row
 
     return to_row
+
+
+@pytest.fixture(autouse=True, scope='session')
+def add_guest_media_helpers(monkeypatch_session):
+    def convert(self):
+        return {
+            'guest_id': self.guest.id,
+            'media_id': self.media.id,
+            'sound_id': self.sound_id,
+            'color': self.color,
+        }
+
+    monkeypatch_session.setattr(GuestMedia, 'test_create', convert, raising=False)
+    monkeypatch_session.setattr(GuestMedia, 'test_update', convert, raising=False)
