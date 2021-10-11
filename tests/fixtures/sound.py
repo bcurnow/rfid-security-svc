@@ -43,10 +43,17 @@ def to_content():
 @pytest.fixture(autouse=True, scope='session')
 def add_sound_helpers(monkeypatch_session):
     def convert(self):
+        # Can't use eithe of the existing to_json methods as one doesn't contain
+        # content and the other base64 encodes it
         copy = self.__dict__.copy()
         del copy['id']
         del copy['last_update_timestamp']
         return copy
 
+    def test_to_row(self):
+        copy = self.__dict__.copy()
+        return copy
+
     monkeypatch_session.setattr(Sound, 'test_create', convert, raising=False)
     monkeypatch_session.setattr(Sound, 'test_update', convert, raising=False)
+    monkeypatch_session.setattr(Sound, 'test_to_row', test_to_row, raising=False)
