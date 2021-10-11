@@ -44,21 +44,13 @@ def test_post_duplicate(rh, media_perms):
     rh.assert_response(rh.open('post', f'{api}', media_perms[0]), 409)
 
 
-def test_post_media_notfound(rh, creatable_media_perm):
-    media = Media(**creatable_media_perm.media.test_create())
-    permission = Permission(creatable_media_perm.permission.id, **creatable_media_perm.permission.test_create())
-    m = Model(creatable_media_perm.id, media, permission)
-    media.id = 'bogus'
+def test_post_media_notfound(rh, creatable_media_perm, creatable_media):
+    m = Model(creatable_media_perm.id, creatable_media, creatable_media_perm.permission)
     rh.assert_response(rh.open('post', f'{api}', m), 400)
 
 
-def test_post_permission_notfound(rh, creatable_media_perm, permissions):
-    media = Media(**creatable_media_perm.media.test_create())
-    permission = Permission(creatable_media_perm.permission.id, **creatable_media_perm.permission.test_create())
-    m = Model(creatable_media_perm.id, media, permission)
-    m.media = media
-    m.permission = permission
-    permission.id = len(permissions) * 1000
+def test_post_permission_notfound(rh, creatable_media_perm, creatable_permission):
+    m = Model(creatable_media_perm.id, creatable_media_perm.media, creatable_permission)
     rh.assert_response(rh.open('post', f'{api}', m), 400)
 
 
