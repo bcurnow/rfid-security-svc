@@ -17,7 +17,7 @@ def creatable_config():
 @pytest.fixture(autouse=True, scope='session')
 def add_config_helpers(monkeypatch_session):
     def convert(self):
-        return self.__dict__.copy()
+        return self.to_json()
 
     monkeypatch_session.setattr(Config, 'test_create', convert, raising=False)
     monkeypatch_session.setattr(Config, 'test_update', convert, raising=False)
