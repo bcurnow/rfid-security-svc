@@ -81,8 +81,13 @@ def media_for_permissions(medias):
 
 @pytest.fixture(autouse=True, scope='session')
 def add_media_helpers(monkeypatch_session):
-    def convert(self):
-        return self.__dict__.copy()
+    def create(self):
+        return self.to_json()
 
-    monkeypatch_session.setattr(Media, 'test_create', convert, raising=False)
-    monkeypatch_session.setattr(Media, 'test_update', convert, raising=False)
+    def update(self):
+        copy = self.to_json()
+        del copy['id']
+        return copy
+
+    monkeypatch_session.setattr(Media, 'test_create', create, raising=False)
+    monkeypatch_session.setattr(Media, 'test_update', update, raising=False)
