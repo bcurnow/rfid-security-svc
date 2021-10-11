@@ -2,7 +2,8 @@ from unittest.mock import patch
 
 from rfidsecuritysvc.api import RECORD_COUNT_HEADER
 from rfidsecuritysvc.api import guest_media as api
-from rfidsecuritysvc.exception import DuplicateGuestMediaError as DuplicateError, GuestMediaNotFoundError as NotFoundError, MediaNotFoundError, GuestNotFoundError, SoundNotFoundError
+from rfidsecuritysvc.exception import DuplicateGuestMediaError as DuplicateError, GuestMediaNotFoundError as NotFoundError
+from rfidsecuritysvc.exception import MediaNotFoundError, GuestNotFoundError, SoundNotFoundError
 from rfidsecuritysvc.model.guest_media import GuestMedia as Model
 from rfidsecuritysvc.model.guest import Guest
 from rfidsecuritysvc.model.media import Media

@@ -3,7 +3,7 @@ import pytest
 from unittest.mock import patch
 
 import rfidsecuritysvc.model.guest_media as model
-from rfidsecuritysvc.exception import GuestNotFoundError, GuestMediaNotFoundError, MediaNotFoundError, SoundNotFoundError
+from rfidsecuritysvc.exception import GuestNotFoundError, MediaNotFoundError, SoundNotFoundError
 from rfidsecuritysvc.model.guest import Guest
 from rfidsecuritysvc.model.guest_media import GuestMedia
 from rfidsecuritysvc.model.media import Media
@@ -11,7 +11,7 @@ from rfidsecuritysvc.model.media import Media
 
 def test_GuestMedia(assert_model, open_door_guest, open_door_media, default_sound):
     assert_model(_model(1, open_door_guest, open_door_media, default_sound.id, default_sound.name, 0xABCDEF),
-                  GuestMedia(1, open_door_guest, open_door_media, default_sound.id, default_sound.name, 0xABCDEF))
+                 GuestMedia(1, open_door_guest, open_door_media, default_sound.id, default_sound.name, 0xABCDEF))
 
 
 def test_GuestMedia_to_json(open_door_guest, open_door_media, default_sound):

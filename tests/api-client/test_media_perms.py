@@ -1,9 +1,7 @@
 from unittest.mock import patch
 
 from rfidsecuritysvc.api import RECORD_COUNT_HEADER
-from rfidsecuritysvc.model.media import Media
 from rfidsecuritysvc.model.media_perm import MediaPerm as Model
-from rfidsecuritysvc.model.permission import Permission
 
 api = 'media-perms'
 

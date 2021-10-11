@@ -21,25 +21,25 @@ def guest_medias(media_for_guests,
 
     for i in range(len(media_for_guests)):
         guest_medias.append(GuestMedia(i + 1,
-                                      guests[i],
-                                      media_for_guests[i],
-                                      default_sound.id,
-                                      default_sound.name,
-                                      0xABCDEF))
+                                       guests[i],
+                                       media_for_guests[i],
+                                       default_sound.id,
+                                       default_sound.name,
+                                       0xABCDEF))
 
     guest_medias.append(GuestMedia(len(guest_medias) + 1,
-                                  open_door_guest,
-                                  open_door_media,
-                                  default_sound.id,
-                                  default_sound.name,
-                                  0xABCDEF))
+                                   open_door_guest,
+                                   open_door_media,
+                                   default_sound.id,
+                                   default_sound.name,
+                                   0xABCDEF))
 
     guest_medias.append(GuestMedia(len(guest_medias) + 1,
-                                  no_prefs_media_guest,
-                                  no_prefs_media,
-                                  None,
-                                  None,
-                                  None))
+                                   no_prefs_media_guest,
+                                   no_prefs_media,
+                                   None,
+                                   None,
+                                   None))
 
     return guest_medias
 
