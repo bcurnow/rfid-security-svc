@@ -27,7 +27,7 @@ def test_Guest___init___no_color(assert_model, default_sound):
 
 @patch('rfidsecuritysvc.model.guest.table')
 def test_get(table):
-    table.get.return_value = _default().__dict__
+    table.get.return_value = _default().to_json()
     assert model.get(1) == _default()
     table.get.assert_called_once_with(1)
 
@@ -42,8 +42,8 @@ def test_get_notfound(table):
 @patch('rfidsecuritysvc.model.guest.table')
 def test_list(table):
     table.list.return_value = [
-        _default().__dict__,
-        _default(2).__dict__,
+        _default().to_json(),
+        _default(2).to_json(),
     ]
     models = model.list()
     table.list.assert_called_once()
