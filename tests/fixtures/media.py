@@ -70,7 +70,13 @@ def media_for_creatable_guest_media(medias):
 @pytest.fixture(scope='session')
 def media_for_guests(medias):
     """ Each media returned should be associated with a guest """
-    return medias[2:5]
+    return medias[2:7]
+
+
+@pytest.fixture(scope='session')
+def media_for_permissions(medias):
+    """ Each media returned should be associated with a guest """
+    return medias[1:9]
 
 
 @pytest.fixture(autouse=True, scope='session')
