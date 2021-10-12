@@ -12,11 +12,11 @@ class GuestMedia(BaseModel):
         self.sound_id = sound_id
         self.sound_name = sound_name
         self.color = color
-        if color:
+        if color is not None:
             # The color is stored as an integer, convert it to a hex string (e.g. FFFFFF)
             # and an HTML hex string (e.g. #ffffff) for use in various contexts
-            self.color_hex = format(color, 'X')
-            self.color_html = f'#{format(color, "x")}'
+            self.color_hex = '{:X}'.format(color)
+            self.color_html = f'#{"{:06x}".format(color)}'
         else:
             self.color_hex = None
             self.color_html = None

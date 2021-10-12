@@ -25,6 +25,13 @@ def test_Guest___init___no_color(assert_model, default_sound):
     assert g.default_color_html is None
 
 
+def test_Guest___init___zero_color(assert_model, default_sound):
+    g = Guest(1, 'first', 'last', default_sound.id, default_sound.name, 0)
+    assert g.default_color == 0
+    assert g.default_color_hex == '0'
+    assert g.default_color_html == '#000000'
+
+
 @patch('rfidsecuritysvc.model.guest.table')
 def test_get(table):
     table.get.return_value = _default().to_json()
@@ -76,7 +83,6 @@ def test_create_SoundNotFoundError(table, sound, default_sound):
         model.create('first', 'last', default_sound.id, 0xFFFFFF)
     sound.get.assert_called_once_with(default_sound.id)
     table.create.assert_not_called()
-
 
 
 @patch('rfidsecuritysvc.model.guest.sound')

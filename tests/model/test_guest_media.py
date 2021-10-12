@@ -14,6 +14,12 @@ def test_GuestMedia(assert_model, open_door_guest, open_door_media, default_soun
                  GuestMedia(1, open_door_guest, open_door_media, default_sound.id, default_sound.name, 0xABCDEF))
 
 
+def test_GuestMedia_default_color_zero(open_door_guest, open_door_media, default_sound):
+    m = GuestMedia(1, open_door_guest, open_door_media, default_sound.id, default_sound.name, 0)
+    assert m.color_hex == "0"
+    assert m.color_html == "#000000"
+
+
 def test_GuestMedia_to_json(open_door_guest, open_door_media, default_sound):
     json = GuestMedia(1, open_door_guest, open_door_media, default_sound.id, default_sound.name, 0xABCDEF).to_json()
     assert json['id'] == 1
