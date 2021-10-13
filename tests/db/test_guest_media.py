@@ -119,17 +119,17 @@ def test_list_with_media_id(mockdb):
 
 
 def test_create(mockdb):
-    mockdb.add_execute('INSERT INTO guest_media (guest_id, media_id, sound, color) VALUES (?,?,?,?)', (1, 'test', 1, 0xFFFFFF))
+    mockdb.add_execute('INSERT INTO guest_media (guest_id, media_id, sound, color) VALUES (?,?,?,?)', (1, 'test', 1, 0xABCDEF))
     mockdb.add_commit()
-    assert db.create(1, 'test', 1, 0xFFFFFF) is None
+    assert db.create(1, 'test', 1, 0xABCDEF) is None
 
 
 def test_create_IntegrityError(mockdb):
-    mockdb.add_execute('INSERT INTO guest_media (guest_id, media_id, sound, color) VALUES (?,?,?,?)', (1, 'test', 1, 0xFFFFFF))
+    mockdb.add_execute('INSERT INTO guest_media (guest_id, media_id, sound, color) VALUES (?,?,?,?)', (1, 'test', 1, 0xABCDEF))
     mockdb.add_commit(sqlite3.IntegrityError)
     mockdb.add_rollback()
     with pytest.raises(Duplicate) as e:
-        db.create(1, 'test', 1, 0xFFFFFF)
+        db.create(1, 'test', 1, 0xABCDEF)
 
     assert type(e.value.__cause__) == sqlite3.IntegrityError
 
@@ -149,9 +149,9 @@ def test_update(mockdb):
                                        sound = ?,
                                        color = ?
                                        WHERE id = ?
-                                       ''').replace('\n', ' '), (1, 'test', 1, 0xFFFFFF, 1), rowcount=1)
+                                       ''').replace('\n', ' '), (1, 'test', 1, 0xABCDEF, 1), rowcount=1)
     mockdb.add_commit()
-    assert db.update(1, 1, 'test', 1, 0xFFFFFF) == 1
+    assert db.update(1, 1, 'test', 1, 0xABCDEF) == 1
 
 
 def test_update_NotFoundError(mockdb):
@@ -163,7 +163,7 @@ def test_update_NotFoundError(mockdb):
                                        sound = ?,
                                        color = ?
                                        WHERE id = ?
-                                       ''').replace('\n', ' '), (1, 'test', 1, 0xFFFFFF, 1), rowcount=0)
+                                       ''').replace('\n', ' '), (1, 'test', 1, 0xABCDEF, 1), rowcount=0)
     mockdb.add_commit()
     with pytest.raises(NotFound):
-        db.update(1, 1, 'test', 1, 0xFFFFFF)
+        db.update(1, 1, 'test', 1, 0xABCDEF)
