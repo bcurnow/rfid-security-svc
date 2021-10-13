@@ -19,6 +19,13 @@ def creatable_media_perm(media_perms, media_for_creatable_media_perm, permission
 
 
 @pytest.fixture(scope='session')
+def open_door_media_perm(media_perms, open_door_media, open_door_permission):
+    for mp in media_perms:
+        if mp.media.id == open_door_media.id and mp.permission.id == open_door_permission.id:
+            return mp
+
+
+@pytest.fixture(scope='session')
 def media_perm_to_row():
     def to_row(m):
         row = {}
