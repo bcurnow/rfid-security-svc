@@ -55,6 +55,13 @@ def creatable_guest_media(guest_medias, guest_for_creatable_guest_media, media_f
 
 
 @pytest.fixture(scope='session')
+def open_door_guest_media(guest_medias, open_door_guest, open_door_media):
+    for gm in guest_medias:
+        if gm.guest.id == open_door_guest.id and gm.media.id == open_door_media.id:
+            return gm
+
+
+@pytest.fixture(scope='session')
 def guest_media_to_row():
     def to_row(m):
         row = {}
