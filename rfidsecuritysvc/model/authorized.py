@@ -1,4 +1,4 @@
-from rfidsecuritysvc.model import BaseModel, media_perm
+from rfidsecuritysvc.model import BaseModel, media_perm, guest_media
 
 
 class MediaConfig(BaseModel):
@@ -31,4 +31,29 @@ def authorized(media_id, perm_name):
     mp = media_perm.get_by_media_and_perm(media_id, perm_name)
     if not mp:
         return
-    return MediaConfig(mp, None, None, None, None)
+    # See if the media is associated with a guest
+    gm = guest_media.get_by_media(media_id)
+
+    color = None
+    guest = None
+    sound_id = None
+    sound_name = None
+    if gm:
+        color = _resolveColor(gm)
+        guest = gm.guest
+        sound_id, sound_name = _resolveSound(gm)
+
+    return MediaConfig(mp, guest, sound_id, sound_name, color)
+
+
+def _resolveColor(gm):
+    if gm.color:
+        return gm.color
+    # This can also be None but that's OK
+    return gm.guest.default_color
+
+
+def _resolveSound(gm):
+    if gm.sound_id:
+        return (gm.sound_id, gm.sound_name)
+    return (gm.guest.default_sound, gm.guest.default_sound_name)
