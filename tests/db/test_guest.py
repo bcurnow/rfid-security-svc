@@ -48,9 +48,9 @@ def test_create(mockdb, default_sound):
                                  INSERT INTO guest
                                  (first_name, last_name, default_sound, default_color)
                                  VALUES (?,?,?,?)
-                                 ''').replace('\n', ' '), ('first', 'last', default_sound.id, 0xFFFFFF))
+                                 ''').replace('\n', ' '), ('first', 'last', default_sound.id, 0xABCDEF))
     mockdb.add_commit()
-    assert db.create('first', 'last', default_sound.id, 0xFFFFFF) is None
+    assert db.create('first', 'last', default_sound.id, 0xABCDEF) is None
 
 
 def test_create_IntegrityError(mockdb, default_sound):
@@ -58,11 +58,11 @@ def test_create_IntegrityError(mockdb, default_sound):
                                  INSERT INTO guest
                                  (first_name, last_name, default_sound, default_color)
                                  VALUES (?,?,?,?)
-                                 ''').replace('\n', ' '), ('first', 'last', default_sound.id, 0xFFFFFF))
+                                 ''').replace('\n', ' '), ('first', 'last', default_sound.id, 0xABCDEF))
     mockdb.add_commit(sqlite3.IntegrityError)
     mockdb.add_rollback()
     with pytest.raises(Duplicate) as e:
-        db.create('first', 'last', default_sound.id, 0xFFFFFF)
+        db.create('first', 'last', default_sound.id, 0xABCDEF)
 
     assert type(e.value.__cause__) == sqlite3.IntegrityError
 
@@ -78,9 +78,9 @@ def test_update(mockdb, default_sound):
                                          UPDATE guest
                                          SET first_name = ?, last_name = ?, default_sound = ?, default_color = ?
                                          WHERE id = ?
-                                         ''').replace('\n', ' '), ('first', 'last', default_sound.id, 0xFFFFFF, 1), rowcount=1)
+                                         ''').replace('\n', ' '), ('first', 'last', default_sound.id, 0xABCDEF, 1), rowcount=1)
     mockdb.add_commit()
-    assert db.update(1, 'first', 'last', default_sound.id, 0xFFFFFF) == 1
+    assert db.update(1, 'first', 'last', default_sound.id, 0xABCDEF) == 1
 
 
 def test_update_NotFoundError(mockdb, default_sound):
@@ -88,6 +88,6 @@ def test_update_NotFoundError(mockdb, default_sound):
                                          UPDATE guest
                                          SET first_name = ?, last_name = ?, default_sound = ?, default_color = ?
                                          WHERE id = ?
-                                         ''').replace('\n', ' '), ('first', 'last', default_sound.id, 0xFFFFFF, 1), rowcount=0)
+                                         ''').replace('\n', ' '), ('first', 'last', default_sound.id, 0xABCDEF, 1), rowcount=0)
     with pytest.raises(NotFound):
-        db.update(1, 'first', 'last', default_sound.id, 0xFFFFFF)
+        db.update(1, 'first', 'last', default_sound.id, 0xABCDEF)

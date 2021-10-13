@@ -7,15 +7,15 @@ from rfidsecuritysvc.exception import SoundNotFoundError
 
 
 def test_Guest(assert_model, default_sound):
-    assert_model(_model(1, 'first', 'last', default_sound.id, default_sound.name, 0xFFFFFF),
-                 Guest(1, 'first', 'last', default_sound.id, default_sound.name, 0xFFFFFF))
+    assert_model(_model(1, 'first', 'last', default_sound.id, default_sound.name, 0xABCDEF),
+                 Guest(1, 'first', 'last', default_sound.id, default_sound.name, 0xABCDEF))
 
 
 def test_Guest___init__(assert_model, default_sound):
-    g = Guest(1, 'first', 'last', default_sound.id, default_sound.name, 0xFFFFFF)
-    assert g.default_color == 16777215
-    assert g.default_color_hex == 'FFFFFF'
-    assert g.default_color_html == '#ffffff'
+    g = Guest(1, 'first', 'last', default_sound.id, default_sound.name, 0xABCDEF)
+    assert g.default_color == 11259375
+    assert g.default_color_hex == 'ABCDEF'
+    assert g.default_color_html == '#abcdef'
 
 
 def test_Guest___init___no_color(assert_model, default_sound):
@@ -70,9 +70,9 @@ def test_list_noresults(table):
 def test_create(table, sound, default_sound):
     sound.get.return_value = default_sound
     table.create.return_value = None
-    assert model.create('first', 'last', default_sound.id, 0xFFFFFF) is None
+    assert model.create('first', 'last', default_sound.id, 0xABCDEF) is None
     sound.get.assert_called_once_with(default_sound.id)
-    table.create.assert_called_once_with('first', 'last', default_sound.id, 0xFFFFFF)
+    table.create.assert_called_once_with('first', 'last', default_sound.id, 0xABCDEF)
 
 
 @patch('rfidsecuritysvc.model.guest.sound')
@@ -80,7 +80,7 @@ def test_create(table, sound, default_sound):
 def test_create_SoundNotFoundError(table, sound, default_sound):
     sound.get.return_value = None
     with pytest.raises(SoundNotFoundError):
-        model.create('first', 'last', default_sound.id, 0xFFFFFF)
+        model.create('first', 'last', default_sound.id, 0xABCDEF)
     sound.get.assert_called_once_with(default_sound.id)
     table.create.assert_not_called()
 
@@ -106,9 +106,9 @@ def test_delete(table):
 def test_update(table, sound, default_sound):
     sound.get.return_value = default_sound
     table.update.return_value = 1
-    assert model.update(1, 'first', 'last', default_sound.id, 0xFFFFFF) == 1
+    assert model.update(1, 'first', 'last', default_sound.id, 0xABCDEF) == 1
     sound.get.assert_called_once_with(default_sound.id)
-    table.update.assert_called_once_with(1, 'first', 'last', default_sound.id, 0xFFFFFF)
+    table.update.assert_called_once_with(1, 'first', 'last', default_sound.id, 0xABCDEF)
 
 
 @patch('rfidsecuritysvc.model.guest.sound')
@@ -126,13 +126,13 @@ def test_update_SoundNotFoundError(table, sound, default_sound):
     table.update.return_value = 1
     sound.get.return_value = None
     with pytest.raises(SoundNotFoundError):
-        model.update(1, 'first', 'last', default_sound.id, 0xFFFFFF)
+        model.update(1, 'first', 'last', default_sound.id, 0xABCDEF)
     sound.get.assert_called_once_with(default_sound.id)
     table.update.assert_not_called()
 
 
 def _default(index=1):
-    return _model(index, f'first {index}', f'last {index}', index, f'sound_name {index}', 0xFFFFFF)
+    return _model(index, f'first {index}', f'last {index}', index, f'sound_name {index}', 0xABCDEF)
 
 
 def _model(id, first_name, last_name, default_sound, default_sound_name, default_color):

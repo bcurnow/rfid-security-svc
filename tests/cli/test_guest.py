@@ -8,7 +8,7 @@ from rfidsecuritysvc.exception import DuplicateGuestError as DuplicateError
 from rfidsecuritysvc.exception import GuestNotFoundError as NotFoundError
 from rfidsecuritysvc.model.guest import Guest as Model
 
-m = Model(1, 'first_name', 'last_name', 1, 'default_sound_name', 0xFFFFFF)
+m = Model(1, 'first_name', 'last_name', 1, 'default_sound_name', 0xABCDEF)
 
 
 @patch('rfidsecuritysvc.cli.guest.model')
