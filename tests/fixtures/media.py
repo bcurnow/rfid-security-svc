@@ -8,7 +8,9 @@ def medias():
     # The DB will return these ordered by id, please build the list accordingly
     return [
         Media('NOT AUTHORIZED', 'Not Authorized', 'This media should never be used in a media_perm record.'),
+        Media('TEST FOR AUTHORIZED NO GUEST', 'test for authorized media without a guest media record', None),
         Media('TEST FOR GUESTMEDIA CREATION', 'test for GuestMedia creation', None),
+        Media('TEST FOR MEDIAPERM CREATION', 'test for MediaPerm creation', None),
         Media('TEST MEDIA 1', 'test media 1', 'Media for testing (1)'),
         Media('TEST MEDIA 2', 'test media 2', 'Media for testing (2)'),
         Media('TEST MEDIA 3', 'test media 3', 'Media for testing (3)'),
@@ -50,12 +52,17 @@ def not_authorized_media(medias):
         if m.id == 'NOT AUTHORIZED':
             return m
 
+@pytest.fixture(scope='session')
+def authorized_media_no_guest(medias):
+    for m in medias:
+        if m.id == 'TEST FOR AUTHORIZED NO GUEST':
+            return m
 
 @pytest.fixture(scope='session')
 def media_for_creatable_media_perm(medias):
     """ This media should be used when creating a media_perm record."""
     for m in medias:
-        if m.id == 'TEST MEDIA 5':
+        if m.id == 'TEST FOR MEDIAPERM CREATION':
             return m
 
 
@@ -63,20 +70,20 @@ def media_for_creatable_media_perm(medias):
 def media_for_creatable_guest_media(medias):
     """ This media should be used when creating a guest_media record."""
     for m in medias:
-        if m.id == 'NOT AUTHORIZED':
+        if m.id == 'TEST FOR GUESTMEDIA CREATION':
             return m
 
 
 @pytest.fixture(scope='session')
 def media_for_guests(medias):
     """ Each media returned should be associated with a guest """
-    return medias[2:7]
+    return medias[4:9]
 
 
 @pytest.fixture(scope='session')
 def media_for_permissions(medias):
-    """ Each media returned should be associated with a guest """
-    return medias[1:9]
+    """ Each media returned should be associated with a permission """
+    return medias[4:]
 
 
 @pytest.fixture(autouse=True, scope='session')
