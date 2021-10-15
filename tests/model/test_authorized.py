@@ -33,7 +33,7 @@ def test_authorized_not_found(media_perm, media_perms):
 
 def test_MediaConfig(media_perms):
     guest = Guest(1, 'first_name', 'last_name')
-    sound = Sound(2, 'test.wav')
+    sound = Sound(2, 'test.wav', '2021-09-25 23:13:25')
     color = Color(0xABCDEF0123456789)
     mc = MediaConfig(media_perms[0], guest, sound, color)
     assert mc.media == media_perms[0].media
@@ -60,7 +60,7 @@ def test_MediaConfig_no_guest(media_perms):
 
 def test_MediaConfig_to_json(media_perms):
     guest = Guest(1, 'first_name', 'last_name')
-    sound = Sound(2, 'test.wav')
+    sound = Sound(2, 'test.wav', '2021-09-25 23:13:25')
     color = Color(0xABCDEF0123456789)
     mc = MediaConfig(media_perms[0], guest, sound, color)
     json = mc.to_json()
@@ -99,7 +99,7 @@ def test__resolveColor_none():
 def test__resolveSound_from_guest():
     gm = modifiableGuestMedia()
     # Set the sound attributes on the guest but leave the rest at None
-    sound = Sound(1, 'guest sound')
+    sound = Sound(1, 'guest sound', '2021-09-25 23:13:25')
     gm.guest.sound = sound
 
     assert model._resolveSound(gm) == sound
@@ -108,9 +108,9 @@ def test__resolveSound_from_guest():
 def test__resolveSound_from_guest_media():
     gm = modifiableGuestMedia()
     # Set the sound attributes on both the guest and guest_media to ensure the guest_media value is returned
-    g_sound = Sound(1, 'guest sound')
+    g_sound = Sound(1, 'guest sound', '2021-09-25 23:13:25')
     gm.guest.sound = g_sound
-    gm_sound = Sound(2, 'guest media sound')
+    gm_sound = Sound(2, 'guest media sound', '2021-09-25 23:13:25')
     gm.sound = gm_sound
 
     assert model._resolveSound(gm) == gm_sound
