@@ -3,7 +3,7 @@ from rfidsecuritysvc.db import guest_media as table
 from rfidsecuritysvc.model import guest, media, sound
 from rfidsecuritysvc.model import BaseModel
 from rfidsecuritysvc.model.color import Color
-from rfidsecuritysvc.model.sound import Sound, to_sound_timestamp
+from rfidsecuritysvc.model.sound import Sound
 
 
 class GuestMedia(BaseModel):
@@ -84,7 +84,7 @@ def __model(row):
 
     guest_sound = None
     if row['guest_sound'] is not None:
-        guest_sound = Sound(row['guest_sound'], row['guest_sound_name'], to_sound_timestamp(row['guest_sound_last_update_timestamp']))
+        guest_sound = Sound(row['guest_sound'], row['guest_sound_name'], row['guest_sound_last_update_timestamp'])
 
     g = guest.Guest(row['guest_id'],
                     row['guest_first_name'],
@@ -99,7 +99,7 @@ def __model(row):
 
     guest_media_sound = None
     if row['sound_id'] is not None:
-        guest_media_sound = Sound(row['sound_id'], row['sound_name'], to_sound_timestamp(row['sound_last_update_timestamp']))
+        guest_media_sound = Sound(row['sound_id'], row['sound_name'], row['sound_last_update_timestamp'])
 
     return GuestMedia(row['id'],
                       g,
