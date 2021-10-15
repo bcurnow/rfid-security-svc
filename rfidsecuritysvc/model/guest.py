@@ -1,7 +1,7 @@
 from rfidsecuritysvc.db import guest as table
 from rfidsecuritysvc import exception
 from rfidsecuritysvc.model import BaseModel, sound as sound_model
-from rfidsecuritysvc.model.sound import Sound, to_sound_timestamp
+from rfidsecuritysvc.model.sound import Sound
 from rfidsecuritysvc.model.color import Color
 
 
@@ -64,7 +64,7 @@ def __model(row):
 
     sound = None
     if row['sound'] is not None:
-        sound = Sound(row['sound'], row['sound_name'], to_sound_timestamp(row['sound_last_update_timestamp']))
+        sound = Sound(row['sound'], row['sound_name'], row['sound_last_update_timestamp'])
 
     return Guest(
         row['id'],
