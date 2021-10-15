@@ -127,7 +127,7 @@ def test__model_no_sound(creatable_guest):
 
 
 def _default(index=1):
-    return _model(index, f'first {index}', f'last {index}', Sound(index, f'sound_name {index}'), Color(0xABCDEF))
+    return _model(index, f'first {index}', f'last {index}', Sound(index, f'sound_name {index}', '2021-09-25 23:13:25'), Color(0xABCDEF))
 
 
 def _model(id, first_name, last_name, sound, color):

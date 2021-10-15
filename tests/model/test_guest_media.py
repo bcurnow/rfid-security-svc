@@ -264,7 +264,7 @@ def test__model_no_sound_id(creatable_guest_media):
 
 
 def _default(index=1):
-    s = Sound(1, 'test.wav')
+    s = Sound(1, 'test.wav', '2021-09-25 23:13:25')
     c = Color(0xABCDEF)
     g = Guest(index, f'test guest_first_name {index}', f'test guest_last_name {index}', s, c)
     m = Media(f'test media_id {index}', f'test media_name {index}', f'test media_desc {index}')
