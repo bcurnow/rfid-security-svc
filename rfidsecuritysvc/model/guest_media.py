@@ -2,29 +2,26 @@ from rfidsecuritysvc import exception as exception
 from rfidsecuritysvc.db import guest_media as table
 from rfidsecuritysvc.model import guest, media, sound
 from rfidsecuritysvc.model import BaseModel
+from rfidsecuritysvc.model.color import Color
+from rfidsecuritysvc.model.sound import Sound, to_sound_timestamp
 
 
 class GuestMedia(BaseModel):
-    def __init__(self, id, guest, media, sound_id=None, sound_name=None, color=None):
+    def __init__(self, id, guest, media, sound=None, color=None):
         self.id = id
         self.guest = guest
         self.media = media
-        self.sound_id = sound_id
-        self.sound_name = sound_name
+        self.sound = sound
         self.color = color
-        if color is not None:
-            # The color is stored as an integer, convert it to a hex string (e.g. FFFFFF)
-            # and an HTML hex string (e.g. #ffffff) for use in various contexts
-            self.color_hex = '{:X}'.format(color)
-            self.color_html = f'#{"{:06x}".format(color)}'
-        else:
-            self.color_hex = None
-            self.color_html = None
 
     def to_json(self):
         copy = super().to_json()
         copy['guest'] = self.guest.to_json()
         copy['media'] = self.media.to_json()
+        if self.sound:
+            copy['sound'] = self.sound.to_json()
+        if self.color:
+            copy['color'] = self.color.to_json()
         return copy
 
 
@@ -80,16 +77,32 @@ def update(id, guest_id, media_id, sound_id=None, color=None):
 def __model(row):
     if not row:
         return
+
+    guest_color = None
+    if row['guest_color'] is not None:
+        guest_color = Color(row['guest_color'])
+
+    guest_sound = None
+    if row['guest_sound'] is not None:
+        guest_sound = Sound(row['guest_sound'], row['guest_sound_name'], to_sound_timestamp(row['guest_sound_last_update_timestamp']))
+
     g = guest.Guest(row['guest_id'],
                     row['guest_first_name'],
                     row['guest_last_name'],
-                    row['guest_default_sound'],
-                    row['guest_default_sound_name'],
-                    row['guest_default_color'])
+                    guest_sound,
+                    guest_color)
     m = media.Media(row['media_id'], row['media_name'], row['media_desc'])
+
+    guest_media_color = None
+    if row['color'] is not None:
+        guest_media_color = Color(row['color'])
+
+    guest_media_sound = None
+    if row['sound_id'] is not None:
+        guest_media_sound = Sound(row['sound_id'], row['sound_name'], to_sound_timestamp(row['sound_last_update_timestamp']))
+
     return GuestMedia(row['id'],
                       g,
                       m,
-                      row['sound_id'],
-                      row['sound_name'],
-                      row['color'])
+                      guest_media_sound,
+                      guest_media_color)

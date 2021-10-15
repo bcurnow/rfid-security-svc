@@ -4,44 +4,37 @@ from unittest.mock import patch
 
 import rfidsecuritysvc.model.guest_media as model
 from rfidsecuritysvc.exception import GuestNotFoundError, MediaNotFoundError, SoundNotFoundError
+from rfidsecuritysvc.model.color import Color
 from rfidsecuritysvc.model.guest import Guest
 from rfidsecuritysvc.model.guest_media import GuestMedia
 from rfidsecuritysvc.model.media import Media
+from rfidsecuritysvc.model.sound import Sound
 
 
-def test_GuestMedia(assert_model, open_door_guest, open_door_media, default_sound):
-    assert_model(_model(1, open_door_guest, open_door_media, default_sound.id, default_sound.name, 0xABCDEF),
-                 GuestMedia(1, open_door_guest, open_door_media, default_sound.id, default_sound.name, 0xABCDEF))
+def test_GuestMedia(assert_model, open_door_guest, open_door_media, default_sound, default_color):
+    assert_model(_model(1, open_door_guest, open_door_media, default_sound, default_color),
+                 GuestMedia(1, open_door_guest, open_door_media, default_sound, default_color))
 
 
-def test_GuestMedia_default_color_zero(open_door_guest, open_door_media, default_sound):
-    m = GuestMedia(1, open_door_guest, open_door_media, default_sound.id, default_sound.name, 0)
-    assert m.color_hex == "0"
-    assert m.color_html == "#000000"
-
-
-def test_GuestMedia_to_json(open_door_guest, open_door_media, default_sound):
-    json = GuestMedia(1, open_door_guest, open_door_media, default_sound.id, default_sound.name, 0xABCDEF).to_json()
+def test_GuestMedia_to_json(open_door_guest, open_door_media, default_sound, default_color):
+    json = GuestMedia(1, open_door_guest, open_door_media, default_sound, default_color).to_json()
     assert json['id'] == 1
     assert json['guest'] == open_door_guest.to_json()
     assert json['media'] == open_door_media.to_json()
-    assert json['sound_id'] == default_sound.id
-    assert json['sound_name'] == default_sound.name
-    assert json['color'] == 0xABCDEF
-    assert json['color_hex'] == 'ABCDEF'
-    assert json['color_html'] == '#abcdef'
+    assert json['sound'] == default_sound.to_json()
+    assert json['color'] == default_color.to_json()
 
 
 @patch('rfidsecuritysvc.model.guest_media.table')
-def test_get(table, guest_media_to_row):
-    table.get.return_value = guest_media_to_row(_default())
+def test_get(table):
+    table.get.return_value = _default().test_to_row()
     assert model.get(1) == _default()
     table.get.assert_called_once_with(1)
 
 
 @patch('rfidsecuritysvc.model.guest_media.table')
-def test_get_by_media(table, guest_media_to_row):
-    table.get_by_media.return_value = guest_media_to_row(_default())
+def test_get_by_media(table):
+    table.get_by_media.return_value = _default().test_to_row()
     assert model.get_by_media('test') == _default()
     table.get_by_media.assert_called_once_with('test')
 
@@ -54,10 +47,10 @@ def test_get_notfound(table):
 
 
 @patch('rfidsecuritysvc.model.guest_media.table')
-def test_list(table, guest_media_to_row):
+def test_list(table):
     table.list.return_value = [
-        guest_media_to_row(_default()),
-        guest_media_to_row(_default(2)),
+        _default().test_to_row(),
+        _default(2).test_to_row(),
     ]
     models = model.list()
     table.list.assert_called_once()
@@ -65,10 +58,10 @@ def test_list(table, guest_media_to_row):
 
 
 @patch('rfidsecuritysvc.model.guest_media.table')
-def test_list_with_guest_id(table, guest_media_to_row):
+def test_list_with_guest_id(table):
     table.list.return_value = [
-        guest_media_to_row(_default()),
-        guest_media_to_row(_default(2)),
+        _default().test_to_row(),
+        _default(2).test_to_row(),
     ]
     models = model.list(1)
     table.list.assert_called_once_with(1)
@@ -242,18 +235,41 @@ def test_update_GuestNotFoundError(table, guest, media, sound, default_sound):
     table.update.assert_not_called()
 
 
-# @patch('rfidsecuritysvc.model.guest_media.table')
-# def test_update(table):
-#     table.update.return_value = 1
-#     assert model.update(1, 'test', 1) == 1
-#     table.update.assert_called_once_with(1, 'test', 1)
-#
-#
+def test__model_no_guest_color(creatable_guest_media):
+    row = creatable_guest_media.test_to_row()
+    row['guest_color'] = None
+    gm = model.__model(row)
+    assert gm.guest.color is None
+
+
+def test__model_no_guest_sound(creatable_guest_media):
+    row = creatable_guest_media.test_to_row()
+    row['guest_sound'] = None
+    gm = model.__model(row)
+    assert gm.guest.sound is None
+
+
+def test__model_no_color(creatable_guest_media):
+    row = creatable_guest_media.test_to_row()
+    row['color'] = None
+    gm = model.__model(row)
+    assert gm.color is None
+
+
+def test__model_no_sound_id(creatable_guest_media):
+    row = creatable_guest_media.test_to_row()
+    row['sound_id'] = None
+    gm = model.__model(row)
+    assert gm.sound is None
+
+
 def _default(index=1):
-    g = Guest(index, f'test guest_first_name {index}', f'test guest_last_name {index}', 1, 'test.wav', 0xABCDEF)
+    s = Sound(1, 'test.wav')
+    c = Color(0xABCDEF)
+    g = Guest(index, f'test guest_first_name {index}', f'test guest_last_name {index}', s, c)
     m = Media(f'test media_id {index}', f'test media_name {index}', f'test media_desc {index}')
-    return _model(index, g, m, 1, 'test.wav', 0xABCDEF)
+    return _model(index, g, m, s, c)
 
 
-def _model(id, guest, media, sound_id=None, sound_name=None, color=None):
-    return GuestMedia(id, guest, media, sound_id, sound_name, color)
+def _model(id, guest, media, sound=None, color=None):
+    return GuestMedia(id, guest, media, sound, color)
