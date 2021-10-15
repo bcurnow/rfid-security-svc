@@ -17,9 +17,9 @@ CREATE TABLE guest (
   id INTEGER PRIMARY KEY,
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
-  default_sound INTEGER,
-  default_color INTEGER,
-  FOREIGN KEY (default_sound) REFERENCES sound (id) ON DELETE SET NULL,
+  sound INTEGER,
+  color INTEGER,
+  FOREIGN KEY (sound) REFERENCES sound (id) ON DELETE SET NULL,
   CONSTRAINT unique_full_name UNIQUE (first_name, last_name)
 );
 
