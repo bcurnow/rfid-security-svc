@@ -50,7 +50,7 @@ def test_get_id_required():
 
 @patch('rfidsecuritysvc.cli.sound.model')
 def test_list(model, runner, assert_output):
-    m2 = Model('id2', 'name2')
+    m2 = Model('id2', 'name2', '2021-09-25 23:13:25')
     model.list.return_value = [m, m2]
     result = runner.invoke(args=['sound', 'list'])
     assert_output(result, m.to_json())
