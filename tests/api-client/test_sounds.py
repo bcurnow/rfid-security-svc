@@ -28,39 +28,39 @@ def test_search_noresults(model, rh):
     model.list.assert_called_once()
 
 
-def test_post(rh, creatable_sound, to_content):
-    rh.assert_response(rh.open('post', f'{api}', to_content(creatable_sound), 'multipart/form-data'), 201)
+def test_post(rh, creatable_sound):
+    rh.assert_response(rh.open('post', f'{api}', creatable_sound.test_to_multipart(), 'multipart/form-data'), 201)
     rh.assert_response(rh.open('get', f'{api}/{creatable_sound.id}'), 200)
     rh.assert_response(rh.open('delete', f'{api}/{creatable_sound.id}'), 200, headers={RECORD_COUNT_HEADER: '1'})
     rh.assert_response(rh.open('get', f'{api}/{creatable_sound.id}'), 404)
 
 
-def test_post_no_content(rh, to_content):
+def test_post_no_content(rh):
     rh.assert_response(rh.open('post', f'{api}', {'name': 'test.wav'}, 'multipart/form-data'), 400)
 
 
-def test_post_wrong_content_type(rh, creatable_sound, to_content):
-    rh.assert_response(rh.open('post', f'{api}', to_content(creatable_sound, 'application/wrong'), 'multipart/form-data'), 415)
+def test_post_wrong_content_type(rh, creatable_sound):
+    rh.assert_response(rh.open('post', f'{api}', creatable_sound.test_to_multipart('application/wrong'), 'multipart/form-data'), 415)
 
 
-def test_post_wrong_missing_name(rh, creatable_sound, to_content):
-    content = to_content(creatable_sound)
+def test_post_wrong_missing_name(rh, creatable_sound):
+    content = creatable_sound.test_to_multipart()
     del content['name']
     rh.assert_response(rh.open('post', f'{api}', content, 'application/wrong'), 400)
 
 
-def test_post_duplicate(rh, sounds, to_content):
-    rh.assert_response(rh.open('post', f'{api}', to_content(sounds[0]), 'multipart/form-data'), 409)
+def test_post_duplicate(rh, sounds):
+    rh.assert_response(rh.open('post', f'{api}', sounds[0].test_to_multipart(), 'multipart/form-data'), 409)
 
 
-def test_post_too_little_content(rh, sounds, to_content):
-    content = to_content(sounds[0])
+def test_post_too_little_content(rh, sounds):
+    content = sounds[0].test_to_multipart()
     content['content'] = FileStorage(BytesIO(b''), 'local file name.wav', sounds[0].name, 'audio/wav', 0)
     rh.assert_response(rh.open('post', f'{api}', content, 'multipart/form-data'), 400)
 
 
-def test_delete(rh, creatable_sound, to_content):
-    rh.assert_response(rh.open('post', f'{api}', to_content(creatable_sound), 'multipart/form-data'), 201)
+def test_delete(rh, creatable_sound):
+    rh.assert_response(rh.open('post', f'{api}', creatable_sound.test_to_multipart(), 'multipart/form-data'), 201)
     rh.assert_response(rh.open('get', f'{api}/{creatable_sound.id}'), 200)
     rh.assert_response(rh.open('delete', f'{api}/{creatable_sound.id}'), 200, headers={RECORD_COUNT_HEADER: '1'})
     rh.assert_response(rh.open('get', f'{api}/{creatable_sound.id}'), 404)
@@ -70,11 +70,11 @@ def test_delete_notfound(rh, creatable_sound):
     rh.assert_response(rh.open('delete', f'{api}/{creatable_sound.id}'), 200, headers={RECORD_COUNT_HEADER: '0'})
 
 
-def test_put(rh, sounds, to_content):
-    rh.assert_response(rh.open('put', f'{api}/{sounds[0].id}', to_content(sounds[0]), 'multipart/form-data'), 200, headers={RECORD_COUNT_HEADER: '1'})
+def test_put(rh, sounds):
+    rh.assert_response(rh.open('put', f'{api}/{sounds[0].id}', sounds[0].test_to_multipart(), 'multipart/form-data'), 200, headers={RECORD_COUNT_HEADER: '1'})
 
 
-def test_put_no_content(rh, sounds, to_content):
+def test_put_no_content(rh, sounds):
     rh.assert_response(
         rh.open(
             'put',
@@ -87,8 +87,8 @@ def test_put_no_content(rh, sounds, to_content):
         )
 
 
-def test_put_too_little_content(rh, sounds, to_content):
-    content = to_content(sounds[0])
+def test_put_too_little_content(rh, sounds):
+    content = sounds[0].test_to_multipart()
     content['content'] = FileStorage(BytesIO(b''), 'local file name.wav', sounds[0].name, 'audio/wav', 0)
     rh.assert_response(
         rh.open(
@@ -100,8 +100,8 @@ def test_put_too_little_content(rh, sounds, to_content):
         400)
 
 
-def test_put_missing_name(rh, sounds, to_content):
-    content = to_content(sounds[0])
+def test_put_missing_name(rh, sounds):
+    content = sounds[0].test_to_multipart()
     del content['name']
     rh.assert_response(
         rh.open(
@@ -113,18 +113,18 @@ def test_put_missing_name(rh, sounds, to_content):
         400)
 
 
-def test_put_notfound(rh, creatable_sound, to_content):
+def test_put_notfound(rh, creatable_sound):
     rh.assert_response(rh.open('put',
                                f'{api}/{creatable_sound.id}',
-                               to_content(creatable_sound),
+                               creatable_sound.test_to_multipart(),
                                'multipart/form-data'
                                ), 201, headers={RECORD_COUNT_HEADER: '1'})
     rh.assert_response(rh.open('delete', f'{api}/{creatable_sound.id}', creatable_sound), 200, headers={RECORD_COUNT_HEADER: '1'})
 
 
-def test_put_wrong_content_type(rh, creatable_sound, to_content):
+def test_put_wrong_content_type(rh, creatable_sound):
     rh.assert_response(rh.open('put',
                                f'{api}/{creatable_sound.id}',
-                               to_content(creatable_sound, 'application/wrong'),
+                               creatable_sound.test_to_multipart('application/wrong'),
                                'multipart/form-data'
                                ), 415)
