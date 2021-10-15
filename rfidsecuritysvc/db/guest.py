@@ -13,12 +13,13 @@ def get(conn, id):
                                             guest.id,
                                             guest.first_name,
                                             guest.last_name,
-                                            guest.default_sound,
-                                            sound.name as default_sound_name,
-                                            guest.default_color
+                                            guest.sound,
+                                            sound.name as sound_name,
+                                            sound.last_update_timestamp as sound_last_update_timestamp,
+                                            guest.color
                                             FROM
                                             guest
-                                            LEFT JOIN sound on guest.default_sound = sound.id
+                                            LEFT JOIN sound on guest.sound = sound.id
                                             WHERE guest.id = ?
                                             ORDER BY guest.id
                                             ''').replace('\n', ' '), (id,)).fetchone()
@@ -32,25 +33,26 @@ def list(conn):
                                             guest.id,
                                             guest.first_name,
                                             guest.last_name,
-                                            guest.default_sound,
-                                            sound.name as default_sound_name,
-                                            guest.default_color
+                                            guest.sound,
+                                            sound.name as sound_name,
+                                            sound.last_update_timestamp as sound_last_update_timestamp,
+                                            guest.color
                                             FROM
                                             guest
-                                            LEFT JOIN sound on guest.default_sound = sound.id
+                                            LEFT JOIN sound on guest.sound = sound.id
                                             ORDER BY guest.id
                                             ''').replace('\n', ' ')).fetchall()
 
 
 @with_dbconn
-def create(conn, first_name, last_name, default_sound=None, default_color=None):
+def create(conn, first_name, last_name, sound=None, color=None):
     try:
         with conn as conn:
             conn.execute(textwrap.dedent('''
                                          INSERT INTO guest
-                                         (first_name, last_name, default_sound, default_color)
+                                         (first_name, last_name, sound, color)
                                          VALUES (?,?,?,?)
-                                         ''').replace('\n', ' '), (first_name, last_name, default_sound, default_color))
+                                         ''').replace('\n', ' '), (first_name, last_name, sound, color))
     except sqlite3.IntegrityError as e:
         raise exception.DuplicateGuestError from e
 
@@ -62,13 +64,13 @@ def delete(conn, id):
 
 
 @with_dbconn
-def update(conn, id, first_name, last_name, default_sound=None, default_color=None):
+def update(conn, id, first_name, last_name, sound=None, color=None):
     with conn:
         count = conn.execute(textwrap.dedent('''
                                              UPDATE guest
-                                             SET first_name = ?, last_name = ?, default_sound = ?, default_color = ?
+                                             SET first_name = ?, last_name = ?, sound = ?, color = ?
                                              WHERE id = ?
-                                             ''').replace('\n', ' '), (first_name, last_name, default_sound, default_color, id)).rowcount
+                                             ''').replace('\n', ' '), (first_name, last_name, sound, color, id)).rowcount
     if count == 0:
         raise exception.GuestNotFoundError
 

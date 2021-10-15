@@ -14,12 +14,13 @@ def test_get(mockdb):
                                         guest.id,
                                         guest.first_name,
                                         guest.last_name,
-                                        guest.default_sound,
-                                        sound.name as default_sound_name,
-                                        guest.default_color
+                                        guest.sound,
+                                        sound.name as sound_name,
+                                        sound.last_update_timestamp as sound_last_update_timestamp,
+                                        guest.color
                                         FROM
                                         guest
-                                        LEFT JOIN sound on guest.default_sound = sound.id
+                                        LEFT JOIN sound on guest.sound = sound.id
                                         WHERE guest.id = ?
                                         ORDER BY guest.id
                                         ''').replace('\n', ' '), (1,), 1)
@@ -32,12 +33,13 @@ def test_list(mockdb):
                                         guest.id,
                                         guest.first_name,
                                         guest.last_name,
-                                        guest.default_sound,
-                                        sound.name as default_sound_name,
-                                        guest.default_color
+                                        guest.sound,
+                                        sound.name as sound_name,
+                                        sound.last_update_timestamp as sound_last_update_timestamp,
+                                        guest.color
                                         FROM
                                         guest
-                                        LEFT JOIN sound on guest.default_sound = sound.id
+                                        LEFT JOIN sound on guest.sound = sound.id
                                         ORDER BY guest.id
                                         ''').replace('\n', ' '), cursor_return=[])
     assert db.list() == []
@@ -46,7 +48,7 @@ def test_list(mockdb):
 def test_create(mockdb, default_sound):
     mockdb.add_execute(textwrap.dedent('''
                                  INSERT INTO guest
-                                 (first_name, last_name, default_sound, default_color)
+                                 (first_name, last_name, sound, color)
                                  VALUES (?,?,?,?)
                                  ''').replace('\n', ' '), ('first', 'last', default_sound.id, 0xABCDEF))
     mockdb.add_commit()
@@ -56,7 +58,7 @@ def test_create(mockdb, default_sound):
 def test_create_IntegrityError(mockdb, default_sound):
     mockdb.add_execute(textwrap.dedent('''
                                  INSERT INTO guest
-                                 (first_name, last_name, default_sound, default_color)
+                                 (first_name, last_name, sound, color)
                                  VALUES (?,?,?,?)
                                  ''').replace('\n', ' '), ('first', 'last', default_sound.id, 0xABCDEF))
     mockdb.add_commit(sqlite3.IntegrityError)
@@ -76,7 +78,7 @@ def test_delete(mockdb):
 def test_update(mockdb, default_sound):
     mockdb.add_execute(textwrap.dedent('''
                                          UPDATE guest
-                                         SET first_name = ?, last_name = ?, default_sound = ?, default_color = ?
+                                         SET first_name = ?, last_name = ?, sound = ?, color = ?
                                          WHERE id = ?
                                          ''').replace('\n', ' '), ('first', 'last', default_sound.id, 0xABCDEF, 1), rowcount=1)
     mockdb.add_commit()
@@ -86,7 +88,7 @@ def test_update(mockdb, default_sound):
 def test_update_NotFoundError(mockdb, default_sound):
     mockdb.add_execute(textwrap.dedent('''
                                          UPDATE guest
-                                         SET first_name = ?, last_name = ?, default_sound = ?, default_color = ?
+                                         SET first_name = ?, last_name = ?, sound = ?, color = ?
                                          WHERE id = ?
                                          ''').replace('\n', ' '), ('first', 'last', default_sound.id, 0xABCDEF, 1), rowcount=0)
     with pytest.raises(NotFound):

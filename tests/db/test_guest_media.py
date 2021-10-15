@@ -14,21 +14,23 @@ def test_get(mockdb):
                                        guest_id,
                                        guest.first_name as guest_first_name,
                                        guest.last_name as guest_last_name,
-                                       guest.default_sound as guest_default_sound,
-                                       gs.name as guest_default_sound_name,
-                                       guest.default_color as guest_default_color,
+                                       guest.sound as guest_sound,
+                                       gs.name as guest_sound_name,
+                                       gs.last_update_timestamp as guest_sound_last_update_timestamp,
+                                       guest.color as guest_color,
                                        media_id,
                                        media.name as media_name,
                                        media.desc as media_desc,
                                        guest_media.sound as sound_id,
                                        gms.name as sound_name,
-                                       color
+                                       gms.last_update_timestamp as sound_last_update_timestamp,
+                                       guest_media.color
                                        FROM
                                        guest_media
                                        INNER JOIN media ON media.id = guest_media.media_id
                                        INNER JOIN guest ON guest.id = guest_media.guest_id
                                        LEFT JOIN sound gms ON gms.id = guest_media.sound
-                                       LEFT JOIN sound gs ON gs.id = guest.default_sound
+                                       LEFT JOIN sound gs ON gs.id = guest.sound
                                        WHERE guest_media.id = ?
                                        ORDER BY guest_media.id
                                        ''').replace('\n', ' '), ('test',), 'test')
@@ -42,21 +44,23 @@ def test_get_by_media(mockdb):
                                        guest_id,
                                        guest.first_name as guest_first_name,
                                        guest.last_name as guest_last_name,
-                                       guest.default_sound as guest_default_sound,
-                                       gs.name as guest_default_sound_name,
-                                       guest.default_color as guest_default_color,
+                                       guest.sound as guest_sound,
+                                       gs.name as guest_sound_name,
+                                       gs.last_update_timestamp as guest_sound_last_update_timestamp,
+                                       guest.color as guest_color,
                                        media_id,
                                        media.name as media_name,
                                        media.desc as media_desc,
                                        guest_media.sound as sound_id,
                                        gms.name as sound_name,
-                                       color
+                                       gms.last_update_timestamp as sound_last_update_timestamp,
+                                       guest_media.color
                                        FROM
                                        guest_media
                                        INNER JOIN media ON media.id = guest_media.media_id
                                        INNER JOIN guest ON guest.id = guest_media.guest_id
                                        LEFT JOIN sound gms ON gms.id = guest_media.sound
-                                       LEFT JOIN sound gs ON gs.id = guest.default_sound
+                                       LEFT JOIN sound gs ON gs.id = guest.sound
                                        WHERE guest_media.media_id = ?
                                        ORDER BY guest_media.id
                                        ''').replace('\n', ' '), ('test',), 'test')
@@ -70,21 +74,23 @@ def test_list(mockdb):
                                        guest_id,
                                        guest.first_name as guest_first_name,
                                        guest.last_name as guest_last_name,
-                                       guest.default_sound as guest_default_sound,
-                                       gs.name as guest_default_sound_name,
-                                       guest.default_color as guest_default_color,
+                                       guest.sound as guest_sound,
+                                       gs.name as guest_sound_name,
+                                       gs.last_update_timestamp as guest_sound_last_update_timestamp,
+                                       guest.color as guest_color,
                                        media_id,
                                        media.name as media_name,
                                        media.desc as media_desc,
                                        guest_media.sound as sound_id,
                                        gms.name as sound_name,
-                                       color
+                                       gms.last_update_timestamp as sound_last_update_timestamp,
+                                       guest_media.color
                                        FROM
                                        guest_media
                                        INNER JOIN media ON media.id = guest_media.media_id
                                        INNER JOIN guest ON guest.id = guest_media.guest_id
                                        LEFT JOIN sound gms ON gms.id = guest_media.sound
-                                       LEFT JOIN sound gs ON gs.id = guest.default_sound
+                                       LEFT JOIN sound gs ON gs.id = guest.sound
                                        ORDER BY guest_media.id
                                         ''').replace('\n', ' '), cursor_return=[])
     assert db.list() == []
@@ -97,21 +103,23 @@ def test_list_with_media_id(mockdb):
                                        guest_id,
                                        guest.first_name as guest_first_name,
                                        guest.last_name as guest_last_name,
-                                       guest.default_sound as guest_default_sound,
-                                       gs.name as guest_default_sound_name,
-                                       guest.default_color as guest_default_color,
+                                       guest.sound as guest_sound,
+                                       gs.name as guest_sound_name,
+                                       gs.last_update_timestamp as guest_sound_last_update_timestamp,
+                                       guest.color as guest_color,
                                        media_id,
                                        media.name as media_name,
                                        media.desc as media_desc,
                                        guest_media.sound as sound_id,
                                        gms.name as sound_name,
-                                       color
+                                       gms.last_update_timestamp as sound_last_update_timestamp,
+                                       guest_media.color
                                        FROM
                                        guest_media
                                        INNER JOIN media ON media.id = guest_media.media_id
                                        INNER JOIN guest ON guest.id = guest_media.guest_id
                                        LEFT JOIN sound gms ON gms.id = guest_media.sound
-                                       LEFT JOIN sound gs ON gs.id = guest.default_sound
+                                       LEFT JOIN sound gs ON gs.id = guest.sound
                                        WHERE guest_media.guest_id = ?
                                        ORDER BY guest_media.id
                                         ''').replace('\n', ' '), (1,), cursor_return=[])
