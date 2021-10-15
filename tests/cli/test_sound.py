@@ -10,7 +10,7 @@ from rfidsecuritysvc.exception import DuplicateSoundError as DuplicateError
 from rfidsecuritysvc.exception import SoundNotFoundError as NotFoundError
 from rfidsecuritysvc.model.sound import Sound as Model
 
-m = Model(1, 'name')
+m = Model(1, 'name', '2021-09-25 23:13:25')
 
 
 @patch('rfidsecuritysvc.cli.sound.model')
