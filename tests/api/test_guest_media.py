@@ -5,14 +5,14 @@ from rfidsecuritysvc.api import guest_media as api
 from rfidsecuritysvc.exception import DuplicateGuestMediaError as DuplicateError, GuestMediaNotFoundError as NotFoundError
 from rfidsecuritysvc.exception import MediaNotFoundError, GuestNotFoundError, SoundNotFoundError
 from rfidsecuritysvc.model.guest_media import GuestMedia as Model
+from rfidsecuritysvc.model.color import Color
 from rfidsecuritysvc.model.guest import Guest
 from rfidsecuritysvc.model.media import Media
 from rfidsecuritysvc.model.sound import Sound
 
-sound = Sound(1, 'test.wav')
-guest = Guest(1, 'first_name', 'last_name', sound.id, sound.name, 0xABCDEF)
+guest = Guest(1, 'first_name', 'last_name', Sound(1, 'test.wav', '2021-09-25 23:13:25'), Color(0xABCDEF))
 media = Media('media_id', 'media_name', 'media_desc')
-m = Model(1, guest, media, sound.id, sound.name, 0xABCDEF)
+m = Model(1, guest, media, Sound(1, 'test.wav', '2021-09-25 23:13:25'), Color(0xABCDEF))
 
 
 @patch('rfidsecuritysvc.api.guest_media.model')
@@ -31,9 +31,9 @@ def test_get_notfound(model):
 
 @patch('rfidsecuritysvc.api.guest_media.model')
 def test_search(model):
-    guest2 = Guest(2, 'first_name2', 'last_name2', sound.id, sound.name, 0xABCDEF)
+    guest2 = Guest(2, 'first_name2', 'last_name2', guest.sound, guest.color)
     media2 = Media('media_id2', 'media_name2', 'media_desc2')
-    m2 = Model(2, guest2, media2, sound.id, sound.name, 0xABCDEF)
+    m2 = Model(2, guest2, media2, m.sound, m.color)
     model.list.return_value = [m, m2]
     assert api.search() == [m.to_json(), m2.to_json()]
     model.list.assert_called_once()
@@ -42,7 +42,7 @@ def test_search(model):
 @patch('rfidsecuritysvc.api.guest_media.model')
 def test_search_with_guest_id(model):
     media2 = Media('media_id2', 'media_name2', 'media_desc2')
-    m2 = Model(2, guest, media2, sound.id, sound.name, 0xABCDEF)
+    m2 = Model(2, guest, media2, m.sound, m.color)
     model.list.return_value = [m, m2]
     assert api.search(1) == [m.to_json(), m2.to_json()]
     model.list.assert_called_once_with(1)
@@ -86,7 +86,7 @@ def test_post_MediaNotFoundError(model):
 @patch('rfidsecuritysvc.api.guest_media.model')
 def test_post_SoundNotFoundError(model):
     model.create.side_effect = SoundNotFoundError
-    assert api.post(m.test_create()) == (f'No sound found with id "{m.sound_id}".', 400)
+    assert api.post(m.test_create()) == (f'No sound found with id "{m.sound.id}".', 400)
     model.create.assert_called_once_with(**m.test_create())
 
 
@@ -121,7 +121,7 @@ def test_put_MediaNotFoundError(model):
 @patch('rfidsecuritysvc.api.guest_media.model')
 def test_put_SoundNotFoundError(model):
     model.update.side_effect = SoundNotFoundError
-    assert api.put(m.id, m.test_create()) == (f'No sound found with id "{m.sound_id}".', 400)
+    assert api.put(m.id, m.test_create()) == (f'No sound found with id "{m.sound.id}".', 400)
     model.update.assert_called_once_with(m.id, **m.test_create())
 
 
@@ -164,6 +164,6 @@ def test_put_not_found_MediaNotFoundError(model):
 def test_put_not_found_SoundNotFoundError(model):
     model.update.side_effect = NotFoundError
     model.create.side_effect = SoundNotFoundError
-    assert api.put(m.id, m.test_create()) == (f'No sound found with id "{m.sound_id}".', 400,)
+    assert api.put(m.id, m.test_create()) == (f'No sound found with id "{m.sound.id}".', 400,)
     model.update.assert_called_once_with(m.id, **m.test_create())
     model.create.assert_called_once_with(**m.test_create())
