@@ -4,12 +4,13 @@ from rfidsecuritysvc.model.media_perm import MediaPerm
 
 
 @pytest.fixture(scope='session')
-def media_perms(media_for_permissions, open_door_media, open_door_permission, default_permission):
+def media_perms(media_for_permissions, open_door_media, open_door_permission, authorized_media_no_guest, default_permission):
     # The DB will return these ordered by id, please build the list accordingly
     media_perms = []
     for i in range(len(media_for_permissions)):
         media_perms.append(MediaPerm(i + 1, media_for_permissions[i], default_permission))
     media_perms.append(MediaPerm(len(media_perms) + 1, open_door_media, open_door_permission))
+    media_perms.append(MediaPerm(len(media_perms) + 1, authorized_media_no_guest, default_permission))
     return media_perms
 
 
@@ -22,6 +23,13 @@ def creatable_media_perm(media_perms, media_for_creatable_media_perm, permission
 def open_door_media_perm(media_perms, open_door_media, open_door_permission):
     for mp in media_perms:
         if mp.media.id == open_door_media.id and mp.permission.id == open_door_permission.id:
+            return mp
+
+
+@pytest.fixture(scope='session')
+def authorized_media_perm_no_guest(media_perms, authorized_media_no_guest, default_permission):
+    for mp in media_perms:
+        if mp.media.id == authorized_media_no_guest.id and mp.permission.id == default_permission.id:
             return mp
 
 
