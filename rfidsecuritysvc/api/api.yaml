@@ -229,7 +229,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/SimpleGuest"
+              $ref: "#/components/schemas/InputGuest"
       responses:
         "201":
           description: New record created.
@@ -312,12 +312,12 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/SimpleGuest"
+              $ref: "#/components/schemas/InputGuest"
             example:
               first_name: Mickey
               last_name: Mouse
-              default_sound: 1
-              default_color: 16777215
+              sound: 1
+              color: 16777215
       responses:
         "200":
           description: Record was updated.
@@ -1089,6 +1089,24 @@ paths:
           $ref: "#/components/responses/UnauthorizedError"
 components:
   schemas:
+    Color:
+      required:
+        - int
+        - hex
+        - html
+      type: object
+      properties:
+        int:
+          type: integer
+          example: 16777215
+        hex:
+          type: string
+          example: FFFFFF
+          pattern: '^[A-F0-9]{6}$'
+        html:
+          type: string
+          example: '#ffffff'
+          pattern: '^#[a-f0-9]{6}$'
     Config:
       allOf:
         - $ref: "#/components/schemas/SimpleConfig"
@@ -1107,6 +1125,61 @@ components:
         - type: object
           required:
           - id
+    InputGuest:
+      required:
+      - first_name
+      - last_name
+      - sound
+      - color
+      type: object
+      properties:
+        first_name:
+          type: string
+          example: Mickey
+        last_name:
+          type: string
+          example: Mouse
+        sound:
+          type: integer
+          nullable: true
+        color:
+          type: integer
+          nullable: true
+      additionalProperties: false
+    InputGuestMedia:
+      required:
+        - guest_id
+        - media_id
+      type: object
+      properties:
+        guest_id:
+          type: integer
+          example: 1
+        media_id:
+          type: string
+          example: 80558ABA5C3504
+        sound_id:
+          type: integer
+          example: 1
+          nullable: true
+        color:
+          type: integer
+          example: 16777215
+          nullable: true
+      additionalProperties: false
+    InputMediaPerm:
+      required:
+        - media_id
+        - permission_id
+      type: object
+      properties:
+        media_id:
+          type: string
+          example: 80558ABA5C3504
+        permission_id:
+          type: integer
+          example: 1
+      additionalProperties: false
     Media:
       allOf:
         - $ref: "#/components/schemas/SimpleMedia"
@@ -1128,34 +1201,17 @@ components:
         guest:
           oneOf:
             - $ref: "#/components/schemas/Guest"
-            - type: object
-              nullable: true
+            - $ref: "#/components/schemas/NullValue"
           readOnly: true
-        sound_id:
-          type: integer
-          example: 1
-          readOnly: true
-          nullable: true
-        sound_name:
-          type: string
-          example: read.wav
-          nullable: true
+        sound:
+          oneOf:
+            - $ref: "#/components/schemas/SimpleSound"
+            - $ref: "#/components/schemas/NullValue"
           readOnly: true
         color:
-          type: integer
-          example: 16777215
-          nullable: true
-          readOnly: true
-        color_hex:
-          type: string
-          example: FFFFFF
-          nullable: true
-          readOnly: true
-        color_html:
-          type: string
-          example: "#ffffff"
-          nullable: true
-          readOnly: true
+          oneOf:
+            - $ref: "#/components/schemas/Color"
+            - $ref: "#/components/schemas/NullValue"
       additionalProperties: false
     MediaPerm:
       allOf:
@@ -1163,6 +1219,16 @@ components:
         - type: object
           required:
             - id
+    NullValue:
+      nullable: true
+      not:
+        anyOf:
+          - type: string
+          - type: number
+          - type: boolean
+          - type: object
+          - type: array
+            items: {}
     Permission:
       allOf:
         - $ref: "#/components/schemas/SimplePermission"
@@ -1205,29 +1271,14 @@ components:
         last_name:
           type: string
           example: Mouse
-        default_sound:
-          type: integer
-          example: 1
-          nullable: true
-        default_sound_name:
-          type: string
-          example: read.wav
-          readOnly: true
-          nullable: true
-        default_color:
-          type: integer
-          example: 16777215
-          nullable: true
-        default_color_hex:
-          type: string
-          example: FFFFFF
-          readOnly: true
-          nullable: true
-        default_color_html:
-          type: string
-          example: "#ffffff"
-          readOnly: true
-          nullable: true
+        sound:
+          oneOf:
+            - $ref: "#/components/schemas/SimpleSound"
+            - $ref: "#/components/schemas/NullValue"
+        color:
+          oneOf:
+            - $ref: "#/components/schemas/Color"
+            - $ref: "#/components/schemas/NullValue"
       additionalProperties: false
     SimpleGuestMedia:
       required:
@@ -1243,27 +1294,14 @@ components:
           $ref: "#/components/schemas/Guest"
         media:
           $ref: "#/components/schemas/Media"
-        sound_id:
-          type: integer
-          example: 1
-          nullable: true
-        sound_name:
-          type: string
-          example: read.wav
-          readOnly: true
-          nullable: true
+        sound:
+          oneOf:
+            - $ref: "#/components/schemas/SimpleSound"
+            - $ref: "#/components/schemas/NullValue"
         color:
-          type: integer
-          example: 16777215
-          nullable: true
-        color_hex:
-          type: string
-          example: FFFFFF
-          nullable: true
-        color_html:
-          type: string
-          example: "#ffffff"
-          nullable: true
+          oneOf:
+            - $ref: "#/components/schemas/Color"
+            - $ref: "#/components/schemas/NullValue"
       additionalProperties: false
     SimpleMedia:
       required:
@@ -1313,7 +1351,9 @@ components:
       additionalProperties: false
     SimpleSound:
       required:
+        - id
         - name
+        - last_update_timestamp
       type: object
       properties:
         id:
@@ -1344,40 +1384,6 @@ components:
           type: string
           example: This is the MagicBand that Anna got from Elsa
           nullable: true
-      additionalProperties: false
-    InputGuestMedia:
-      required:
-        - guest_id
-        - media_id
-      type: object
-      properties:
-        guest_id:
-          type: integer
-          example: 1
-        media_id:
-          type: string
-          example: 80558ABA5C3504
-        sound_id:
-          type: integer
-          example: 1
-          nullable: true
-        color:
-          type: integer
-          example: 16777215
-          nullable: true
-      additionalProperties: false
-    InputMediaPerm:
-      required:
-        - media_id
-        - permission_id
-      type: object
-      properties:
-        media_id:
-          type: string
-          example: 80558ABA5C3504
-        permission_id:
-          type: integer
-          example: 1
       additionalProperties: false
   securitySchemes:
     ApiKey:
