@@ -6,9 +6,13 @@ from click.exceptions import MissingParameter
 from rfidsecuritysvc.cli.guest import get, create, delete, update
 from rfidsecuritysvc.exception import DuplicateGuestError as DuplicateError
 from rfidsecuritysvc.exception import GuestNotFoundError as NotFoundError
+from rfidsecuritysvc.model.color import Color
 from rfidsecuritysvc.model.guest import Guest as Model
+from rfidsecuritysvc.model.sound import Sound
 
-m = Model(1, 'first_name', 'last_name', 1, 'default_sound_name', 0xABCDEF)
+c = Color(0xABCDEF)
+s = Sound(1, 'sound_name')
+m = Model(1, 'first_name', 'last_name', s, c)
 
 
 @patch('rfidsecuritysvc.cli.guest.model')
@@ -46,18 +50,18 @@ def test_list(model, runner, assert_output):
 def test_create(model, runner, assert_output):
     model.create.return_value = None
     model.list.return_value = [m]
-    result = runner.invoke(args=['guest', 'create', m.first_name, m.last_name, str(m.default_sound), str(m.default_color)])
+    result = runner.invoke(args=['guest', 'create', m.first_name, m.last_name, str(m.sound.id), str(m.color.int)])
     assert_output(result, m.to_json())
-    model.create.assert_called_once_with(m.first_name, m.last_name, m.default_sound, m.default_color)
+    model.create.assert_called_once_with(m.first_name, m.last_name, m.sound.id, m.color.int)
     model.list.assert_called_once()
 
 
 @patch('rfidsecuritysvc.cli.guest.model')
 def test_create_duplicate(model, runner, assert_output):
     model.create.side_effect = DuplicateError
-    result = runner.invoke(args=['guest', 'create', m.first_name, m.last_name, str(m.default_sound), str(m.default_color)], color=True)
+    result = runner.invoke(args=['guest', 'create', m.first_name, m.last_name, str(m.sound.id), str(m.color.int)], color=True)
     assert_output(result, f'Record with first_name "{m.first_name}" and last_name "{m.last_name}" already exists.', 2, fg='red')
-    model.create.assert_called_once_with(m.first_name, m.last_name, m.default_sound, m.default_color)
+    model.create.assert_called_once_with(m.first_name, m.last_name, m.sound.id, m.color.int)
 
 
 def test_create_first_name_required():
@@ -97,18 +101,18 @@ def test_delete_id_required():
 def test_update(model, runner, assert_output):
     model.update.return_value = 1
     model.list.return_value = [m]
-    result = runner.invoke(args=['guest', 'update', str(m.id), m.first_name, m.last_name, str(m.default_sound), str(m.default_color)], color=True)
+    result = runner.invoke(args=['guest', 'update', str(m.id), m.first_name, m.last_name, str(m.sound.id), str(m.color.int)], color=True)
     assert_output(result, 'Record updated.', bg='green', fg='black')
-    model.update.assert_called_once_with(m.id, m.first_name, m.last_name, m.default_sound, m.default_color)
+    model.update.assert_called_once_with(m.id, m.first_name, m.last_name, m.sound.id, m.color.int)
     model.list.assert_called_once()
 
 
 @patch('rfidsecuritysvc.cli.guest.model')
 def test_update_notfound(model, runner, assert_output):
     model.update.side_effect = NotFoundError
-    result = runner.invoke(args=['guest', 'update', str(m.id), m.first_name, m.last_name, str(m.default_sound), str(m.default_color)], color=True)
+    result = runner.invoke(args=['guest', 'update', str(m.id), m.first_name, m.last_name, str(m.sound.id), str(m.color.int)], color=True)
     assert_output(result, f'Record with id "{m.id}" does not exist.', 2, fg='red')
-    model.update.assert_called_once_with(m.id, m.first_name, m.last_name, m.default_sound, m.default_color)
+    model.update.assert_called_once_with(m.id, m.first_name, m.last_name, m.sound.id, m.color.int)
 
 
 def test_update_id_required():

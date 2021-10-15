@@ -32,13 +32,13 @@ def list():
 @group.command('create')
 @click.argument('first_name')
 @click.argument('last_name')
-@click.argument('default_sound', type=int, required=False)
-@click.argument('default_color', type=int, required=False)
+@click.argument('sound', type=int, required=False)
+@click.argument('color', type=int, required=False)
 @click.pass_context
-def create(ctx, first_name, last_name, default_sound, default_color):
+def create(ctx, first_name, last_name, sound, color):
     """Manually adds a record to the table."""
     try:
-        model.create(first_name, last_name, default_sound, default_color)
+        model.create(first_name, last_name, sound, color)
         ctx.invoke(list)
     except exception.DuplicateGuestError:
         ctx.fail(click.style(f'Record with first_name "{first_name}" and last_name "{last_name}" already exists.', fg='red'))
@@ -57,13 +57,13 @@ def delete(ctx, id):
 @click.argument('id', type=int)
 @click.argument('first_name')
 @click.argument('last_name')
-@click.argument('default_sound', type=int, required=False)
-@click.argument('default_color', type=int, required=False)
+@click.argument('sound', type=int, required=False)
+@click.argument('color', type=int, required=False)
 @click.pass_context
-def update(ctx, id, first_name, last_name, default_sound, default_color):
+def update(ctx, id, first_name, last_name, sound, color):
     """Manually updates a record in the table."""
     try:
-        model.update(id, first_name, last_name, default_sound, default_color)
+        model.update(id, first_name, last_name, sound, color)
         click.echo(click.style('Record updated.', bg='green', fg='black'))
         ctx.invoke(list)
     except exception.GuestNotFoundError:
