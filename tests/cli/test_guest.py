@@ -11,7 +11,7 @@ from rfidsecuritysvc.model.guest import Guest as Model
 from rfidsecuritysvc.model.sound import Sound
 
 c = Color(0xABCDEF)
-s = Sound(1, 'sound_name')
+s = Sound(1, 'sound_name', '2021-09-25 23:13:25')
 m = Model(1, 'first_name', 'last_name', s, c)
 
 
