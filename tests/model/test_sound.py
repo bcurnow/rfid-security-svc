@@ -1,3 +1,4 @@
+import base64
 from datetime import datetime, timezone
 from unittest.mock import patch
 
@@ -9,6 +10,37 @@ def test_Sound(assert_model):
     dt = datetime.now().isoformat(timespec='seconds')
     assert_model(_model('id', 'name', dt, 'binary content'), Sound('id', 'name', dt, 'binary content'))
     assert_model(_model('id', 'name', dt), Sound('id', 'name', dt))
+
+
+def test_Sound_to_json(assert_model):
+    json = Sound(1, 'name', '2021-09-25 23:13:25').to_json()
+    assert_model(json, {'id': 1, 'name': 'name', 'last_update_timestamp': '2021-09-25T23:13:25+00:00'})
+
+
+def test_Sound_to_json_with_content(assert_model):
+    json = Sound(1, 'name', None, 'binary content').to_json()
+    assert_model(json, {'id': 1, 'name': 'name'})
+
+
+def test_Sound_to_json_all_fields(assert_model):
+    dt = datetime.now().isoformat(timespec='seconds')
+    json = Sound(1, 'name', dt, 'binary content').to_json()
+    expected_dt = datetime.fromisoformat(dt)
+    expected_dt = expected_dt.replace(tzinfo=timezone.utc)
+    assert_model(json, {'id': 1, 'name': 'name', 'last_update_timestamp': expected_dt.isoformat(timespec='seconds')})
+
+
+def test_Sound_to_json_with_content(assert_model, wav_content):
+    json = Sound(1, 'name', '2021-09-25 23:13:25', wav_content).to_json_with_content()
+    assert_model(json, {'id': 1, 'name': 'name', 'last_update_timestamp': '2021-09-25T23:13:25+00:00', 'content': base64.b64encode(wav_content).decode('ascii')})
+
+
+def test_Sound_to_json_with_content_all_fields(assert_model, wav_content):
+    json = Sound(1, 'name', '2021-09-25 23:13:25', wav_content).to_json_with_content()
+    assert_model(json, {'id': 1,
+                        'name': 'name',
+                        'content': base64.b64encode(wav_content).decode('ascii'),
+                        'last_update_timestamp': '2021-09-25T23:13:25+00:00'})
 
 
 @patch('rfidsecuritysvc.model.sound.table')
