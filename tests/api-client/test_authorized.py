@@ -1,6 +1,15 @@
+from rfidsecuritysvc.model.authorized import MediaConfig
+from rfidsecuritysvc.model.media_perm import MediaPerm
+
+
 def test_get(rh, open_door):
     media, perm = open_door
     rh.assert_response(rh.open('get', f'authorized/{media.id}/{perm.name}'), 200)
+
+
+def test_get_no_guest_info(rh, authorized_media_perm_no_guest, default_permission):
+    mc = MediaConfig(authorized_media_perm_no_guest, None, None, None)
+    rh.assert_response(rh.open('get', f'authorized/{authorized_media_perm_no_guest.media.id}/{authorized_media_perm_no_guest.permission.name}'), 200, mc)
 
 
 def test_get_nomedia(rh, open_door):
