@@ -6,7 +6,7 @@ from rfidsecuritysvc.model.authorized import MediaConfig
 
 @patch('rfidsecuritysvc.api.authorized.authorized')
 def test_get(model, media_perms):
-    mc = MediaConfig(media_perms[0], None, None, None, None)
+    mc = MediaConfig(media_perms[0], None, None, None)
     model.authorized.return_value = mc
     assert api.get('test', 1) == mc.to_json()
     model.authorized.assert_called_once_with('test', 1)
