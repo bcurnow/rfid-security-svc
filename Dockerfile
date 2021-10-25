@@ -34,7 +34,7 @@ COPY ./docker-files/home/.* /home/flask/
 
 COPY ./requirements.txt /tmp
 
-RUN pip install -r /tmp/requirements.txt
+RUN pip3 --disable-pip-version-check install -r /tmp/requirements.txt && rm /tmp/requirements.txt
 
 ENV FLASK_APP=rfidsecuritysvc
 ENV FLASK_ENV=${FLASK_ENV}
@@ -53,12 +53,22 @@ CMD ["flask", "run", "--host", "0.0.0.0"]
 
 from dev_image as packager
 
+USER root
 WORKDIR /package
 
-COPY --chown=flask:flask . .
+COPY  LICENSE .
+COPY  MANIFEST.in .
+COPY  README.md .
+COPY  rfidsecuritysvc ./rfidsecuritysvc/
+COPY  setup.cfg .
+COPY  setup.py .
+COPY  tests ./tests/
 
-RUN pip install --no-warn-script-location build
-RUN python -m build --wheel
+# Install the build command
+RUN pip3 --disable-pip-version-check install build
+
+# Build and make sure to include the wheel
+RUN python3 -m build --wheel
 
 from python:3 as prod_build
 
@@ -73,14 +83,16 @@ RUN groupadd ${GROUP} \
  && useradd -g ${USER} ${GROUP} \
  && install -d -m 0755 -o ${USER} -g ${GROUP} /home/${USER}
 
-RUN apt-get update && apt-get -y install --no-install-recommends gunicorn3
-
-USER ${USER}:${GROUP}
-
 COPY --from=packager --chown=${USER}:${GROUP} /package/dist/rfidsecuritysvc-${VERSION}-py3-none-any.whl /tmp
 
-RUN pip install --no-warn-script-location /tmp/rfidsecuritysvc-${VERSION}-py3-none-any.whl && rm -rf /tmp/rfidsecuritysvc-${VERSION}-py3-none-any.whl
+RUN pip3 --disable-pip-version-check install /tmp/rfidsecuritysvc-${VERSION}-py3-none-any.whl && rm -rf /tmp/rfidsecuritysvc-${VERSION}-py3-none-any.whl
+
+# Install gunicorn
+RUN pip3 --disable-pip-version-check install gunicorn
 
 EXPOSE 5000
 
-CMD ["/usr/bin/gunicorn3", "--bind", "0.0.0.0:5000", "--preload", "--workers", "2", "--umask", "007", "rfidsecuritysvc:create_app()"]
+USER ${USER}:${GROUP}
+
+ENTRYPOINT ["/usr/local/bin/gunicorn"]
+CMD ["--bind", "0.0.0.0:5000", "--preload", "--workers", "2", "--umask", "007", "rfidsecuritysvc:create_app()"]
