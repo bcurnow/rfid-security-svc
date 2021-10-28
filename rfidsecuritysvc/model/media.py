@@ -13,9 +13,9 @@ def get(id):
     return __model(table.get(id))
 
 
-def list():
+def list(excludeAssociated=False):
     result = []
-    for row in table.list():
+    for row in table.list(excludeAssociated):
         result.append(__model(row))
 
     return result

@@ -480,6 +480,13 @@ paths:
       summary: Retrieves all the media
       description: |
         Retrieves all the media records. This implementation does not currently support pagination.
+      parameters:
+        - name: excludeAssociated
+          in: query
+          description: If present and true, will only list media which is not currently associated with a guest.
+          schema:
+            type: boolean
+            example: true
       responses:
         "200":
           description: Array of Media objects.

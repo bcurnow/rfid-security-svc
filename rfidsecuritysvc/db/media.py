@@ -11,8 +11,10 @@ def get(conn, id):
 
 
 @with_dbconn
-def list(conn):
+def list(conn, excludeAssociated=False):
     with conn:
+        if excludeAssociated:
+            return conn.execute('SELECT media.* FROM media LEFT JOIN guest_media ON guest_media.media_id = media.id where guest_media.media_id IS NULL ORDER BY media.id').fetchall()
         return conn.execute('SELECT * FROM media ORDER BY id').fetchall()
 
 

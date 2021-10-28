@@ -16,6 +16,11 @@ def test_list(mockdb):
     assert db.list() == []
 
 
+def test_list_exclude_associated(mockdb):
+    mockdb.add_execute('SELECT media.* FROM media LEFT JOIN guest_media ON guest_media.media_id = media.id where guest_media.media_id IS NULL ORDER BY media.id', cursor_return=[])
+    assert db.list(True) == []
+
+
 def test_create(mockdb):
     mockdb.add_execute('INSERT INTO media (id, name, desc) VALUES (?,?,?)', ('TEST', 'test name', 'test desc'))
     mockdb.add_commit()

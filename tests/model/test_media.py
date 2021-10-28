@@ -33,7 +33,7 @@ def test_list(table):
         _default(2).to_json(),
     ]
     models = model.list()
-    table.list.assert_called_once()
+    table.list.assert_called_once_with(False)
     assert models == [_default(), _default(2)]
 
 
@@ -41,8 +41,18 @@ def test_list(table):
 def test_list_noresults(table):
     table.list.return_value = []
     models = model.list()
-    table.list.assert_called_once()
+    table.list.assert_called_once_with(False)
     assert models == []
+
+
+@patch('rfidsecuritysvc.model.media.table')
+def test_list_exclude_associated(table):
+    table.list.return_value = [
+        _default().to_json(),
+    ]
+    models = model.list(True)
+    table.list.assert_called_once_with(True)
+    assert models == [_default()]
 
 
 @patch('rfidsecuritysvc.model.media.table')

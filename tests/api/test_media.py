@@ -28,14 +28,22 @@ def test_search(model):
     m2 = Model('test2', 'name2', 'desc2')
     model.list.return_value = [m, m2]
     assert api.search() == [m.to_json(), m2.to_json()]
-    model.list.assert_called_once()
+    model.list.assert_called_once_with(False)
 
 
 @patch('rfidsecuritysvc.api.media.model')
 def test_search_noresults(model):
     model.list.return_value = []
     assert api.search() == []
-    model.list.assert_called_once()
+    model.list.assert_called_once_with(False)
+
+
+@patch('rfidsecuritysvc.api.media.model')
+def test_search_exclude_associated(model):
+    m2 = Model('test2', 'name2', 'desc2')
+    model.list.return_value = [m, m2]
+    assert api.search(True) == [m.to_json(), m2.to_json()]
+    model.list.assert_called_once_with(True)
 
 
 @patch('rfidsecuritysvc.api.media.model')

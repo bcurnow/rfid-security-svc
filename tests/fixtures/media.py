@@ -52,11 +52,13 @@ def not_authorized_media(medias):
         if m.id == 'NOT AUTHORIZED':
             return m
 
+
 @pytest.fixture(scope='session')
 def authorized_media_no_guest(medias):
     for m in medias:
         if m.id == 'TEST FOR AUTHORIZED NO GUEST':
             return m
+
 
 @pytest.fixture(scope='session')
 def media_for_creatable_media_perm(medias):
@@ -78,6 +80,12 @@ def media_for_creatable_guest_media(medias):
 def media_for_guests(medias):
     """ Each media returned should be associated with a guest """
     return medias[4:9]
+
+
+@pytest.fixture(scope='session')
+def media_without_guests(medias):
+    """ Each media returned should NOT be associated with a guest """
+    return medias[0:4]
 
 
 @pytest.fixture(scope='session')
