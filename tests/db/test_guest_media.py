@@ -33,7 +33,7 @@ def test_get(mockdb):
                                        LEFT JOIN sound gs ON gs.id = guest.sound
                                        WHERE guest_media.id = ?
                                        ORDER BY guest_media.id
-                                       ''').replace('\n', ' '), ('test',), 'test')
+                                       ''').replace('\n', ' ').strip(), ('test',), 'test')
     assert db.get('test') == 'test'
 
 
@@ -63,7 +63,7 @@ def test_get_by_media(mockdb):
                                        LEFT JOIN sound gs ON gs.id = guest.sound
                                        WHERE guest_media.media_id = ?
                                        ORDER BY guest_media.id
-                                       ''').replace('\n', ' '), ('test',), 'test')
+                                       ''').replace('\n', ' ').strip(), ('test',), 'test')
     assert db.get_by_media('test') == 'test'
 
 
@@ -92,7 +92,7 @@ def test_list(mockdb):
                                        LEFT JOIN sound gms ON gms.id = guest_media.sound
                                        LEFT JOIN sound gs ON gs.id = guest.sound
                                        ORDER BY guest_media.id
-                                        ''').replace('\n', ' '), cursor_return=[])
+                                        ''').replace('\n', ' ').strip(), cursor_return=[])
     assert db.list() == []
 
 
@@ -122,7 +122,7 @@ def test_list_with_media_id(mockdb):
                                        LEFT JOIN sound gs ON gs.id = guest.sound
                                        WHERE guest_media.guest_id = ?
                                        ORDER BY guest_media.id
-                                        ''').replace('\n', ' '), (1,), cursor_return=[])
+                                        ''').replace('\n', ' ').strip(), (1,), cursor_return=[])
     assert db.list(1) == []
 
 

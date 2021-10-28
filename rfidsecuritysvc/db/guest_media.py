@@ -4,125 +4,51 @@ import textwrap
 from rfidsecuritysvc.db.dbms import with_dbconn
 import rfidsecuritysvc.exception as exception
 
+SELECT_BASE = textwrap.dedent('''
+                              SELECT
+                              guest_media.id,
+                              guest_id,
+                              guest.first_name as guest_first_name,
+                              guest.last_name as guest_last_name,
+                              guest.sound as guest_sound,
+                              gs.name as guest_sound_name,
+                              gs.last_update_timestamp as guest_sound_last_update_timestamp,
+                              guest.color as guest_color,
+                              media_id,
+                              media.name as media_name,
+                              media.desc as media_desc,
+                              guest_media.sound as sound_id,
+                              gms.name as sound_name,
+                              gms.last_update_timestamp as sound_last_update_timestamp,
+                              guest_media.color
+                              FROM
+                              guest_media
+                              INNER JOIN media ON media.id = guest_media.media_id
+                              INNER JOIN guest ON guest.id = guest_media.guest_id
+                              LEFT JOIN sound gms ON gms.id = guest_media.sound
+                              LEFT JOIN sound gs ON gs.id = guest.sound
+                              ''').replace('\n', ' ').strip()
+
 
 @with_dbconn
 def get(conn, id):
     with conn:
-        return conn.execute(textwrap.dedent('''
-                                            SELECT
-                                            guest_media.id,
-                                            guest_id,
-                                            guest.first_name as guest_first_name,
-                                            guest.last_name as guest_last_name,
-                                            guest.sound as guest_sound,
-                                            gs.name as guest_sound_name,
-                                            gs.last_update_timestamp as guest_sound_last_update_timestamp,
-                                            guest.color as guest_color,
-                                            media_id,
-                                            media.name as media_name,
-                                            media.desc as media_desc,
-                                            guest_media.sound as sound_id,
-                                            gms.name as sound_name,
-                                            gms.last_update_timestamp as sound_last_update_timestamp,
-                                            guest_media.color
-                                            FROM
-                                            guest_media
-                                            INNER JOIN media ON media.id = guest_media.media_id
-                                            INNER JOIN guest ON guest.id = guest_media.guest_id
-                                            LEFT JOIN sound gms ON gms.id = guest_media.sound
-                                            LEFT JOIN sound gs ON gs.id = guest.sound
-                                            WHERE guest_media.id = ?
-                                            ORDER BY guest_media.id
-                                            ''').replace('\n', ' '), (id,)).fetchone()
+        return conn.execute(f'{SELECT_BASE} WHERE guest_media.id = ? ORDER BY guest_media.id', (id,)).fetchone()
 
 
 @with_dbconn
 def get_by_media(conn, media_id):
     with conn:
-        return conn.execute(textwrap.dedent('''
-                                            SELECT
-                                            guest_media.id,
-                                            guest_id,
-                                            guest.first_name as guest_first_name,
-                                            guest.last_name as guest_last_name,
-                                            guest.sound as guest_sound,
-                                            gs.name as guest_sound_name,
-                                            gs.last_update_timestamp as guest_sound_last_update_timestamp,
-                                            guest.color as guest_color,
-                                            media_id,
-                                            media.name as media_name,
-                                            media.desc as media_desc,
-                                            guest_media.sound as sound_id,
-                                            gms.name as sound_name,
-                                            gms.last_update_timestamp as sound_last_update_timestamp,
-                                            guest_media.color
-                                            FROM
-                                            guest_media
-                                            INNER JOIN media ON media.id = guest_media.media_id
-                                            INNER JOIN guest ON guest.id = guest_media.guest_id
-                                            LEFT JOIN sound gms ON gms.id = guest_media.sound
-                                            LEFT JOIN sound gs ON gs.id = guest.sound
-                                            WHERE guest_media.media_id = ?
-                                            ORDER BY guest_media.id
-                                            ''').replace('\n', ' '), (media_id,)).fetchone()
+        return conn.execute(f'{SELECT_BASE} WHERE guest_media.media_id = ? ORDER BY guest_media.id', (media_id,)).fetchone()
 
 
 @with_dbconn
 def list(conn, guest_id=None):
     with conn:
         if guest_id:
-            return conn.execute(textwrap.dedent('''
-                                                SELECT
-                                                guest_media.id,
-                                                guest_id,
-                                                guest.first_name as guest_first_name,
-                                                guest.last_name as guest_last_name,
-                                                guest.sound as guest_sound,
-                                                gs.name as guest_sound_name,
-                                                gs.last_update_timestamp as guest_sound_last_update_timestamp,
-                                                guest.color as guest_color,
-                                                media_id,
-                                                media.name as media_name,
-                                                media.desc as media_desc,
-                                                guest_media.sound as sound_id,
-                                                gms.name as sound_name,
-                                                gms.last_update_timestamp as sound_last_update_timestamp,
-                                                guest_media.color
-                                                FROM
-                                                guest_media
-                                                INNER JOIN media ON media.id = guest_media.media_id
-                                                INNER JOIN guest ON guest.id = guest_media.guest_id
-                                                LEFT JOIN sound gms ON gms.id = guest_media.sound
-                                                LEFT JOIN sound gs ON gs.id = guest.sound
-                                                WHERE guest_media.guest_id = ?
-                                                ORDER BY guest_media.id
-                                                ''').replace('\n', ' '), (guest_id,)).fetchall()
+            return conn.execute(f'{SELECT_BASE} WHERE guest_media.guest_id = ? ORDER BY guest_media.id', (guest_id,)).fetchall()
         else:
-            return conn.execute(textwrap.dedent('''
-                                                SELECT
-                                                guest_media.id,
-                                                guest_id,
-                                                guest.first_name as guest_first_name,
-                                                guest.last_name as guest_last_name,
-                                                guest.sound as guest_sound,
-                                                gs.name as guest_sound_name,
-                                                gs.last_update_timestamp as guest_sound_last_update_timestamp,
-                                                guest.color as guest_color,
-                                                media_id,
-                                                media.name as media_name,
-                                                media.desc as media_desc,
-                                                guest_media.sound as sound_id,
-                                                gms.name as sound_name,
-                                                gms.last_update_timestamp as sound_last_update_timestamp,
-                                                guest_media.color
-                                                FROM
-                                                guest_media
-                                                INNER JOIN media ON media.id = guest_media.media_id
-                                                INNER JOIN guest ON guest.id = guest_media.guest_id
-                                                LEFT JOIN sound gms ON gms.id = guest_media.sound
-                                                LEFT JOIN sound gs ON gs.id = guest.sound
-                                                ORDER BY guest_media.id
-                                                ''').replace('\n', ' ')).fetchall()
+            return conn.execute(f'{SELECT_BASE} ORDER BY guest_media.id').fetchall()
 
 
 @with_dbconn
