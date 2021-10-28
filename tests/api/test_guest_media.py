@@ -65,7 +65,7 @@ def test_post(model):
 @patch('rfidsecuritysvc.api.guest_media.model')
 def test_post_Duplicate(model):
     model.create.side_effect = DuplicateError
-    assert api.post(m.test_create()) == (f'Object with guest_id "{m.guest.id} and media_id "{m.media.id}" already exists.', 409)
+    assert api.post(m.test_create()) == (f'Media with media_id "{m.media.id} is already associated with a guest.', 409)
     model.create.assert_called_once_with(**m.test_create())
 
 

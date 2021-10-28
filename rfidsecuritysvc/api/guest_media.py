@@ -23,7 +23,7 @@ def post(body):
         model.create(**body)
         return None, 201
     except exception.DuplicateGuestMediaError:
-        return f'Object with guest_id "{body["guest_id"]} and media_id "{body["media_id"]}" already exists.', 409
+        return f'Media with media_id "{body["media_id"]} is already associated with a guest.', 409
     except exception.GuestNotFoundError:
         return f'No guest found with id "{body["guest_id"]}".', 400
     except exception.MediaNotFoundError:
