@@ -9,7 +9,6 @@ from rfidsecuritysvc.model.authorized import MediaConfig
 from rfidsecuritysvc.model.sound import Sound
 
 
-
 @patch('rfidsecuritysvc.model.authorized.guest_media')
 @patch('rfidsecuritysvc.model.authorized.media_perm')
 def test_authorized(media_perm, guest_media, open_door_media_perm, open_door_guest_media):
@@ -118,7 +117,7 @@ def test__resolveSound_from_guest_media():
 
 def test__resolveSound_none():
     gm = modifiableGuestMedia()
-    assert model._resolveSound(gm) == None
+    assert model._resolveSound(gm) is None
 
 
 def modifiableGuestMedia():

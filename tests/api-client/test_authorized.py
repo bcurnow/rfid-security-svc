@@ -1,5 +1,4 @@
 from rfidsecuritysvc.model.authorized import MediaConfig
-from rfidsecuritysvc.model.media_perm import MediaPerm
 
 
 def test_get(rh, open_door):
