@@ -29,7 +29,7 @@ def post(body):
     except exception.MediaNotFoundError:
         return f'No media found with id "{body["media_id"]}".', 400
     except exception.SoundNotFoundError:
-        return f'No sound found with id "{body["sound_id"]}".', 400
+        return f'No sound found with id "{body["sound"]}".', 400
 
 
 def delete(id):
@@ -44,7 +44,7 @@ def put(id, body):
     except exception.MediaNotFoundError:
         return f'No media found with id "{body["media_id"]}".', 400
     except exception.SoundNotFoundError:
-        return f'No sound found with id "{body["sound_id"]}".', 400
+        return f'No sound found with id "{body["sound"]}".', 400
     except exception.GuestMediaNotFoundError:
         # In theory, this should never throw and exception but, in case it ever does...
         try:
@@ -57,4 +57,4 @@ def put(id, body):
         except exception.MediaNotFoundError:
             return f'No media found with id "{body["media_id"]}".', 400
         except exception.SoundNotFoundError:
-            return f'No sound found with id "{body["sound_id"]}".', 400
+            return f'No sound found with id "{body["sound"]}".', 400

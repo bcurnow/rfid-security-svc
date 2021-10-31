@@ -76,7 +76,7 @@ def test_list_noresults(table):
     assert models == []
 
 
-@patch('rfidsecuritysvc.model.guest_media.sound')
+@patch('rfidsecuritysvc.model.guest_media.soundModel')
 @patch('rfidsecuritysvc.model.guest_media.media')
 @patch('rfidsecuritysvc.model.guest_media.guest')
 @patch('rfidsecuritysvc.model.guest_media.table')
@@ -92,7 +92,7 @@ def test_create(table, guest, media, sound, default_sound):
     table.create.assert_called_once_with(1, 'test', default_sound.id, 0xABCDEF)
 
 
-@patch('rfidsecuritysvc.model.guest_media.sound')
+@patch('rfidsecuritysvc.model.guest_media.soundModel')
 @patch('rfidsecuritysvc.model.guest_media.media')
 @patch('rfidsecuritysvc.model.guest_media.guest')
 @patch('rfidsecuritysvc.model.guest_media.table')
@@ -107,7 +107,7 @@ def test_create_no_prefs(table, guest, media, sound):
     table.create.assert_called_once_with(1, 'test', None, None)
 
 
-@patch('rfidsecuritysvc.model.guest_media.sound')
+@patch('rfidsecuritysvc.model.guest_media.soundModel')
 @patch('rfidsecuritysvc.model.guest_media.media')
 @patch('rfidsecuritysvc.model.guest_media.guest')
 @patch('rfidsecuritysvc.model.guest_media.table')
@@ -121,7 +121,7 @@ def test_create_no_guest(table, guest, media, sound):
     table.create.assert_not_called()
 
 
-@patch('rfidsecuritysvc.model.guest_media.sound')
+@patch('rfidsecuritysvc.model.guest_media.soundModel')
 @patch('rfidsecuritysvc.model.guest_media.media')
 @patch('rfidsecuritysvc.model.guest_media.guest')
 @patch('rfidsecuritysvc.model.guest_media.table')
@@ -136,7 +136,7 @@ def test_create_no_media(table, guest, media, sound):
     table.create.assert_not_called()
 
 
-@patch('rfidsecuritysvc.model.guest_media.sound')
+@patch('rfidsecuritysvc.model.guest_media.soundModel')
 @patch('rfidsecuritysvc.model.guest_media.media')
 @patch('rfidsecuritysvc.model.guest_media.guest')
 @patch('rfidsecuritysvc.model.guest_media.table')
@@ -159,7 +159,7 @@ def test_delete(table):
     table.delete.assert_called_with(1)
 
 
-@patch('rfidsecuritysvc.model.guest_media.sound')
+@patch('rfidsecuritysvc.model.guest_media.soundModel')
 @patch('rfidsecuritysvc.model.guest_media.media')
 @patch('rfidsecuritysvc.model.guest_media.guest')
 @patch('rfidsecuritysvc.model.guest_media.table')
@@ -175,7 +175,7 @@ def test_update(table, guest, media, sound, default_sound):
     table.update.assert_called_once_with(1, 1, 'test', default_sound.id, 0xABCDEF)
 
 
-@patch('rfidsecuritysvc.model.guest_media.sound')
+@patch('rfidsecuritysvc.model.guest_media.soundModel')
 @patch('rfidsecuritysvc.model.guest_media.media')
 @patch('rfidsecuritysvc.model.guest_media.guest')
 @patch('rfidsecuritysvc.model.guest_media.table')
@@ -190,7 +190,7 @@ def test_update_no_sound(table, guest, media, sound):
     table.update.assert_called_once_with(1, 1, 'test', None, 0xABCDEF)
 
 
-@patch('rfidsecuritysvc.model.guest_media.sound')
+@patch('rfidsecuritysvc.model.guest_media.soundModel')
 @patch('rfidsecuritysvc.model.guest_media.media')
 @patch('rfidsecuritysvc.model.guest_media.guest')
 @patch('rfidsecuritysvc.model.guest_media.table')
@@ -206,7 +206,7 @@ def test_update_SoundNotFoundError(table, guest, media, sound, default_sound):
     table.update.assert_not_called()
 
 
-@patch('rfidsecuritysvc.model.guest_media.sound')
+@patch('rfidsecuritysvc.model.guest_media.soundModel')
 @patch('rfidsecuritysvc.model.guest_media.media')
 @patch('rfidsecuritysvc.model.guest_media.guest')
 @patch('rfidsecuritysvc.model.guest_media.table')
@@ -221,7 +221,7 @@ def test_update_MediaNotFoundError(table, guest, media, sound, default_sound):
     table.update.assert_not_called()
 
 
-@patch('rfidsecuritysvc.model.guest_media.sound')
+@patch('rfidsecuritysvc.model.guest_media.soundModel')
 @patch('rfidsecuritysvc.model.guest_media.media')
 @patch('rfidsecuritysvc.model.guest_media.guest')
 @patch('rfidsecuritysvc.model.guest_media.table')
@@ -256,9 +256,9 @@ def test__model_no_color(creatable_guest_media):
     assert gm.color is None
 
 
-def test__model_no_sound_id(creatable_guest_media):
+def test__model_no_sound(creatable_guest_media):
     row = creatable_guest_media.test_to_row()
-    row['sound_id'] = None
+    row['sound'] = None
     gm = model.__model(row)
     assert gm.sound is None
 

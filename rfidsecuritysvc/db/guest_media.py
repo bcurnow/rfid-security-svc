@@ -17,7 +17,7 @@ SELECT_BASE = textwrap.dedent('''
                               media_id,
                               media.name as media_name,
                               media.desc as media_desc,
-                              guest_media.sound as sound_id,
+                              guest_media.sound as sound,
                               gms.name as sound_name,
                               gms.last_update_timestamp as sound_last_update_timestamp,
                               guest_media.color
@@ -52,10 +52,10 @@ def list(conn, guest_id=None):
 
 
 @with_dbconn
-def create(conn, guest_id, media_id, sound_id=None, color=None):
+def create(conn, guest_id, media_id, sound=None, color=None):
     try:
         with conn:
-            conn.execute('INSERT INTO guest_media (guest_id, media_id, sound, color) VALUES (?,?,?,?)', (guest_id, media_id, sound_id, color))
+            conn.execute('INSERT INTO guest_media (guest_id, media_id, sound, color) VALUES (?,?,?,?)', (guest_id, media_id, sound, color))
     except sqlite3.IntegrityError as e:
         raise exception.DuplicateGuestMediaError from e
 
@@ -67,7 +67,7 @@ def delete(conn, id):
 
 
 @with_dbconn
-def update(conn, id, guest_id, media_id, sound_id=None, color=None):
+def update(conn, id, guest_id, media_id, sound=None, color=None):
     with conn:
         count = conn.execute(textwrap.dedent('''
                                              UPDATE guest_media
@@ -77,7 +77,7 @@ def update(conn, id, guest_id, media_id, sound_id=None, color=None):
                                              sound = ?,
                                              color = ?
                                              WHERE id = ?
-                                             ''').replace('\n', ' '), (guest_id, media_id, sound_id, color, id)).rowcount
+                                             ''').replace('\n', ' '), (guest_id, media_id, sound, color, id)).rowcount
     if count == 0:
         raise exception.GuestMediaNotFoundError
 

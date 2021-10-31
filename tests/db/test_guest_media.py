@@ -21,7 +21,7 @@ def test_get(mockdb):
                                        media_id,
                                        media.name as media_name,
                                        media.desc as media_desc,
-                                       guest_media.sound as sound_id,
+                                       guest_media.sound as sound,
                                        gms.name as sound_name,
                                        gms.last_update_timestamp as sound_last_update_timestamp,
                                        guest_media.color
@@ -51,7 +51,7 @@ def test_get_by_media(mockdb):
                                        media_id,
                                        media.name as media_name,
                                        media.desc as media_desc,
-                                       guest_media.sound as sound_id,
+                                       guest_media.sound as sound,
                                        gms.name as sound_name,
                                        gms.last_update_timestamp as sound_last_update_timestamp,
                                        guest_media.color
@@ -81,7 +81,7 @@ def test_list(mockdb):
                                        media_id,
                                        media.name as media_name,
                                        media.desc as media_desc,
-                                       guest_media.sound as sound_id,
+                                       guest_media.sound as sound,
                                        gms.name as sound_name,
                                        gms.last_update_timestamp as sound_last_update_timestamp,
                                        guest_media.color
@@ -110,7 +110,7 @@ def test_list_with_media_id(mockdb):
                                        media_id,
                                        media.name as media_name,
                                        media.desc as media_desc,
-                                       guest_media.sound as sound_id,
+                                       guest_media.sound as sound,
                                        gms.name as sound_name,
                                        gms.last_update_timestamp as sound_last_update_timestamp,
                                        guest_media.color

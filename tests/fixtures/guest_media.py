@@ -61,17 +61,17 @@ def open_door_guest_media(guest_medias, open_door_guest, open_door_media):
 @pytest.fixture(autouse=True, scope='session')
 def add_guest_media_helpers(monkeypatch_session):
     def convert(self):
-        sound_id = None
+        sound = None
         color = None
         if self.sound:
-            sound_id = self.sound.id
+            sound = self.sound.id
         if self.color:
             color = self.color.int
 
         return {
             'guest_id': self.guest.id,
             'media_id': self.media.id,
-            'sound_id': sound_id,
+            'sound': sound,
             'color': color,
         }
 
@@ -88,7 +88,7 @@ def add_guest_media_helpers(monkeypatch_session):
         row['media_id'] = m.media.id
         row['media_name'] = m.media.name
         row['media_desc'] = m.media.desc
-        row['sound_id'] = m.sound.id
+        row['sound'] = m.sound.id
         row['sound_name'] = m.sound.name
         row['sound_last_update_timestamp'] = m.sound.last_update_timestamp
         row['color'] = m.color.int

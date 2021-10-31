@@ -457,7 +457,7 @@ paths:
             example:
               guest_id: 1
               media_id: 80558ABA5C3504
-              sound_id: 1
+              sound: 1
               color: 16777215
       responses:
         "200":
@@ -1165,7 +1165,7 @@ components:
         media_id:
           type: string
           example: 80558ABA5C3504
-        sound_id:
+        sound:
           type: integer
           example: 1
           nullable: true

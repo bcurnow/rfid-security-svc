@@ -1,6 +1,6 @@
 from rfidsecuritysvc import exception as exception
 from rfidsecuritysvc.db import guest_media as table
-from rfidsecuritysvc.model import guest, media, sound
+from rfidsecuritysvc.model import guest, media, sound as soundModel
 from rfidsecuritysvc.model import BaseModel
 from rfidsecuritysvc.model.color import Color
 from rfidsecuritysvc.model.sound import Sound
@@ -41,37 +41,37 @@ def list(guest_id=None):
     return result
 
 
-def create(guest_id, media_id, sound_id=None, color=None):
+def create(guest_id, media_id, sound=None, color=None):
     g = guest.get(guest_id)
     if not g:
         raise exception.GuestNotFoundError
     m = media.get(media_id)
     if not m:
         raise exception.MediaNotFoundError
-    if sound_id:
-        s = sound.get(sound_id)
+    if sound:
+        s = soundModel.get(sound)
         if not s:
             raise exception.SoundNotFoundError
 
-    return table.create(guest_id, media_id, sound_id, color)
+    return table.create(guest_id, media_id, sound, color)
 
 
 def delete(id):
     return table.delete(id)
 
 
-def update(id, guest_id, media_id, sound_id=None, color=None):
+def update(id, guest_id, media_id, sound=None, color=None):
     g = guest.get(guest_id)
     if not g:
         raise exception.GuestNotFoundError
     m = media.get(media_id)
     if not m:
         raise exception.MediaNotFoundError
-    if sound_id:
-        s = sound.get(sound_id)
+    if sound:
+        s = soundModel.get(sound)
         if not s:
             raise exception.SoundNotFoundError
-    return table.update(id, guest_id, media_id, sound_id, color)
+    return table.update(id, guest_id, media_id, sound, color)
 
 
 def __model(row):
@@ -98,8 +98,8 @@ def __model(row):
         guest_media_color = Color(row['color'])
 
     guest_media_sound = None
-    if row['sound_id'] is not None:
-        guest_media_sound = Sound(row['sound_id'], row['sound_name'], row['sound_last_update_timestamp'])
+    if row['sound'] is not None:
+        guest_media_sound = Sound(row['sound'], row['sound_name'], row['sound_last_update_timestamp'])
 
     return GuestMedia(row['id'],
                       g,

@@ -18,8 +18,8 @@ def test_Sound_to_json(assert_model):
 
 
 def test_Sound_to_json_when_content_present(assert_model):
-    json = Sound(1, 'name', None, 'binary content').to_json()
-    assert_model(json, {'id': 1, 'name': 'name'})
+    json = Sound(1, 'name', '2021-09-25 23:13:25', 'binary content').to_json()
+    assert_model(json, {'id': 1, 'name': 'name', 'last_update_timestamp': '2021-09-25T23:13:25+00:00'})
 
 
 def test_Sound_to_json_all_fields(assert_model):
