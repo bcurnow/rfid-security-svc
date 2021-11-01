@@ -74,7 +74,7 @@ from python:3 as prod_build
 
 ARG USER=rfidsecuritysvc
 ARG GROUP=${USER}
-ARG VERSION=1.0.0
+ARG VERSION=2.0.0
 
 ENV FLASK_ENV=production
 ENV FLASK_DEBUG=0
