@@ -90,6 +90,10 @@ RUN pip3 --disable-pip-version-check install /tmp/rfidsecuritysvc-${VERSION}-py3
 # Install gunicorn
 RUN pip3 --disable-pip-version-check install gunicorn
 
+# Create the database volume
+RUN mkdir /rfid-db && chown ${USER}:${GROUP} /rfid-db && chmod 750 /rfid-db
+VOLUME /rfid-db
+
 EXPOSE 5000
 
 USER ${USER}:${GROUP}
