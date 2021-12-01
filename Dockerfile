@@ -94,6 +94,12 @@ RUN pip3 --disable-pip-version-check install gunicorn
 RUN mkdir /rfid-db && chown ${USER}:${GROUP} /rfid-db && chmod 750 /rfid-db
 VOLUME /rfid-db
 
+# Create a directory for the application
+RUN mkdir /app && chown ${USER}:${GROUP} /app && chmod 750 /app
+# Create a diretory for the default sounds
+RUN mkdir /app/sounds && chown ${USER}:${GROUP} /app/sounds && chmod 750 /app/sounds
+COPY --chown=${USER}:${GROUP} docker-files/sounds/*.wav /app/sounds/
+
 EXPOSE 5000
 
 USER ${USER}:${GROUP}
