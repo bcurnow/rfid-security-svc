@@ -5,7 +5,7 @@ PID_FILE := $(ROOT_DIR)/flask.pid
 LOG_FILE := $(ROOT_DIR)/flask.log
 INPUT_GROUP_ID := $(shell getent group input | cut -d: -f3)
 
-.PHONY: help build build-prod docker flask prod run stop testing
+.PHONY: help build build-prod docker flask prod run stop testing init
 
 help:
 	@printf "Usage:\n"
@@ -17,6 +17,7 @@ help:
 	@printf "  make run            Start Flask in the background\n"
 	@printf "  make stop           Stop Flask started by make run\n"
 	@printf "  make testing        Stop and start Flask, then tail the logs\n"
+	@printf "  make init           Initialize the database and generate an API key\n"
 
 build:
 	docker image build \
@@ -47,6 +48,11 @@ flask:
 prod:
 	docker run -p 5000:5000 --mount src=rfid-db,target=/rfid-db $(IMAGE_NAME):production $(ARGS)
 
+init:
+	@FLASK_APP=rfidsecuritysvc FLASK_ENV=development flask db init --yes
+	@FLASK_APP=rfidsecuritysvc FLASK_ENV=development flask auth generate-api-key --yes | sed 's/.*\"\(.*\)\".*/\1/' > test.apikey
+	@echo "API key written to test.apikey"
+
 run:
 	@if [ -f "$(PID_FILE)" ]; then \
 	  echo "Flask is currently running, please use make stop or cleanup $(PID_FILE)" >&2; \
@@ -72,8 +78,6 @@ stop:
 	  echo "Flask is not currently running, can't find $(PID_FILE)" >&2; \
 	fi
 
-testing:
-	$(MAKE) stop
-	$(MAKE) run
-	cat test.apikey
-	tail -f flask.log
+testing: stop run
+	@cat test.apikey
+	@tail -F -n +1 flask.log
