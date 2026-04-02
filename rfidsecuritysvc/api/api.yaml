@@ -49,7 +49,7 @@ paths:
           example: 80558ABA5C3504
       - name: perm_name
         in: path
-        description: The permmission name to check
+        description: The permission name to check
         required: true
         schema:
           type: string
@@ -616,7 +616,7 @@ paths:
     get:
       tags:
         - media-perm
-      summary: Retrieves all the media permisions
+      summary: Retrieves all the media permissions
       description: |
         Retrieves all the media permission records. This implementation does not currently support pagination.
       parameters:
@@ -660,7 +660,6 @@ paths:
           $ref: "#/components/responses/UnauthorizedError"
         "409":
           description: Record already exists.
-          description: Record not found.
   /media-perms/{id}:
     get:
       tags:
@@ -753,7 +752,7 @@ paths:
     get:
       tags:
         - permission
-      summary: Retrieves all the permisions
+      summary: Retrieves all the permissions
       description: |
         Retrieves all the permission records. This implementation does not currently support pagination.
       responses:
@@ -1206,19 +1205,16 @@ components:
           $ref: "#/components/schemas/Permission"
           readOnly: true
         guest:
-          oneOf:
-            - $ref: "#/components/schemas/Guest"
-            - $ref: "#/components/schemas/NullValue"
+          $ref: "#/components/schemas/Guest"
+          nullable: true
           readOnly: true
         sound:
-          oneOf:
-            - $ref: "#/components/schemas/SimpleSound"
-            - $ref: "#/components/schemas/NullValue"
+          $ref: "#/components/schemas/SimpleSound"
+          nullable: true
           readOnly: true
         color:
-          oneOf:
-            - $ref: "#/components/schemas/Color"
-            - $ref: "#/components/schemas/NullValue"
+          $ref: "#/components/schemas/Color"
+          nullable: true
       additionalProperties: false
     MediaPerm:
       allOf:
@@ -1279,13 +1275,11 @@ components:
           type: string
           example: Mouse
         sound:
-          oneOf:
-            - $ref: "#/components/schemas/SimpleSound"
-            - $ref: "#/components/schemas/NullValue"
+          $ref: "#/components/schemas/SimpleSound"
+          nullable: true
         color:
-          oneOf:
-            - $ref: "#/components/schemas/Color"
-            - $ref: "#/components/schemas/NullValue"
+          $ref: "#/components/schemas/Color"
+          nullable: true
       additionalProperties: false
     SimpleGuestMedia:
       required:
@@ -1302,13 +1296,11 @@ components:
         media:
           $ref: "#/components/schemas/Media"
         sound:
-          oneOf:
-            - $ref: "#/components/schemas/SimpleSound"
-            - $ref: "#/components/schemas/NullValue"
+          $ref: "#/components/schemas/SimpleSound"
+          nullable: true
         color:
-          oneOf:
-            - $ref: "#/components/schemas/Color"
-            - $ref: "#/components/schemas/NullValue"
+          $ref: "#/components/schemas/Color"
+          nullable: true
       additionalProperties: false
     SimpleMedia:
       required:
@@ -1377,7 +1369,7 @@ components:
           readOnly: true
         content:
           type: string
-          format: bytes
+          format: binary
       additionalProperties: false
     UpdateMedia:
       required:
@@ -1397,7 +1389,7 @@ components:
       type: apiKey
       in: header
       name: X-RFIDSECURITYSVC-API-KEY
-      x-apikeyInfoFunc : rfidsecuritysvc.util.auth.verify_apikey
+      x-apikeyInfoFunc: rfidsecuritysvc.util.auth.verify_apikey
   responses:
     UnauthorizedError:
       description: API key is missing or invalid
