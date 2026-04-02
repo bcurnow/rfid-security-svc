@@ -41,11 +41,7 @@ def get_by_name(name):
 
 
 def list():
-    result = []
-    for row in table.list():
-        result.append(__model_light(row))
-
-    return result
+    return [_model_light(row) for row in table.list()]
 
 
 def create(name, content):
@@ -61,12 +57,12 @@ def update(id, name, content=None):
 
 
 def __model(row):
-    if not row:
+    if row is None:
         return
-    c = __model_light(row)
+    c = _model_light(row)
     c.content = row['content']
     return c
 
 
-def __model_light(row):
+def _model_light(row):
     return Sound(row['id'], row['name'], row['last_update_timestamp'])

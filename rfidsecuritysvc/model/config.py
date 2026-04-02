@@ -13,11 +13,7 @@ def get(key):
 
 
 def list():
-    result = []
-    for row in table.list():
-        result.append(__model(row))
-
-    return result
+    return [__model(row) for row in table.list()]
 
 
 def create(key, value):
@@ -33,6 +29,6 @@ def update(key, value):
 
 
 def __model(row):
-    if not row:
+    if row is None:
         return
     return Config(row['key'], row['value'])

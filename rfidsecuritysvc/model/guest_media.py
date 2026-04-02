@@ -34,11 +34,7 @@ def get_by_media(media_id):
 
 
 def list(guest_id=None):
-    result = []
-    for row in table.list(guest_id):
-        result.append(__model(row))
-
-    return result
+    return [__model(row) for row in table.list(guest_id)]
 
 
 def create(guest_id, media_id, sound=None, color=None):
@@ -75,7 +71,7 @@ def update(id, guest_id, media_id, sound=None, color=None):
 
 
 def __model(row):
-    if not row:
+    if row is None:
         return
 
     guest_color = None

@@ -14,21 +14,19 @@ def get(id):
 
 
 def search():
-    results = []
-    for m in model.list():
-        results.append(m.to_json())
-
-    return results
+    return [m.to_json() for m in model.list()]
 
 
 def post():
-    content = request.files['content']
-    if content.content_type != 'audio/wav':
+    content = request.files.get('content')
+    if content is None or content.content_type != 'audio/wav':
         return 'audio/wav data is required', 415
     file_content = content.read()
     if _content_length(content, file_content) <= 0:
         return 'audio/wav data is required', 400
-    name = request.form['name']
+    name = request.form.get('name')
+    if not name:
+        return 'name is required', 400
 
     try:
         model.create(name, file_content)

@@ -11,11 +11,7 @@ def get(id):
 
 
 def search():
-    results = []
-    for m in model.list():
-        results.append(m.to_json())
-
-    return results
+    return [m.to_json() for m in model.list()]
 
 
 def post(body):

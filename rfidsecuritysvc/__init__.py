@@ -38,10 +38,7 @@ def create_app(test_config=None):
     else:
         app.config.from_mapping(test_config)
 
-    try:
-        os.makedirs(app.instance_path)
-    except OSError:
-        pass
+    os.makedirs(app.instance_path, exist_ok=True)
 
     if app.testing:
         # Store the connexion wrapper for tests to use

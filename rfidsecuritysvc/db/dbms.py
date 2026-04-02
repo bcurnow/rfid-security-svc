@@ -1,10 +1,11 @@
 from functools import wraps
+from typing import Any, Callable
 
 import sqlite3
 from flask import current_app, g
 
 
-def get_connection():
+def get_connection() -> sqlite3.Connection:
     if 'db_connection' not in g:
         g.db_connection = sqlite3.connect(current_app.config['DATABASE'], detect_types=sqlite3.PARSE_DECLTYPES)
         g.db_connection.row_factory = sqlite3.Row
@@ -14,7 +15,7 @@ def get_connection():
     return g.db_connection
 
 
-def close_db(e=None):
+def close_db(e: Any = None) -> None:
     connection = g.pop('db_connection', None)
     if connection is not None:
         # Optimize the database before we close it per https://www.sqlite.org/pragma.html#pragma_optimize
@@ -24,16 +25,16 @@ def close_db(e=None):
             connection.close()
 
 
-def with_dbconn(func):
+def with_dbconn(func: Callable[..., Any]) -> Callable[..., Any]:
     """Decorator which injects a database connection."""
     @wraps(func)
-    def with_dbconn_impl(*args, **kwargs):
+    def with_dbconn_impl(*args: Any, **kwargs: Any) -> Any:
         conn = get_connection()
         return func(conn, *args, **kwargs)
 
     return with_dbconn_impl
 
 
-def init_db():
+def init_db() -> None:
     with current_app.open_resource('db/schema.sql') as f:
         get_connection().executescript(f.read().decode('utf8'))

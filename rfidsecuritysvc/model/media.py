@@ -14,11 +14,7 @@ def get(id):
 
 
 def list(excludeAssociated=False):
-    result = []
-    for row in table.list(excludeAssociated):
-        result.append(__model(row))
-
-    return result
+    return [__model(row) for row in table.list(excludeAssociated)]
 
 
 def create(id, name, desc=None):
@@ -34,6 +30,6 @@ def update(id, name, desc=None):
 
 
 def __model(row):
-    if not row:
+    if row is None:
         return
     return Media(row['id'], row['name'], row['desc'])

@@ -27,11 +27,7 @@ def get_by_media_and_perm(media_id, permission_name):
 
 
 def list(media_id=None):
-    result = []
-    for row in table.list(media_id):
-        result.append(__model(row))
-
-    return result
+    return [__model(row) for row in table.list(media_id)]
 
 
 def create(media_id, permission_id):
@@ -54,7 +50,7 @@ def update(id, media_id, permission_id):
 
 
 def __model(row):
-    if not row:
+    if row is None:
         return
     m = media.Media(row['media_id'], row['media_name'], row['media_desc'])
     p = permission.Permission(row['permission_id'], row['permission_name'], row['permission_desc'])

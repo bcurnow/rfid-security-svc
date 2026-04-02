@@ -27,11 +27,7 @@ def get(id):
 
 
 def list():
-    result = []
-    for row in table.list():
-        result.append(__model(row))
-
-    return result
+    return [__model(row) for row in table.list()]
 
 
 def create(first_name, last_name, sound=None, color=None):
@@ -55,7 +51,7 @@ def update(id, first_name, last_name, sound=None, color=None):
 
 
 def __model(row):
-    if not row:
+    if row is None:
         return
 
     color = None

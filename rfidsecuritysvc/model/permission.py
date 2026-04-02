@@ -18,11 +18,7 @@ def get_by_name(name):
 
 
 def list():
-    result = []
-    for row in table.list():
-        result.append(__model(row))
-
-    return result
+    return [__model(row) for row in table.list()]
 
 
 def create(name, desc=None):
@@ -46,6 +42,6 @@ def update_by_name(name, desc=None):
 
 
 def __model(row):
-    if not row:
+    if row is None:
         return
     return Permission(row['id'], row['name'], row['desc'])
