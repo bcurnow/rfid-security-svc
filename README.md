@@ -71,9 +71,10 @@ Run tests with coverage:
 
 Before you run the API, initialize the database and create an API key:
 
-  make flask ARGS="db init"
-  make flask ARGS="auth generate-api-key"
+  make init
   make flask ARGS="config create RFID_DEVICE <device name>"
+
+The `make init` target will run the database initialization and generate a new API key into `test.apikey`.
 
 Use the device path for your system, typically `/dev/input/rfid`.
 
