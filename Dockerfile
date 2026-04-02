@@ -1,4 +1,4 @@
-from python:3 as dev_image
+FROM python:3 AS dev_image
 
 ARG USER_ID=0
 ARG GROUP_ID=0
@@ -51,7 +51,7 @@ USER flask
 
 CMD ["flask", "run", "--host", "0.0.0.0"]
 
-from dev_image as packager
+FROM dev_image AS packager
 
 USER root
 WORKDIR /package
@@ -70,7 +70,7 @@ RUN pip3 --disable-pip-version-check install build
 # Build and make sure to include the wheel
 RUN python3 -m build --wheel
 
-from python:3 as prod_build
+FROM python:3 AS prod_build
 
 ARG USER=rfidsecuritysvc
 ARG GROUP=${USER}
