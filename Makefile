@@ -22,6 +22,7 @@ help:
 build:
 	docker image build \
 	  --target dev_image \
+	  --no-cache \
 	  --build-arg USER_ID=$(shell id -u) \
 	  --build-arg GROUP_ID=$(shell id -g) \
 	  --build-arg INPUT_GROUP_ID=$(INPUT_GROUP_ID) \
@@ -30,6 +31,7 @@ build:
 
 build-prod:
 	docker image build \
+	  --no-cache \
 	  --platform linux/arm/v6 \
 	  -t $(IMAGE_NAME):production \
 	  $(ROOT_DIR)
@@ -58,7 +60,7 @@ run:
 	  echo "Flask is currently running, please use make stop or cleanup $(PID_FILE)" >&2; \
 	  exit 1; \
 	fi; \
-	FLASK_APP=rfidsecuritysvc FLASK_ENV=development FLASK_DEBUG=1 flask run --host 0.0.0.0 > "$(LOG_FILE)" 2>&1 & \
+	FLASK_APP=rfidsecuritysvc FLASK_ENV=development FLASK_DEBUG=1 flask run --host 0.0.0.0 --debug> "$(LOG_FILE)" 2>&1 & \
 	pid=$$!; \
 	echo $$pid > "$(PID_FILE)"; \
 	echo "Flask is running under pid $$pid, logs are located at $(LOG_FILE)"
@@ -69,6 +71,7 @@ stop:
 	  if ps -p $$pid -o cmd | grep -q flask; then \
 	    echo "Killing $$pid..."; \
 	    kill $$pid; \
+		sleep 1; \
 	    rm "$(PID_FILE)"; \
 	  else \
 	    echo "Pid $$pid is not a Flask process, cleaning up $(PID_FILE)" >&2; \
