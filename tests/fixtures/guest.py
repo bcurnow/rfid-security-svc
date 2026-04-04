@@ -38,7 +38,7 @@ def open_door_guest(guests):
 
 @pytest.fixture(scope='session')
 def guest_for_creatable_guest_media(guests):
-    """ This guest should be used when creating a guest_media record."""
+    """This guest should be used when creating a guest_media record."""
     for g in guests:
         if g.first_name == 'Mickey' and g.last_name == 'Mouse':
             return g
@@ -46,7 +46,7 @@ def guest_for_creatable_guest_media(guests):
 
 @pytest.fixture(scope='session')
 def no_prefs_media_guest(guests):
-    """ For use when building GuestMedia records """
+    """For use when building GuestMedia records"""
     for g in guests:
         if g.first_name == 'Princess' and g.last_name == 'Anna':
             return g

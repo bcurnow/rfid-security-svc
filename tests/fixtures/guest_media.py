@@ -4,16 +4,7 @@ from rfidsecuritysvc.model.guest_media import GuestMedia
 
 
 @pytest.fixture(scope='session')
-def guest_medias(media_for_guests,
-                 guests,
-                 open_door_guest,
-                 open_door_media,
-                 not_authorized_media_guest,
-                 not_authorized_media,
-                 no_prefs_media_guest,
-                 no_prefs_media,
-                 default_sound,
-                 default_color):
+def guest_medias(media_for_guests, guests, open_door_guest, open_door_media, not_authorized_media_guest, not_authorized_media, no_prefs_media_guest, no_prefs_media, default_sound, default_color):
     # The DB will return these ordered by id, please build the list accordingly
     guest_medias = []
     # Make sure we have enough guests for the media provided
@@ -21,34 +12,18 @@ def guest_medias(media_for_guests,
     assert len(media_for_guests) <= len(guests)
 
     for i in range(len(media_for_guests)):
-        guest_medias.append(GuestMedia(i + 1,
-                                       guests[i],
-                                       media_for_guests[i],
-                                       default_sound,
-                                       default_color))
+        guest_medias.append(GuestMedia(i + 1, guests[i], media_for_guests[i], default_sound, default_color))
 
-    guest_medias.append(GuestMedia(len(guest_medias) + 1,
-                                   open_door_guest,
-                                   open_door_media,
-                                   default_sound,
-                                   default_color))
+    guest_medias.append(GuestMedia(len(guest_medias) + 1, open_door_guest, open_door_media, default_sound, default_color))
 
-    guest_medias.append(GuestMedia(len(guest_medias) + 1,
-                                   no_prefs_media_guest,
-                                   no_prefs_media,
-                                   None,
-                                   None))
+    guest_medias.append(GuestMedia(len(guest_medias) + 1, no_prefs_media_guest, no_prefs_media, None, None))
 
     return guest_medias
 
 
 @pytest.fixture(scope='session')
 def creatable_guest_media(guest_medias, guest_for_creatable_guest_media, media_for_creatable_guest_media, default_sound, default_color):
-    return GuestMedia(len(guest_medias) + 1,
-                      guest_for_creatable_guest_media,
-                      media_for_creatable_guest_media,
-                      default_sound,
-                      default_color)
+    return GuestMedia(len(guest_medias) + 1, guest_for_creatable_guest_media, media_for_creatable_guest_media, default_sound, default_color)
 
 
 @pytest.fixture(scope='session')

@@ -16,9 +16,9 @@ def wav_content():
 @pytest.fixture(scope='session')
 def sounds(wav_content):
     return [
-            Sound(1, 'test1.wav', '2021-09-25 23:13:25', wav_content),
-            Sound(2, 'test2.wav', '2021-09-25 23:13:25', wav_content),
-           ]
+        Sound(1, 'test1.wav', '2021-09-25 23:13:25', wav_content),
+        Sound(2, 'test2.wav', '2021-09-25 23:13:25', wav_content),
+    ]
 
 
 @pytest.fixture(scope='session')
@@ -49,7 +49,9 @@ def add_sound_helpers(monkeypatch_session):
         # For multipart data, we need to return a tuple because this will need to be separated into form data (the first item)
         # and files (the second item)
         return (
-            {'name': self.name, },
+            {
+                'name': self.name,
+            },
             {'content': (self.name, io.BytesIO(self.content), content_type)},
         )
 

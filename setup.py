@@ -1,7 +1,7 @@
 from setuptools import find_packages, setup
 
 
-with open("README.md", "r") as fh:
+with open('README.md', 'r') as fh:
     long_description = fh.read()
 
 setup(
@@ -22,10 +22,7 @@ setup(
     long_description_content_type='text/markdown',
     name='rfidsecuritysvc',
     packages=find_packages(include=['rfidsecuritysvc', 'rfidsecuritysvc.*']),
-    package_data={
-        'rfidsecuritysvc.api': ['api.yaml'],
-        'rfidsecuritysvc.db': ['schema.sql']
-    },
+    package_data={'rfidsecuritysvc.api': ['api.yaml'], 'rfidsecuritysvc.db': ['schema.sql']},
     entry_points={
         'console_scripts': [
             'rfidsecuritysvc-genkey=rfidsecuritysvc.bin.genkey:main',

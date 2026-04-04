@@ -44,14 +44,7 @@ class ResponseHandler:
                 # We have data but it's not supposed a content type we explicitly handle, we'll populate data and assume that everything goes to plan
                 request_data = data
 
-        return self._client.request(
-            method=method.upper(),
-            url=self._api_base + api,
-            content=request_content,
-            data=request_data,
-            files=request_files,
-            headers=request_headers
-        )
+        return self._client.request(method=method.upper(), url=self._api_base + api, content=request_content, data=request_data, files=request_files, headers=request_headers)
 
     def assert_response(self, response, status_code=200, expected=None, headers=None):
         # Add some helpful debug info if we aren't going to be successful
@@ -112,6 +105,7 @@ def api_base():
 @pytest.fixture(scope='session')
 def monkeypatch_session():
     from _pytest.monkeypatch import MonkeyPatch
+
     m = MonkeyPatch()
     yield m
     m.undo()

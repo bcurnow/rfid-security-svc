@@ -9,8 +9,7 @@ from rfidsecuritysvc.exception import SoundNotFoundError
 
 
 def test_Guest(assert_model, default_sound, default_color):
-    assert_model(_model(1, 'first', 'last', default_sound, default_color),
-                 Guest(1, 'first', 'last', default_sound, default_color))
+    assert_model(_model(1, 'first', 'last', default_sound, default_color), Guest(1, 'first', 'last', default_sound, default_color))
 
 
 @patch('rfidsecuritysvc.model.guest.table')

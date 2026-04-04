@@ -12,8 +12,7 @@ from rfidsecuritysvc.model.sound import Sound
 
 
 def test_GuestMedia(assert_model, open_door_guest, open_door_media, default_sound, default_color):
-    assert_model(_model(1, open_door_guest, open_door_media, default_sound, default_color),
-                 GuestMedia(1, open_door_guest, open_door_media, default_sound, default_color))
+    assert_model(_model(1, open_door_guest, open_door_media, default_sound, default_color), GuestMedia(1, open_door_guest, open_door_media, default_sound, default_color))
 
 
 def test_GuestMedia_to_json(open_door_guest, open_door_media, default_sound, default_color):

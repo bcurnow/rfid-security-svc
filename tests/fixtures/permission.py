@@ -39,7 +39,7 @@ def open_door_permission(permissions):
 
 @pytest.fixture(scope='session')
 def default_permission(permissions):
-    """ This permission should be used as the default (e.g. all guest, all media)"""
+    """This permission should be used as the default (e.g. all guest, all media)"""
     for p in permissions:
         if p.name == 'Default':
             return p
@@ -47,7 +47,7 @@ def default_permission(permissions):
 
 @pytest.fixture(scope='session')
 def permission_for_creatable_media_perm(permissions):
-    """ This is the permission that should be used to create a creatable media_perm record."""
+    """This is the permission that should be used to create a creatable media_perm record."""
     for p in permissions:
         if p.name == 'Perm 5':
             return p

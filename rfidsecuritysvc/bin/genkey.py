@@ -2,6 +2,7 @@
 """
 Standalone script to regenerate the API key for rfidsecuritysvc.
 """
+
 import sys
 from pathlib import Path
 import click
@@ -18,16 +19,16 @@ def main():
     if not click.confirm('Are you sure? This will invalidate the current API key.'):
         click.echo('Aborted.')
         sys.exit(0)
-    
+
     try:
         # Initialize database (creates connection, schema, etc.)
         init_db()
-        
+
         # Generate new API key
         key = generate_api_key()
         click.echo(click.style(f'Generated new API key: "{key}"', fg='green'))
         click.echo(click.style('Please record this value as it will not be printed again.', fg='yellow'))
-    
+
     except Exception as e:
         click.echo(click.style(f'Error: {e}', fg='red'), err=True)
         sys.exit(1)

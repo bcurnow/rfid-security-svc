@@ -8,7 +8,8 @@ import rfidsecuritysvc.exception as exception
 @with_dbconn
 def get(conn, id):
     with conn:
-        return conn.execute(textwrap.dedent('''
+        return conn.execute(
+            textwrap.dedent("""
                                             SELECT
                                             media_perm.id,
                                             media_id,
@@ -23,13 +24,16 @@ def get(conn, id):
                                             INNER JOIN permission ON permission.id = media_perm.permission_id
                                             WHERE media_perm.id = ?
                                             ORDER BY media_perm.id
-                                            ''').replace('\n', ' '), (id,)).fetchone()
+                                            """).replace('\n', ' '),
+            (id,),
+        ).fetchone()
 
 
 @with_dbconn
 def get_by_media_and_perm(conn, media_id, permission_name):
     with conn:
-        return conn.execute(textwrap.dedent('''
+        return conn.execute(
+            textwrap.dedent("""
                                             SELECT
                                             media_perm.id,
                                             media_id,
@@ -44,14 +48,17 @@ def get_by_media_and_perm(conn, media_id, permission_name):
                                             INNER JOIN permission ON permission.id = media_perm.permission_id
                                             WHERE media_perm.media_id = ? AND permission.name = ?
                                             ORDER BY media_perm.id
-                                            ''').replace('\n', ' '), (media_id, permission_name)).fetchone()
+                                            """).replace('\n', ' '),
+            (media_id, permission_name),
+        ).fetchone()
 
 
 @with_dbconn
 def list(conn, media_id=None):
     with conn:
         if media_id:
-            return conn.execute(textwrap.dedent('''
+            return conn.execute(
+                textwrap.dedent("""
                                                 SELECT
                                                 media_perm.id,
                                                 media_id,
@@ -66,9 +73,12 @@ def list(conn, media_id=None):
                                                 INNER JOIN permission ON permission.id = media_perm.permission_id
                                                 WHERE media_id = ?
                                                 ORDER BY media_perm.id
-                                                ''').replace('\n', ' '), (media_id,)).fetchall()
+                                                """).replace('\n', ' '),
+                (media_id,),
+            ).fetchall()
         else:
-            return conn.execute(textwrap.dedent('''
+            return conn.execute(
+                textwrap.dedent("""
                                                 SELECT
                                                 media_perm.id,
                                                 media_id,
@@ -82,7 +92,8 @@ def list(conn, media_id=None):
                                                 INNER JOIN media on media.id = media_perm.media_id
                                                 INNER JOIN permission ON permission.id = media_perm.permission_id
                                                 ORDER BY media_perm.id
-                                                ''').replace('\n', ' ')).fetchall()
+                                                """).replace('\n', ' ')
+            ).fetchall()
 
 
 @with_dbconn

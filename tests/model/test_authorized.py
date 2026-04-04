@@ -14,10 +14,7 @@ from rfidsecuritysvc.model.sound import Sound
 def test_authorized(media_perm, guest_media, open_door_media_perm, open_door_guest_media):
     media_perm.get_by_media_and_perm.return_value = open_door_media_perm
     guest_media.get_by_media.return_value = open_door_guest_media
-    expected = MediaConfig(open_door_media_perm,
-                           open_door_guest_media.guest,
-                           open_door_guest_media.sound,
-                           open_door_guest_media.color)
+    expected = MediaConfig(open_door_media_perm, open_door_guest_media.guest, open_door_guest_media.sound, open_door_guest_media.color)
     assert model.authorized('test', 'test_perm') == expected
     media_perm.get_by_media_and_perm.assert_called_once_with('test', 'test_perm')
     guest_media.get_by_media.assert_called_once_with('test')
@@ -121,7 +118,7 @@ def test__resolveSound_none():
 
 
 def modifiableGuestMedia():
-    """ Returns a new GuestMedia object every time it's called to allow for modifications of the object state. """
+    """Returns a new GuestMedia object every time it's called to allow for modifications of the object state."""
     g = Guest(1, 'Mickey', 'Mouse', None, None)
     m = Media('modifiable', 'modifiable', 'this media is modifiable')
     gm = GuestMedia(1, g, m, None, None)

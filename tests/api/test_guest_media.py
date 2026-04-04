@@ -137,7 +137,10 @@ def test_put_not_found(model):
 def test_put_not_found_duplicate(model):
     model.update.side_effect = NotFoundError
     model.create.side_effect = DuplicateError
-    assert api.put(m.id, m.test_create()) == (f'Object with guest_id "{m.guest.id} and media_id "{m.media.id}" already exists.', 409,)
+    assert api.put(m.id, m.test_create()) == (
+        f'Object with guest_id "{m.guest.id} and media_id "{m.media.id}" already exists.',
+        409,
+    )
     model.update.assert_called_once_with(m.id, **m.test_create())
     model.create.assert_called_once_with(**m.test_create())
 
@@ -146,7 +149,10 @@ def test_put_not_found_duplicate(model):
 def test_put_not_found_GuestNotFoundError(model):
     model.update.side_effect = NotFoundError
     model.create.side_effect = GuestNotFoundError
-    assert api.put(m.id, m.test_create()) == (f'No guest found with id "{m.guest.id}".', 400,)
+    assert api.put(m.id, m.test_create()) == (
+        f'No guest found with id "{m.guest.id}".',
+        400,
+    )
     model.update.assert_called_once_with(m.id, **m.test_create())
     model.create.assert_called_once_with(**m.test_create())
 
@@ -155,7 +161,10 @@ def test_put_not_found_GuestNotFoundError(model):
 def test_put_not_found_MediaNotFoundError(model):
     model.update.side_effect = NotFoundError
     model.create.side_effect = MediaNotFoundError
-    assert api.put(m.id, m.test_create()) == (f'No media found with id "{m.media.id}".', 400,)
+    assert api.put(m.id, m.test_create()) == (
+        f'No media found with id "{m.media.id}".',
+        400,
+    )
     model.update.assert_called_once_with(m.id, **m.test_create())
     model.create.assert_called_once_with(**m.test_create())
 
@@ -164,6 +173,9 @@ def test_put_not_found_MediaNotFoundError(model):
 def test_put_not_found_SoundNotFoundError(model):
     model.update.side_effect = NotFoundError
     model.create.side_effect = SoundNotFoundError
-    assert api.put(m.id, m.test_create()) == (f'No sound found with id "{m.sound.id}".', 400,)
+    assert api.put(m.id, m.test_create()) == (
+        f'No sound found with id "{m.sound.id}".',
+        400,
+    )
     model.update.assert_called_once_with(m.id, **m.test_create())
     model.create.assert_called_once_with(**m.test_create())

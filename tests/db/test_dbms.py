@@ -16,7 +16,7 @@ def test_get_connection(sqlite3, app):
     def execute(sql, *args, **kwargs):
         if sql.startswith('PRAGMA foreign_keys'):
             return None
-        if "sqlite_master" in sql:
+        if 'sqlite_master' in sql:
             return cursor
         return None
 
@@ -34,8 +34,6 @@ def test_get_connection(sqlite3, app):
     )
     assert connection.row_factory == sqlite3.Row
     connection.execute.assert_any_call('PRAGMA foreign_keys = ON')
-
-
 
 
 @patch('rfidsecuritysvc.db.dbms.sqlite3')
@@ -90,4 +88,3 @@ def test_init_db(app):
     assert len(results) == len(table_names)
     for row in results:
         assert row['name'] in table_names
-

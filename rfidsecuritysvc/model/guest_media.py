@@ -82,11 +82,7 @@ def __model(row):
     if row['guest_sound'] is not None:
         guest_sound = Sound(row['guest_sound'], row['guest_sound_name'], row['guest_sound_last_update_timestamp'])
 
-    g = guest.Guest(row['guest_id'],
-                    row['guest_first_name'],
-                    row['guest_last_name'],
-                    guest_sound,
-                    guest_color)
+    g = guest.Guest(row['guest_id'], row['guest_first_name'], row['guest_last_name'], guest_sound, guest_color)
     m = media.Media(row['media_id'], row['media_name'], row['media_desc'])
 
     guest_media_color = None
@@ -97,8 +93,4 @@ def __model(row):
     if row['sound'] is not None:
         guest_media_sound = Sound(row['sound'], row['sound_name'], row['sound_last_update_timestamp'])
 
-    return GuestMedia(row['id'],
-                      g,
-                      m,
-                      guest_media_sound,
-                      guest_media_color)
+    return GuestMedia(row['id'], g, m, guest_media_sound, guest_media_color)

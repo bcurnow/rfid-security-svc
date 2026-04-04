@@ -32,8 +32,7 @@ class MockDb(object):
         conn.execute.side_effect = self.get_return_value_for_execute
 
         # Create a context manager implementation to ensure that commit and rollback get called
-        class mock_context_manager():
-
+        class mock_context_manager:
             def __enter__(self):
                 return conn
 
@@ -65,6 +64,7 @@ class MockDb(object):
 
     def with_dbconn(self, func):
         """This function replaces the with_dbconn decorator from rfidsecuritysvc.db.dbms with one that provides the MockDB"""
+
         def with_dbconn_impl(*args, **kwargs):
             return func(self._conn, *args, **kwargs)
 
@@ -100,7 +100,7 @@ class MockDb(object):
             self._conn.execute.assert_not_called()
 
         total_execs = 0
-        for (key, execs) in self._executes.items():
+        for key, execs in self._executes.items():
             for e in execs:
                 total_execs += 1
                 if e['sql_args']:

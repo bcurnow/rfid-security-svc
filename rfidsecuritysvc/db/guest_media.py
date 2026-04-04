@@ -4,7 +4,8 @@ import textwrap
 from rfidsecuritysvc.db.dbms import with_dbconn
 import rfidsecuritysvc.exception as exception
 
-SELECT_BASE = textwrap.dedent('''
+SELECT_BASE = (
+    textwrap.dedent("""
                               SELECT
                               guest_media.id,
                               guest_id,
@@ -27,7 +28,10 @@ SELECT_BASE = textwrap.dedent('''
                               INNER JOIN guest ON guest.id = guest_media.guest_id
                               LEFT JOIN sound gms ON gms.id = guest_media.sound
                               LEFT JOIN sound gs ON gs.id = guest.sound
-                              ''').replace('\n', ' ').strip()
+                              """)
+    .replace('\n', ' ')
+    .strip()
+)
 
 
 @with_dbconn
@@ -69,7 +73,8 @@ def delete(conn, id):
 @with_dbconn
 def update(conn, id, guest_id, media_id, sound=None, color=None):
     with conn:
-        count = conn.execute(textwrap.dedent('''
+        count = conn.execute(
+            textwrap.dedent("""
                                              UPDATE guest_media
                                              SET
                                              guest_id = ?,
@@ -77,7 +82,9 @@ def update(conn, id, guest_id, media_id, sound=None, color=None):
                                              sound = ?,
                                              color = ?
                                              WHERE id = ?
-                                             ''').replace('\n', ' '), (guest_id, media_id, sound, color, id)).rowcount
+                                             """).replace('\n', ' '),
+            (guest_id, media_id, sound, color, id),
+        ).rowcount
     if count == 0:
         raise exception.GuestMediaNotFoundError
 

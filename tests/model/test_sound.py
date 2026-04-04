@@ -37,10 +37,7 @@ def test_Sound_to_json_with_content(assert_model, wav_content):
 
 def test_Sound_to_json_with_content_all_fields(assert_model, wav_content):
     json = Sound(1, 'name', '2021-09-25 23:13:25', wav_content).to_json_with_content()
-    assert_model(json, {'id': 1,
-                        'name': 'name',
-                        'content': base64.b64encode(wav_content).decode('ascii'),
-                        'last_update_timestamp': '2021-09-25T23:13:25+00:00'})
+    assert_model(json, {'id': 1, 'name': 'name', 'content': base64.b64encode(wav_content).decode('ascii'), 'last_update_timestamp': '2021-09-25T23:13:25+00:00'})
 
 
 @patch('rfidsecuritysvc.model.sound.table')

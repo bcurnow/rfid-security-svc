@@ -47,9 +47,10 @@ def verify_apikey(apikey: str, required_scopes=None) -> dict:
     except Exception:
         raise OAuthProblem('Invalid authentication: ""')
 
+
 def _print_new_key_warning(key):
-    print("IMPORTANT:", file=sys.stderr)
-    print("******************************************************************************", file=sys.stderr)
-    print("Please record this value as it will not be printed again.\n", file=sys.stderr)
-    print(f"API key: \"{key}\".", file=sys.stderr)
-    print("******************************************************************************", file=sys.stderr)
+    print('IMPORTANT:', file=sys.stderr)
+    print('******************************************************************************', file=sys.stderr)
+    print('Please record this value as it will not be printed again.\n', file=sys.stderr)
+    print(f'API key: "{key}".', file=sys.stderr)
+    print('******************************************************************************', file=sys.stderr)

@@ -8,7 +8,8 @@ from rfidsecuritysvc.exception import GuestMediaNotFoundError as NotFound
 
 
 def test_get(mockdb):
-    mockdb.add_execute(textwrap.dedent('''
+    mockdb.add_execute(
+        textwrap.dedent("""
                                        SELECT
                                        guest_media.id,
                                        guest_id,
@@ -33,12 +34,18 @@ def test_get(mockdb):
                                        LEFT JOIN sound gs ON gs.id = guest.sound
                                        WHERE guest_media.id = ?
                                        ORDER BY guest_media.id
-                                       ''').replace('\n', ' ').strip(), ('test',), 'test')
+                                       """)
+        .replace('\n', ' ')
+        .strip(),
+        ('test',),
+        'test',
+    )
     assert db.get('test') == 'test'
 
 
 def test_get_by_media(mockdb):
-    mockdb.add_execute(textwrap.dedent('''
+    mockdb.add_execute(
+        textwrap.dedent("""
                                        SELECT
                                        guest_media.id,
                                        guest_id,
@@ -63,12 +70,18 @@ def test_get_by_media(mockdb):
                                        LEFT JOIN sound gs ON gs.id = guest.sound
                                        WHERE guest_media.media_id = ?
                                        ORDER BY guest_media.id
-                                       ''').replace('\n', ' ').strip(), ('test',), 'test')
+                                       """)
+        .replace('\n', ' ')
+        .strip(),
+        ('test',),
+        'test',
+    )
     assert db.get_by_media('test') == 'test'
 
 
 def test_list(mockdb):
-    mockdb.add_execute(textwrap.dedent('''
+    mockdb.add_execute(
+        textwrap.dedent("""
                                        SELECT
                                        guest_media.id,
                                        guest_id,
@@ -92,12 +105,17 @@ def test_list(mockdb):
                                        LEFT JOIN sound gms ON gms.id = guest_media.sound
                                        LEFT JOIN sound gs ON gs.id = guest.sound
                                        ORDER BY guest_media.id
-                                        ''').replace('\n', ' ').strip(), cursor_return=[])
+                                        """)
+        .replace('\n', ' ')
+        .strip(),
+        cursor_return=[],
+    )
     assert db.list() == []
 
 
 def test_list_with_media_id(mockdb):
-    mockdb.add_execute(textwrap.dedent('''
+    mockdb.add_execute(
+        textwrap.dedent("""
                                        SELECT
                                        guest_media.id,
                                        guest_id,
@@ -122,7 +140,12 @@ def test_list_with_media_id(mockdb):
                                        LEFT JOIN sound gs ON gs.id = guest.sound
                                        WHERE guest_media.guest_id = ?
                                        ORDER BY guest_media.id
-                                        ''').replace('\n', ' ').strip(), (1,), cursor_return=[])
+                                        """)
+        .replace('\n', ' ')
+        .strip(),
+        (1,),
+        cursor_return=[],
+    )
     assert db.list(1) == []
 
 
@@ -149,7 +172,8 @@ def test_delete(mockdb):
 
 
 def test_update(mockdb):
-    mockdb.add_execute(textwrap.dedent('''
+    mockdb.add_execute(
+        textwrap.dedent("""
                                        UPDATE guest_media
                                        SET
                                        guest_id = ?,
@@ -157,13 +181,17 @@ def test_update(mockdb):
                                        sound = ?,
                                        color = ?
                                        WHERE id = ?
-                                       ''').replace('\n', ' '), (1, 'test', 1, 0xABCDEF, 1), rowcount=1)
+                                       """).replace('\n', ' '),
+        (1, 'test', 1, 0xABCDEF, 1),
+        rowcount=1,
+    )
     mockdb.add_commit()
     assert db.update(1, 1, 'test', 1, 0xABCDEF) == 1
 
 
 def test_update_NotFoundError(mockdb):
-    mockdb.add_execute(textwrap.dedent('''
+    mockdb.add_execute(
+        textwrap.dedent("""
                                        UPDATE guest_media
                                        SET
                                        guest_id = ?,
@@ -171,7 +199,10 @@ def test_update_NotFoundError(mockdb):
                                        sound = ?,
                                        color = ?
                                        WHERE id = ?
-                                       ''').replace('\n', ' '), (1, 'test', 1, 0xABCDEF, 1), rowcount=0)
+                                       """).replace('\n', ' '),
+        (1, 'test', 1, 0xABCDEF, 1),
+        rowcount=0,
+    )
     mockdb.add_commit()
     with pytest.raises(NotFound):
         db.update(1, 1, 'test', 1, 0xABCDEF)

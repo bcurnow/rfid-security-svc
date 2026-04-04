@@ -21,7 +21,7 @@ def test_search(rh, guests):
 
 @patch(f'rfidsecuritysvc.api.{api}.model')
 def test_search_noresults(model, rh):
-    """ The table is already populated so we need to patch instead """
+    """The table is already populated so we need to patch instead"""
     model.list.return_value = []
     rh.assert_response(rh.open('get', f'{api}'), 200, [])
     model.list.assert_called_once()

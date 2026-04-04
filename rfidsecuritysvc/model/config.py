@@ -27,8 +27,10 @@ def delete(key):
 def update(key, value):
     return table.update(key, value)
 
+
 def replace(key, value):
     return table.replace(key, value)
+
 
 def __model(row):
     if row is None:

@@ -7,6 +7,7 @@ from connexion.options import SwaggerUIOptions
 from rfidsecuritysvc.db.dbms import init_db, close_db
 from rfidsecuritysvc.util.auth import ensure_api_key
 
+
 @asynccontextmanager
 async def lifespan(app: AsyncApp):
     """Handle application startup and shutdown events."""
@@ -16,9 +17,10 @@ async def lifespan(app: AsyncApp):
     yield
     close_db()
 
+
 def create_app(test_config=None):
     """Create and configure the Connexion application."""
-    
+
     if test_config is not None:
         if 'DATABASE' in test_config:
             os.environ['DATABASE'] = test_config['DATABASE']
@@ -30,18 +32,18 @@ def create_app(test_config=None):
         specification_dir=str(Path(__file__).parent / 'api'),
         lifespan=lifespan,
         swagger_ui_options=SwaggerUIOptions(
-            swagger_ui_config= {
-                "docExpansion": "none",
-                "persistAuthorization": True,
-                "displayRequestDuration": True,
-                "filter": True,
-                "showCommonExtensions": True,
-                "tryItOutEnabled": True,
+            swagger_ui_config={
+                'docExpansion': 'none',
+                'persistAuthorization': True,
+                'displayRequestDuration': True,
+                'filter': True,
+                'showCommonExtensions': True,
+                'tryItOutEnabled': True,
             }
-        )
+        ),
     )
     connexion_app.add_api('api.yaml', strict_validation=True, validate_responses=True, resolver=RestyResolver('rfidsecuritysvc.api'))
-    
+
     return connexion_app
 
 

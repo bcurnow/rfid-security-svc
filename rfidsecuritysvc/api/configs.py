@@ -32,7 +32,7 @@ def delete(key):
 
 def put(key, body):
     try:
-        return None, 200, {RECORD_COUNT_HEADER: str(model.update(key, body["value"]))}
+        return None, 200, {RECORD_COUNT_HEADER: str(model.update(key, body['value']))}
     except exception.ConfigNotFoundError:
-        model.create(key, body["value"])
+        model.create(key, body['value'])
         return None, 201, {RECORD_COUNT_HEADER: '1'}

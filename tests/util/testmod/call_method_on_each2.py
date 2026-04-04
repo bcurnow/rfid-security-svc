@@ -1,4 +1,5 @@
 import testmod.call_method_on_each2
+
 called = False
 
 

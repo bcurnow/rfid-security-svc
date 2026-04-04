@@ -15,11 +15,13 @@ def app(configs, guests, guest_medias, medias, permissions, media_perms, sounds)
     """A Connexion test application"""
     db_fd, db_path = tempfile.mkstemp()
 
-    app = create_app({
-        'TESTING': True,
-        'ENV': 'development',
-        'DATABASE': db_path,
-    })
+    app = create_app(
+        {
+            'TESTING': True,
+            'ENV': 'development',
+            'DATABASE': db_path,
+        }
+    )
 
     for table, objects in {
         config: configs,
@@ -50,4 +52,3 @@ def app(configs, guests, guest_medias, medias, permissions, media_perms, sounds)
 @pytest.fixture(scope='session')
 def client(app):
     return TestClient(app)
-

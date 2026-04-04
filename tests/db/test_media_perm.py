@@ -8,7 +8,8 @@ from rfidsecuritysvc.exception import MediaPermNotFoundError as NotFound
 
 
 def test_get(mockdb):
-    mockdb.add_execute(textwrap.dedent('''
+    mockdb.add_execute(
+        textwrap.dedent("""
                                        SELECT
                                        media_perm.id,
                                        media_id,
@@ -23,12 +24,16 @@ def test_get(mockdb):
                                        INNER JOIN permission ON permission.id = media_perm.permission_id
                                        WHERE media_perm.id = ?
                                        ORDER BY media_perm.id
-                                       ''').replace('\n', ' '), ('test',), 'test')
+                                       """).replace('\n', ' '),
+        ('test',),
+        'test',
+    )
     assert db.get('test') == 'test'
 
 
 def test_get_by_media_and_perm(mockdb):
-    mockdb.add_execute(textwrap.dedent('''
+    mockdb.add_execute(
+        textwrap.dedent("""
                                        SELECT
                                        media_perm.id,
                                        media_id,
@@ -43,12 +48,16 @@ def test_get_by_media_and_perm(mockdb):
                                        INNER JOIN permission ON permission.id = media_perm.permission_id
                                        WHERE media_perm.media_id = ? AND permission.name = ?
                                        ORDER BY media_perm.id
-                                       ''').replace('\n', ' '), ('test', 1), 'test')
+                                       """).replace('\n', ' '),
+        ('test', 1),
+        'test',
+    )
     assert db.get_by_media_and_perm('test', 1) == 'test'
 
 
 def test_list(mockdb):
-    mockdb.add_execute(textwrap.dedent('''
+    mockdb.add_execute(
+        textwrap.dedent("""
                                        SELECT
                                        media_perm.id,
                                        media_id,
@@ -62,12 +71,15 @@ def test_list(mockdb):
                                        INNER JOIN media on media.id = media_perm.media_id
                                        INNER JOIN permission ON permission.id = media_perm.permission_id
                                        ORDER BY media_perm.id
-                                       ''').replace('\n', ' '), cursor_return=[])
+                                       """).replace('\n', ' '),
+        cursor_return=[],
+    )
     assert db.list() == []
 
 
 def test_list_with_media_id(mockdb):
-    mockdb.add_execute(textwrap.dedent('''
+    mockdb.add_execute(
+        textwrap.dedent("""
                                        SELECT
                                        media_perm.id,
                                        media_id,
@@ -82,7 +94,10 @@ def test_list_with_media_id(mockdb):
                                        INNER JOIN permission ON permission.id = media_perm.permission_id
                                        WHERE media_id = ?
                                        ORDER BY media_perm.id
-                                       ''').replace('\n', ' '), ('test',), cursor_return=[])
+                                       """).replace('\n', ' '),
+        ('test',),
+        cursor_return=[],
+    )
     assert db.list('test') == []
 
 

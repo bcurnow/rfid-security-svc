@@ -25,7 +25,7 @@ def test_search_with_guest_id(rh, guest_medias):
 
 @patch('rfidsecuritysvc.api.guest_media.model')
 def test_search_noresults(model, rh):
-    """ The table is already populated so we need to patch instead """
+    """The table is already populated so we need to patch instead"""
     model.list.return_value = []
     rh.assert_response(rh.open('get', f'{api}'), 200, [])
     model.list.assert_called_once()
@@ -44,29 +44,17 @@ def test_post_duplicate(rh, guest_medias):
 
 
 def test_post_guest_notfound(rh, creatable_guest_media, creatable_guest):
-    m = Model(creatable_guest_media.id,
-              creatable_guest,
-              creatable_guest_media.media,
-              creatable_guest_media.sound,
-              creatable_guest_media.color)
+    m = Model(creatable_guest_media.id, creatable_guest, creatable_guest_media.media, creatable_guest_media.sound, creatable_guest_media.color)
     rh.assert_response(rh.open('post', f'{api}', m), 400)
 
 
 def test_post_media_notfound(rh, creatable_guest_media, creatable_media):
-    m = Model(creatable_guest_media.id,
-              creatable_guest_media.guest,
-              creatable_media,
-              creatable_guest_media.sound,
-              creatable_guest_media.color)
+    m = Model(creatable_guest_media.id, creatable_guest_media.guest, creatable_media, creatable_guest_media.sound, creatable_guest_media.color)
     rh.assert_response(rh.open('post', f'{api}', m), 400)
 
 
 def test_post_sound_notfound(rh, creatable_guest_media, creatable_sound):
-    m = Model(creatable_guest_media.id,
-              creatable_guest_media.guest,
-              creatable_guest_media.media,
-              creatable_sound,
-              creatable_guest_media.color)
+    m = Model(creatable_guest_media.id, creatable_guest_media.guest, creatable_guest_media.media, creatable_sound, creatable_guest_media.color)
     rh.assert_response(rh.open('post', f'{api}', m), 400)
 
 
@@ -84,11 +72,7 @@ def test_delete_notfound(rh, creatable_guest_media):
 
 def test_put(rh, creatable_guest_media):
     p = creatable_guest_media
-    updated_p = Model(creatable_guest_media.id,
-                      creatable_guest_media.guest,
-                      creatable_guest_media.media,
-                      creatable_guest_media.sound,
-                      Color(0xFEDCBA))
+    updated_p = Model(creatable_guest_media.id, creatable_guest_media.guest, creatable_guest_media.media, creatable_guest_media.sound, Color(0xFEDCBA))
 
     rh.assert_response(rh.open('post', f'{api}', p.test_create()), 201)
     rh.assert_response(rh.open('get', f'{api}/{p.id}'), 200)
@@ -107,11 +91,7 @@ def test_put_notfound(rh, creatable_guest_media):
 
 def test_put_guest_notfound(rh, creatable_guest_media, creatable_guest):
     p = creatable_guest_media
-    updated_p = Model(creatable_guest_media.id,
-                      creatable_guest,
-                      creatable_guest_media.media,
-                      creatable_guest_media.sound,
-                      Color(0xFEDCBA))
+    updated_p = Model(creatable_guest_media.id, creatable_guest, creatable_guest_media.media, creatable_guest_media.sound, Color(0xFEDCBA))
 
     rh.assert_response(rh.open('post', f'{api}', p.test_create()), 201)
     rh.assert_response(rh.open('get', f'{api}/{p.id}'), 200)
@@ -121,11 +101,7 @@ def test_put_guest_notfound(rh, creatable_guest_media, creatable_guest):
 
 def test_put_media_notfound(rh, creatable_guest_media, creatable_media):
     p = creatable_guest_media
-    updated_p = Model(creatable_guest_media.id,
-                      creatable_guest_media.guest,
-                      creatable_media,
-                      creatable_guest_media.sound,
-                      Color(0xFEDCBA))
+    updated_p = Model(creatable_guest_media.id, creatable_guest_media.guest, creatable_media, creatable_guest_media.sound, Color(0xFEDCBA))
 
     rh.assert_response(rh.open('post', f'{api}', p.test_create()), 201)
     rh.assert_response(rh.open('get', f'{api}/{p.id}'), 200)
@@ -135,11 +111,7 @@ def test_put_media_notfound(rh, creatable_guest_media, creatable_media):
 
 def test_put_sound_notfound(rh, creatable_guest_media, creatable_sound):
     p = creatable_guest_media
-    updated_p = Model(creatable_guest_media.id,
-                      creatable_guest_media.guest,
-                      creatable_guest_media.media,
-                      creatable_sound,
-                      Color(0xFEDCBA))
+    updated_p = Model(creatable_guest_media.id, creatable_guest_media.guest, creatable_guest_media.media, creatable_sound, Color(0xFEDCBA))
 
     rh.assert_response(rh.open('post', f'{api}', p.test_create()), 201)
     rh.assert_response(rh.open('get', f'{api}/{p.id}'), 200)

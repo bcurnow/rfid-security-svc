@@ -35,7 +35,7 @@ def no_desc_media(medias):
 
 @pytest.fixture(scope='session')
 def no_prefs_media(no_desc_media):
-    """ For use when building GuestMedia records """
+    """For use when building GuestMedia records"""
     return no_desc_media
 
 
@@ -62,7 +62,7 @@ def authorized_media_no_guest(medias):
 
 @pytest.fixture(scope='session')
 def media_for_creatable_media_perm(medias):
-    """ This media should be used when creating a media_perm record."""
+    """This media should be used when creating a media_perm record."""
     for m in medias:
         if m.id == 'TEST FOR MEDIAPERM CREATION':
             return m
@@ -70,7 +70,7 @@ def media_for_creatable_media_perm(medias):
 
 @pytest.fixture(scope='session')
 def media_for_creatable_guest_media(medias):
-    """ This media should be used when creating a guest_media record."""
+    """This media should be used when creating a guest_media record."""
     for m in medias:
         if m.id == 'TEST FOR GUESTMEDIA CREATION':
             return m
@@ -78,19 +78,19 @@ def media_for_creatable_guest_media(medias):
 
 @pytest.fixture(scope='session')
 def media_for_guests(medias):
-    """ Each media returned should be associated with a guest """
+    """Each media returned should be associated with a guest"""
     return medias[4:9]
 
 
 @pytest.fixture(scope='session')
 def media_without_guests(medias):
-    """ Each media returned should NOT be associated with a guest """
+    """Each media returned should NOT be associated with a guest"""
     return medias[0:4]
 
 
 @pytest.fixture(scope='session')
 def media_for_permissions(medias):
-    """ Each media returned should be associated with a permission """
+    """Each media returned should be associated with a permission"""
     return medias[4:]
 
 

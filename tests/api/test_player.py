@@ -1,4 +1,5 @@
-""" This only contains the not_found test as the others require the app context and are found in api-client """
+"""This only contains the not_found test as the others require the app context and are found in api-client"""
+
 from unittest.mock import patch
 
 from rfidsecuritysvc.api import player as api

@@ -9,7 +9,8 @@ from rfidsecuritysvc.exception import GuestNotFoundError as NotFound
 
 
 def test_get(mockdb):
-    mockdb.add_execute(textwrap.dedent('''
+    mockdb.add_execute(
+        textwrap.dedent("""
                                         SELECT
                                         guest.id,
                                         guest.first_name,
@@ -23,12 +24,16 @@ def test_get(mockdb):
                                         LEFT JOIN sound on guest.sound = sound.id
                                         WHERE guest.id = ?
                                         ORDER BY guest.id
-                                        ''').replace('\n', ' '), (1,), 1)
+                                        """).replace('\n', ' '),
+        (1,),
+        1,
+    )
     assert db.get(1) == 1
 
 
 def test_list(mockdb):
-    mockdb.add_execute(textwrap.dedent('''
+    mockdb.add_execute(
+        textwrap.dedent("""
                                         SELECT
                                         guest.id,
                                         guest.first_name,
@@ -41,26 +46,34 @@ def test_list(mockdb):
                                         guest
                                         LEFT JOIN sound on guest.sound = sound.id
                                         ORDER BY guest.id
-                                        ''').replace('\n', ' '), cursor_return=[])
+                                        """).replace('\n', ' '),
+        cursor_return=[],
+    )
     assert db.list() == []
 
 
 def test_create(mockdb, default_sound):
-    mockdb.add_execute(textwrap.dedent('''
+    mockdb.add_execute(
+        textwrap.dedent("""
                                  INSERT INTO guest
                                  (first_name, last_name, sound, color)
                                  VALUES (?,?,?,?)
-                                 ''').replace('\n', ' '), ('first', 'last', default_sound.id, 0xABCDEF))
+                                 """).replace('\n', ' '),
+        ('first', 'last', default_sound.id, 0xABCDEF),
+    )
     mockdb.add_commit()
     assert db.create('first', 'last', default_sound.id, 0xABCDEF) is None
 
 
 def test_create_IntegrityError(mockdb, default_sound):
-    mockdb.add_execute(textwrap.dedent('''
+    mockdb.add_execute(
+        textwrap.dedent("""
                                  INSERT INTO guest
                                  (first_name, last_name, sound, color)
                                  VALUES (?,?,?,?)
-                                 ''').replace('\n', ' '), ('first', 'last', default_sound.id, 0xABCDEF))
+                                 """).replace('\n', ' '),
+        ('first', 'last', default_sound.id, 0xABCDEF),
+    )
     mockdb.add_commit(sqlite3.IntegrityError)
     mockdb.add_rollback()
     with pytest.raises(Duplicate) as e:
@@ -76,20 +89,28 @@ def test_delete(mockdb):
 
 
 def test_update(mockdb, default_sound):
-    mockdb.add_execute(textwrap.dedent('''
+    mockdb.add_execute(
+        textwrap.dedent("""
                                          UPDATE guest
                                          SET first_name = ?, last_name = ?, sound = ?, color = ?
                                          WHERE id = ?
-                                         ''').replace('\n', ' '), ('first', 'last', default_sound.id, 0xABCDEF, 1), rowcount=1)
+                                         """).replace('\n', ' '),
+        ('first', 'last', default_sound.id, 0xABCDEF, 1),
+        rowcount=1,
+    )
     mockdb.add_commit()
     assert db.update(1, 'first', 'last', default_sound.id, 0xABCDEF) == 1
 
 
 def test_update_NotFoundError(mockdb, default_sound):
-    mockdb.add_execute(textwrap.dedent('''
+    mockdb.add_execute(
+        textwrap.dedent("""
                                          UPDATE guest
                                          SET first_name = ?, last_name = ?, sound = ?, color = ?
                                          WHERE id = ?
-                                         ''').replace('\n', ' '), ('first', 'last', default_sound.id, 0xABCDEF, 1), rowcount=0)
+                                         """).replace('\n', ' '),
+        ('first', 'last', default_sound.id, 0xABCDEF, 1),
+        rowcount=0,
+    )
     with pytest.raises(NotFound):
         db.update(1, 'first', 'last', default_sound.id, 0xABCDEF)

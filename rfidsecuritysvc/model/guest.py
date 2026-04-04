@@ -62,9 +62,4 @@ def __model(row):
     if row['sound'] is not None:
         sound = Sound(row['sound'], row['sound_name'], row['sound_last_update_timestamp'])
 
-    return Guest(
-        row['id'],
-        row['first_name'],
-        row['last_name'],
-        sound,
-        color)
+    return Guest(row['id'], row['first_name'], row['last_name'], sound, color)

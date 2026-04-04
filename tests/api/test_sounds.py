@@ -1,4 +1,4 @@
-""" The post and put tests require the app context and are found in api-client """
+"""The post and put tests require the app context and are found in api-client"""
 
 from datetime import datetime
 from unittest.mock import patch
