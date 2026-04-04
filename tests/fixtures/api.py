@@ -1,9 +1,6 @@
 import json
 import pytest
 
-from werkzeug.datastructures import Headers
-from werkzeug.test import EnvironBuilder
-
 from rfidsecuritysvc.model import BaseModel
 
 
@@ -15,51 +12,63 @@ class ResponseHandler:
         self._assert_model = assert_model
 
     def open(self, method, api, data=None, content_type='application/json', headers={}):
-        h = Headers()
         # Add the default testing authorization header so the calls succeed
-        h.add_header('X-RFIDSECURITYSVC-API-KEY', 'testing')
-        for header, value in headers.items():
-            h.add_header(header, value)
+        request_headers = {'X-RFIDSECURITYSVC-API-KEY': 'testing'}
+        request_headers.update(headers)
 
-        if data is not None and 'application/json' in content_type:
-            if isinstance(data, BaseModel):
-                # BaseModel has to methods monkeypatched in:
-                # - test_update - Removes the attributes that are readOnly
-                # - test_create - Performs any conversion necessary to call create
-                if method == 'put':
-                    data = json.dumps(data.test_update())
-                elif method == 'post':
-                    data = json.dumps(data.test_create())
+        request_content = None
+        request_data = None
+        request_files = None
+        if data is not None:
+            if 'application/json' in content_type:
+                request_headers['Content-Type'] = 'application/json'
+                # We have data and it is supposed to be JSON, we need to conver the object to JSON
+                if isinstance(data, BaseModel):
+                    # BaseModel has two methods monkeypatched in:
+                    # - test_update - Removes the attributes that are readOnly
+                    # - test_create - Performs any conversion necessary to call create
+                    if method == 'put':
+                        request_content = json.dumps(data.test_update())
+                    elif method == 'post':
+                        request_content = json.dumps(data.test_create())
+                    else:
+                        request_content = json.dumps(data.to_json())
                 else:
-                    print("in the else:", type(data), data)
-                    data = json.dumps(data.to_json())
+                    request_content = json.dumps(data)
+            elif 'multipart/form-data' in content_type:
+                # We don't update the headers here because request will set it correctly because we're providing data and files
+                # This must be submitted as a tuple containing the form data (any text fields) and the files.
+                request_data, request_files = data
             else:
-                data = json.dumps(data)
+                request_headers['Content-Type'] = content_type
+                # We have data but it's not supposed a content type we explicitly handle, we'll populate data and assume that everything goes to plan
+                request_data = data
 
-        builder = EnvironBuilder(
-            path=self._api_base + api,
+        return self._client.request(
             method=method.upper(),
-            content_type=content_type,
-            headers=h,
-            charset='utf-8',
-            data=data,
+            url=self._api_base + api,
+            content=request_content,
+            data=request_data,
+            files=request_files,
+            headers=request_headers
         )
-        return self._client.open(builder)
 
     def assert_response(self, response, status_code=200, expected=None, headers=None):
         # Add some helpful debug info if we aren't going to be successful
         if response.status_code != status_code:
-            print(f'{response.status} "{response.content_type}":\n{response.get_data(as_text=True)}\nHeaders:\n{response.headers}')
+            content_type = response.headers.get('content-type', '')
+            print(f'{response.status_code} "{content_type}":\n{response.text}\nHeaders:\n{dict(response.headers)}')
 
         assert response.status_code == status_code
 
         if expected is not None:
-            assert response.data is not None
+            assert response.content is not None
 
-            if 'application/json' in response.content_type:
-                actual = json.loads(response.get_data(as_text=True))
+            content_type = response.headers.get('content-type', '')
+            if 'application/json' in content_type:
+                actual = response.json()
             else:
-                actual = response.get_data()
+                actual = response.content
 
             if isinstance(expected, list):
                 # assert the lengths of the lists to account for zero-length lists
@@ -80,7 +89,7 @@ class ResponseHandler:
             for header, value in headers.items():
                 assert response.headers.get(header) == value
         # Return the response that was passed into us, this is helpful if the test wants to do some additional
-        # testing but doesn't wants to keep the single line assert semantics
+        # testing but doesn't want to keep the single line assert semantics
         return response
 
 

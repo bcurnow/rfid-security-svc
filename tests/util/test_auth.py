@@ -14,13 +14,11 @@ from rfidsecuritysvc.util.auth import API_KEY_CONFIG_KEY, API_KEY_SIZE
 @patch('rfidsecuritysvc.util.auth.token_urlsafe')
 def test_generate_api_key(token_urlsafe, generate_password_hash, config):
     token_urlsafe.return_value = 'test'
-    config.delete.return_value = 0
-    config.create.return_value = None
+    config.replace.return_value = None
     generate_password_hash.return_value = 'test'
     assert auth.generate_api_key() == 'test'
     token_urlsafe.assert_called_once_with(API_KEY_SIZE)
-    config.delete.assert_called_once_with(API_KEY_CONFIG_KEY)
-    config.create.assert_called_once_with(API_KEY_CONFIG_KEY, 'test')
+    config.replace.assert_called_once_with(API_KEY_CONFIG_KEY, 'test')
 
 
 @patch('rfidsecuritysvc.util.auth.config')
@@ -41,6 +39,6 @@ def test_verify_apikey_false(check_password_hash, config):
     with pytest.raises(OAuthProblem) as einfo:
         auth.verify_apikey('test', None)
 
-    assert einfo.value.description == 'Invalid authentication: "test"'
+    assert 'Invalid authentication' in str(einfo.value)
     config.get.assert_called_once_with(API_KEY_CONFIG_KEY)
     check_password_hash.assert_called_once_with('nottest', 'test')

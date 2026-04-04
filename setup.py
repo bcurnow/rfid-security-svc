@@ -13,10 +13,10 @@ setup(
         'Operating System :: OS Independent',
         'Natural Language :: English',
     ],
-    description='A Flask and Connexion-based REST API and database for managing RFID media and permissions.',
+    description='A Connexion-based REST API and database for managing RFID media and permissions.',
     install_requires=[
-        'Flask>=1.1.4,<3',
-        'connexion[swagger-ui]>=2.9.0,<3',
+        'connexion[swagger-ui,uvicorn]>=3.3.0,<4',
+        'click>=8.1.0,<9',
     ],
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -25,6 +25,11 @@ setup(
     package_data={
         'rfidsecuritysvc.api': ['api.yaml'],
         'rfidsecuritysvc.db': ['schema.sql']
+    },
+    entry_points={
+        'console_scripts': [
+            'rfidsecuritysvc-genkey=rfidsecuritysvc.bin.genkey:main',
+        ],
     },
     python_requires='>=3.9',
     url='https://github.com/bcurnow/rfid-security-svc',

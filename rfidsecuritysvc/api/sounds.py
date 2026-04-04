@@ -1,5 +1,3 @@
-from flask import request
-
 import rfidsecuritysvc.exception as exception
 from rfidsecuritysvc.api import RECORD_COUNT_HEADER
 from rfidsecuritysvc.model import sound as model
@@ -17,16 +15,13 @@ def search():
     return [m.to_json() for m in model.list()]
 
 
-def post():
-    content = request.files.get('content')
+def post(body, content):
     if content is None or content.content_type != 'audio/wav':
         return 'audio/wav data is required', 415
-    file_content = content.read()
-    if _content_length(content, file_content) <= 0:
+    file_content = content.file.read()
+    if content.size <= 0:
         return 'audio/wav data is required', 400
-    name = request.form.get('name')
-    if not name:
-        return 'name is required', 400
+    name = body['name']
 
     try:
         model.create(name, file_content)
@@ -36,31 +31,19 @@ def post():
 
 
 def delete(id):
-    return None, 200, {RECORD_COUNT_HEADER: model.delete(id)}
+    return None, 200, {RECORD_COUNT_HEADER: str(model.delete(id))}
 
 
-def put(id):
-    file_content = None
-    if 'content' in request.files:
-        content = request.files['content']
-        if content.content_type != 'audio/wav':
-            return 'audio/wav data is required', 415
-        file_content = content.read()
-        if _content_length(content, file_content) <= 0:
-            return 'audio/wav data is required', 400
-    name = request.form['name']
+def put(id, body, content):
+    if content is None or content.content_type != 'audio/wav':
+        return 'audio/wav data is required', 415
+    file_content = content.file.read()
+    if content.size <= 0:
+        return 'audio/wav data is required', 400
+    name = body['name']
+
     try:
-        return None, 200, {RECORD_COUNT_HEADER: model.update(id, name, file_content)}
+        return None, 200, {RECORD_COUNT_HEADER: str(model.update(id, name, file_content))}
     except exception.SoundNotFoundError:
         model.create(name, file_content)
-        return None, 201, {RECORD_COUNT_HEADER: 1}
-
-
-def _content_length(file, file_content):
-    # Determine the actual length of the content.
-    # Some clients (e.g flask test_request_context) don't provide the
-    # content_length but do provide the content
-    if file.content_length <= 0:
-        return len(file_content)
-    else:
-        return file.content_length
+        return None, 201, {RECORD_COUNT_HEADER: '1'}

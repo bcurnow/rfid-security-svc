@@ -66,7 +66,7 @@ def test_create_IntegrityError(mockdb, default_sound):
     with pytest.raises(Duplicate) as e:
         db.create('first', 'last', default_sound.id, 0xABCDEF)
 
-    assert type(e.value.__cause__) == sqlite3.IntegrityError
+    assert isinstance(e.value.__cause__, sqlite3.IntegrityError)
 
 
 def test_delete(mockdb):

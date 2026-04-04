@@ -93,14 +93,14 @@ def test_post_SoundNotFoundError(model):
 @patch('rfidsecuritysvc.api.guest_media.model')
 def test_delete(model):
     model.delete.return_value = 1
-    assert api.delete(m.id) == (None, 200, {RECORD_COUNT_HEADER: 1})
+    assert api.delete(m.id) == (None, 200, {RECORD_COUNT_HEADER: '1'})
     model.delete.assert_called_once_with(m.id)
 
 
 @patch('rfidsecuritysvc.api.guest_media.model')
 def test_put(model):
     model.update.return_value = 1
-    assert api.put(m.id, m.test_create()) == (None, 200, {RECORD_COUNT_HEADER: 1})
+    assert api.put(m.id, m.test_create()) == (None, 200, {RECORD_COUNT_HEADER: '1'})
     model.update.assert_called_once_with(m.id, **m.test_create())
 
 
@@ -128,7 +128,7 @@ def test_put_SoundNotFoundError(model):
 @patch('rfidsecuritysvc.api.guest_media.model')
 def test_put_not_found(model):
     model.update.side_effect = NotFoundError
-    assert api.put(m.id, m.test_create()) == (None, 201, {RECORD_COUNT_HEADER: 1})
+    assert api.put(m.id, m.test_create()) == (None, 201, {RECORD_COUNT_HEADER: '1'})
     model.update.assert_called_once_with(m.id, **m.test_create())
     model.create.assert_called_once_with(**m.test_create())
 

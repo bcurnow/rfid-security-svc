@@ -61,7 +61,7 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 
-# Flask stuff:
+# Runtime stuff:
 instance/
 .webassets-cache
 
@@ -129,8 +129,9 @@ dmypy.json
 .pyre/
 
 # Project specific files
-flask.pid
-flask.log
+rfidsecuritysvc.pid
+rfidsecuritysvc.log
 *.swp
 test.apikey
 read.wav
+rfid-db/

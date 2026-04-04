@@ -25,17 +25,17 @@ def post(body):
 
 
 def delete(id):
-    return None, 200, {RECORD_COUNT_HEADER: model.delete(id)}
+    return None, 200, {RECORD_COUNT_HEADER: str(model.delete(id))}
 
 
 def put(id, body):
     try:
-        return None, 200, {RECORD_COUNT_HEADER: model.update(id, **body)}
+        return None, 200, {RECORD_COUNT_HEADER: str(model.update(id, **body))}
     except exception.SoundNotFoundError:
         return f'Sound with id "{body["sound"]}" does not exist.', 400
     except exception.GuestNotFoundError:
         try:
             model.create(**body)
-            return None, 201, {RECORD_COUNT_HEADER: 1}
+            return None, 201, {RECORD_COUNT_HEADER: '1'}
         except exception.SoundNotFoundError:
             return f'Sound with id "{body["sound"]}" does not exist.', 400

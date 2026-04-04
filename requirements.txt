@@ -1,7 +1,6 @@
-connexion[swagger-ui]>=2.9.0,<3
-Flask>=1.1.4,<3
-pytest>=6.2.5,<7
-coverage>=5.5,<6
-wheel>=0.37.0,<1
-flake8>=3.9.2,<4
-requests>=2.26.0,<3
+connexion[swagger-ui,uvicorn]>=3.3.0,<4
+pytest>=9.0.2,<10
+coverage>=7.13.5,<8
+wheel>=0.46.3,<1
+ruff>=0.15.9,<1
+click>=8.1.0,<9

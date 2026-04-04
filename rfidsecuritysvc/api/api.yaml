@@ -1069,6 +1069,7 @@ paths:
               type: object
               required:
                 - name
+                - content
               properties:
                 name:
                   type: string
@@ -1205,15 +1206,21 @@ components:
           $ref: "#/components/schemas/Permission"
           readOnly: true
         guest:
-          $ref: "#/components/schemas/Guest"
+          oneOf:
+            - $ref: "#/components/schemas/Guest"
+            - $ref: "#/components/schemas/NullValue"
           nullable: true
           readOnly: true
         sound:
-          $ref: "#/components/schemas/SimpleSound"
+          oneOf:
+            - $ref: "#/components/schemas/SimpleSound"
+            - $ref: "#/components/schemas/NullValue"
           nullable: true
           readOnly: true
         color:
-          $ref: "#/components/schemas/Color"
+          oneOf:
+             - $ref: "#/components/schemas/Color"
+             - $ref: "#/components/schemas/NullValue"
           nullable: true
       additionalProperties: false
     MediaPerm:
@@ -1231,7 +1238,7 @@ components:
           - type: boolean
           - type: object
           - type: array
-            items: {}
+            items: {}    
     Permission:
       allOf:
         - $ref: "#/components/schemas/SimplePermission"
@@ -1275,10 +1282,14 @@ components:
           type: string
           example: Mouse
         sound:
-          $ref: "#/components/schemas/SimpleSound"
+          oneOf:
+            - $ref: "#/components/schemas/SimpleSound"
+            - $ref: "#/components/schemas/NullValue"
           nullable: true
         color:
-          $ref: "#/components/schemas/Color"
+          oneOf:
+             - $ref: "#/components/schemas/Color"
+             - $ref: "#/components/schemas/NullValue"
           nullable: true
       additionalProperties: false
     SimpleGuestMedia:
@@ -1296,10 +1307,14 @@ components:
         media:
           $ref: "#/components/schemas/Media"
         sound:
-          $ref: "#/components/schemas/SimpleSound"
+          oneOf:
+            - $ref: "#/components/schemas/SimpleSound"
+            - $ref: "#/components/schemas/NullValue"
           nullable: true
         color:
-          $ref: "#/components/schemas/Color"
+          oneOf:
+             - $ref: "#/components/schemas/Color"
+             - $ref: "#/components/schemas/NullValue"
           nullable: true
       additionalProperties: false
     SimpleMedia:

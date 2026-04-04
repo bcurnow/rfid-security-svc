@@ -39,3 +39,11 @@ def update(conn, key, value):
         raise exception.ConfigNotFoundError
 
     return count
+
+@with_dbconn
+def replace(conn, key, value):
+    try:
+        with conn:
+            conn.execute('REPLACE INTO config (key, value) VALUES (?,?)', (key, value))
+    except sqlite3.IntegrityError as e:
+        raise exception.DuplicateConfigError from e

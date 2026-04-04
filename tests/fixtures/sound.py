@@ -1,8 +1,7 @@
+import io
 import os
-from io import BytesIO
 
 import pytest
-from werkzeug.datastructures import FileStorage
 
 from rfidsecuritysvc.model.sound import Sound
 
@@ -47,8 +46,12 @@ def add_sound_helpers(monkeypatch_session):
         return copy
 
     def test_to_multipart(self, content_type='audio/wav'):
-        fs = FileStorage(BytesIO(self.content), 'local file name.wav', self.name, content_type, len(self.content))
-        return {'name': self.name, 'content': fs}
+        # For multipart data, we need to return a tuple because this will need to be separated into form data (the first item)
+        # and files (the second item)
+        return (
+            {'name': self.name, },
+            {'content': (self.name, io.BytesIO(self.content), content_type)},
+        )
 
     monkeypatch_session.setattr(Sound, 'test_create', convert, raising=False)
     monkeypatch_session.setattr(Sound, 'test_update', convert, raising=False)

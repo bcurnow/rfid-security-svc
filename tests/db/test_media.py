@@ -40,7 +40,7 @@ def test_create_IntegrityError(mockdb):
     with pytest.raises(Duplicate) as e:
         db.create('TEST', 'test name', 'test desc')
 
-    assert type(e.value.__cause__) == sqlite3.IntegrityError
+    assert isinstance(e.value.__cause__, sqlite3.IntegrityError)
 
 
 def test_delete(mockdb):
