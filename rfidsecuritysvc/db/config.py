@@ -46,6 +46,10 @@ def update(conn: sqlite3.Connection, key: str, value: str) -> int:
 def replace(conn: sqlite3.Connection, key: str, value: str) -> None:
     try:
         with conn:
-            conn.execute('REPLACE INTO config (key, value) VALUES (?,?)', (key, value))
+            count = conn.execute('REPLACE INTO config (key, value) VALUES (?,?)', (key, value)).rowcount
+        if count == 0:
+            raise exception.ConfigNotFoundError
+        
+        return count
     except sqlite3.IntegrityError as e:
         raise exception.DuplicateConfigError from e
