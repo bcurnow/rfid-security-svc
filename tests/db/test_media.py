@@ -24,13 +24,13 @@ def test_list_exclude_associated(mockdb):
 def test_create(mockdb):
     mockdb.add_execute('INSERT INTO media (id, name, desc) VALUES (?,?,?)', ('TEST', 'test name', 'test desc'))
     mockdb.add_commit()
-    assert db.create('TEST', 'test name', 'test desc') is None
+    assert db.create('TEST', 'test name', 'test desc') == 'TEST'
 
 
 def test_create_ensure_uppercase(mockdb):
     mockdb.add_execute('INSERT INTO media (id, name, desc) VALUES (?,?,?)', ('LOWERCASEID', 'test name', 'test desc'))
     mockdb.add_commit()
-    assert db.create('lowercaseid', 'test name', 'test desc') is None
+    assert db.create('lowercaseid', 'test name', 'test desc') == 'LOWERCASEID'
 
 
 def test_create_IntegrityError(mockdb):

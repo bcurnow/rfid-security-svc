@@ -59,7 +59,7 @@ def list(conn, guest_id=None):
 def create(conn, guest_id, media_id, sound=None, color=None):
     try:
         with conn:
-            conn.execute('INSERT INTO guest_media (guest_id, media_id, sound, color) VALUES (?,?,?,?)', (guest_id, media_id, sound, color))
+            return conn.execute('INSERT INTO guest_media (guest_id, media_id, sound, color) VALUES (?,?,?,?) RETURNING id', (guest_id, media_id, sound, color)).fetchone()[0]
     except sqlite3.IntegrityError as e:
         raise exception.DuplicateGuestMediaError from e
 

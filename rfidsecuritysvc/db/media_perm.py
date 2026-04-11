@@ -100,7 +100,7 @@ def list(conn, media_id=None):
 def create(conn, media_id, permission_id):
     try:
         with conn:
-            conn.execute('INSERT INTO media_perm (media_id, permission_id) VALUES (?,?)', (media_id, permission_id))
+            return conn.execute('INSERT INTO media_perm (media_id, permission_id) VALUES (?,?) RETURNING id', (media_id, permission_id)).fetchone()[0]
     except sqlite3.IntegrityError as e:
         raise exception.DuplicateMediaPermError from e
 

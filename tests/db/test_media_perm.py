@@ -102,13 +102,13 @@ def test_list_with_media_id(mockdb):
 
 
 def test_create(mockdb):
-    mockdb.add_execute('INSERT INTO media_perm (media_id, permission_id) VALUES (?,?)', ('test', 1))
+    mockdb.add_execute('INSERT INTO media_perm (media_id, permission_id) VALUES (?,?) RETURNING id', ('test', 1), (1,))
     mockdb.add_commit()
-    assert db.create('test', 1) is None
+    assert db.create('test', 1) is 1
 
 
 def test_create_IntegrityError(mockdb):
-    mockdb.add_execute('INSERT INTO media_perm (media_id, permission_id) VALUES (?,?)', ('test', 1))
+    mockdb.add_execute('INSERT INTO media_perm (media_id, permission_id) VALUES (?,?) RETURNING id', ('test', 1), (1,))
     mockdb.add_commit(sqlite3.IntegrityError)
     mockdb.add_rollback()
     with pytest.raises(Duplicate) as e:

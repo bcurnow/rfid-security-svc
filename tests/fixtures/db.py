@@ -125,7 +125,7 @@ class MockDb(object):
         cursor = Mock()
         execute['cursor'] = cursor
 
-        if self._is_iterable(cursor_return):
+        if isinstance(cursor_return, list):
             # Assume fetchall
             execute['cursor_return'] = cursor_return
             execute['cursor_return_method'] = cursor.fetchall
@@ -134,11 +134,14 @@ class MockDb(object):
             # Assume this is a DELETE, UPDATE, INSERT, etc
             execute['cursor_return_method'] = None
         else:
-            # Assume it is a single return (either a non-iterable value or None)
+            # Assume it is a single return (either a tuple with a single value, a single value or None)
             execute['cursor_return'] = cursor_return
             execute['cursor_return_method'] = cursor.fetchone
             cursor.fetchone.return_value = cursor_return
 
+            # Make sure it's subscriptable for the  "RETURNING id" code
+            if isinstance(cursor_return, tuple):
+                type(cursor).__getitem__ = Mock(side_effect=cursor_return.__getitem__)
         if rowcount is not None:
             execute['rowcount'] = rowcount
             p = PropertyMock(return_value=rowcount)

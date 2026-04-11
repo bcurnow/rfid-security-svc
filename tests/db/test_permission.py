@@ -22,13 +22,13 @@ def test_list(mockdb):
 
 
 def test_create(mockdb):
-    mockdb.add_execute('INSERT INTO permission (name, desc) VALUES (?,?)', ('test name', 'test desc'))
+    mockdb.add_execute('INSERT INTO permission (name, desc) VALUES (?,?) RETURNING id', ('test name', 'test desc'), (1,))
     mockdb.add_commit()
-    assert db.create('test name', 'test desc') is None
+    assert db.create('test name', 'test desc') is 1
 
 
 def test_create_IntegrityError(mockdb):
-    mockdb.add_execute('INSERT INTO permission (name, desc) VALUES (?,?)', ('test name', 'test desc'))
+    mockdb.add_execute('INSERT INTO permission (name, desc) VALUES (?,?) RETURNING id', ('test name', 'test desc'), (1,))
     mockdb.add_commit(sqlite3.IntegrityError)
     mockdb.add_rollback()
     with pytest.raises(Duplicate) as e:

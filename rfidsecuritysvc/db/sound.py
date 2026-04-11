@@ -26,7 +26,7 @@ def list(conn):
 def create(conn, name, content):
     try:
         with conn as conn:
-            conn.execute('INSERT INTO sound (name, content) VALUES (?,?)', (name, content))
+            return conn.execute('INSERT INTO sound (name, content) VALUES (?,?) RETURNING id', (name, content)).fetchone()[0]
     except sqlite3.IntegrityError as e:
         raise exception.DuplicateSoundError from e
 

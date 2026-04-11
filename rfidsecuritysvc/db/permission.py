@@ -26,7 +26,7 @@ def list(conn):
 def create(conn, name, desc):
     try:
         with conn:
-            conn.execute('INSERT INTO permission (name, desc) VALUES (?,?)', (name, desc))
+            return conn.execute('INSERT INTO permission (name, desc) VALUES (?,?) RETURNING id', (name, desc)).fetchone()[0]
     except sqlite3.IntegrityError as e:
         raise exception.DuplicatePermissionError from e
 

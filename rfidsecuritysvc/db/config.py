@@ -21,6 +21,7 @@ def create(conn, key, value):
     try:
         with conn as conn:
             conn.execute('INSERT INTO config (key, value) VALUES (?,?)', (key, value))
+        return key
     except sqlite3.IntegrityError as e:
         raise exception.DuplicateConfigError from e
 

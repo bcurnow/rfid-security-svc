@@ -150,13 +150,13 @@ def test_list_with_media_id(mockdb):
 
 
 def test_create(mockdb):
-    mockdb.add_execute('INSERT INTO guest_media (guest_id, media_id, sound, color) VALUES (?,?,?,?)', (1, 'test', 1, 0xABCDEF))
+    mockdb.add_execute('INSERT INTO guest_media (guest_id, media_id, sound, color) VALUES (?,?,?,?) RETURNING id', (1, 'test', 1, 0xABCDEF), (1,))
     mockdb.add_commit()
-    assert db.create(1, 'test', 1, 0xABCDEF) is None
+    assert db.create(1, 'test', 1, 0xABCDEF) is 1
 
 
 def test_create_IntegrityError(mockdb):
-    mockdb.add_execute('INSERT INTO guest_media (guest_id, media_id, sound, color) VALUES (?,?,?,?)', (1, 'test', 1, 0xABCDEF))
+    mockdb.add_execute('INSERT INTO guest_media (guest_id, media_id, sound, color) VALUES (?,?,?,?) RETURNING id', (1, 'test', 1, 0xABCDEF), (1,))
     mockdb.add_commit(sqlite3.IntegrityError)
     mockdb.add_rollback()
     with pytest.raises(Duplicate) as e:

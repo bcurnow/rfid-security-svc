@@ -22,13 +22,13 @@ def test_list(mockdb):
 
 
 def test_create(mockdb):
-    mockdb.add_execute('INSERT INTO sound (name, content) VALUES (?,?)', ('test', 'binary content'))
+    mockdb.add_execute('INSERT INTO sound (name, content) VALUES (?,?) RETURNING id', ('test', 'binary content'), (1,))
     mockdb.add_commit()
-    assert db.create('test', 'binary content') is None
+    assert db.create('test', 'binary content') is 1
 
 
 def test_create_IntegrityError(mockdb):
-    mockdb.add_execute('INSERT INTO sound (name, content) VALUES (?,?)', ('test', 'binary content'))
+    mockdb.add_execute('INSERT INTO sound (name, content) VALUES (?,?) RETURNING id', ('test', 'binary content'), (1,))
     mockdb.add_commit(sqlite3.IntegrityError)
     mockdb.add_rollback()
     with pytest.raises(Duplicate) as e:

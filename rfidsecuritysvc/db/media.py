@@ -25,6 +25,7 @@ def create(conn, id, name, desc=None):
         id = id.upper()
         with conn:
             conn.execute('INSERT INTO media (id, name, desc) VALUES (?,?,?)', (id, name, desc))
+        return id
     except sqlite3.IntegrityError as e:
         raise exception.DuplicateMediaError from e
 

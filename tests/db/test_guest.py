@@ -57,12 +57,13 @@ def test_create(mockdb, default_sound):
         textwrap.dedent("""
                                  INSERT INTO guest
                                  (first_name, last_name, sound, color)
-                                 VALUES (?,?,?,?)
+                                 VALUES (?,?,?,?) RETURNING id
                                  """).replace('\n', ' '),
         ('first', 'last', default_sound.id, 0xABCDEF),
+        (1,),
     )
     mockdb.add_commit()
-    assert db.create('first', 'last', default_sound.id, 0xABCDEF) is None
+    assert db.create('first', 'last', default_sound.id, 0xABCDEF) is 1
 
 
 def test_create_IntegrityError(mockdb, default_sound):
@@ -70,9 +71,10 @@ def test_create_IntegrityError(mockdb, default_sound):
         textwrap.dedent("""
                                  INSERT INTO guest
                                  (first_name, last_name, sound, color)
-                                 VALUES (?,?,?,?)
+                                 VALUES (?,?,?,?) RETURNING id
                                  """).replace('\n', ' '),
         ('first', 'last', default_sound.id, 0xABCDEF),
+        (1,),
     )
     mockdb.add_commit(sqlite3.IntegrityError)
     mockdb.add_rollback()

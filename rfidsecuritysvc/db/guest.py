@@ -53,14 +53,16 @@ def list(conn):
 def create(conn, first_name, last_name, sound=None, color=None):
     try:
         with conn as conn:
-            conn.execute(
+            return conn.execute(
                 textwrap.dedent("""
                                          INSERT INTO guest
                                          (first_name, last_name, sound, color)
                                          VALUES (?,?,?,?)
+                                         RETURNING id
                                          """).replace('\n', ' '),
                 (first_name, last_name, sound, color),
-            )
+            ).fetchone()[0]
+
     except sqlite3.IntegrityError as e:
         raise exception.DuplicateGuestError from e
 
