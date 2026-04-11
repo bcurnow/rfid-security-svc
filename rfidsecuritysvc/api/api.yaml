@@ -233,12 +233,18 @@ paths:
       responses:
         "201":
           description: New record created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Guest"
         "409":
           description: Record already exists.
         "400":
           description: Invalid request.
         "401":
           $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: Newly inserted record could not be found.
   /guests/{id}:
     get:
       tags:
@@ -481,7 +487,7 @@ paths:
       description: |
         Retrieves all the media records. This implementation does not currently support pagination.
       parameters:
-        - name: excludeAssociated
+        - name: exclude_associated
           in: query
           description: If present and true, will only list media which is not currently associated with a guest.
           schema:
@@ -1404,7 +1410,7 @@ components:
       type: apiKey
       in: header
       name: X-RFIDSECURITYSVC-API-KEY
-      x-apikeyInfoFunc: rfidsecuritysvc.util.auth.verify_apikey
+      x-apikeyInfoFunc: rfidsecuritysvc.model.authorized.verify_api_key
   responses:
     UnauthorizedError:
       description: API key is missing or invalid
