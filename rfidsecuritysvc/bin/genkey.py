@@ -11,7 +11,7 @@ import click
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from rfidsecuritysvc.db.dbms import init_db
-from rfidsecuritysvc.util.auth import generate_api_key
+from rfidsecuritysvc.model.authorized import generate_api_key
 
 
 def main():

@@ -5,7 +5,7 @@ from connexion import AsyncApp
 from connexion.resolver import RestyResolver
 from connexion.options import SwaggerUIOptions
 from rfidsecuritysvc.db.dbms import init_db, close_db
-from rfidsecuritysvc.util.auth import ensure_api_key
+from rfidsecuritysvc.model.authorized import ensure_api_key
 
 
 @asynccontextmanager
