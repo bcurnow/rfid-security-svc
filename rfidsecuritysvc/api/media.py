@@ -10,9 +10,9 @@ def get(id):
     return f'Object with id "{id}" does not exist.', 404
 
 
-def search(excludeAssociated=False):
+def search(exclude_associated=False):
     results = []
-    for m in model.list(excludeAssociated):
+    for m in model.list(exclude_associated):
         results.append(m.to_json())
 
     return results

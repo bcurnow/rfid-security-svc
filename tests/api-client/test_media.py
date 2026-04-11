@@ -30,7 +30,7 @@ def test_search_noresults(model, rh):
 
 
 def test_search_exclude_associated(rh, media_without_guests):
-    rh.assert_response(rh.open('get', f'{api}?excludeAssociated=true'), 200, media_without_guests)
+    rh.assert_response(rh.open('get', f'{api}?exclude_associated=true'), 200, media_without_guests)
 
 
 def test_post(rh, creatable_media):

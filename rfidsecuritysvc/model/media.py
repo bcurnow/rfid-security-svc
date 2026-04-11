@@ -1,5 +1,5 @@
+from .base_model import BaseModel
 from rfidsecuritysvc.db import media as table
-from rfidsecuritysvc.model import BaseModel
 
 
 class Media(BaseModel):
@@ -13,8 +13,8 @@ def get(id):
     return __model(table.get(id))
 
 
-def list(excludeAssociated=False):
-    return [__model(row) for row in table.list(excludeAssociated)]
+def list(exclude_associated=False):
+    return [__model(row) for row in table.list(exclude_associated)]
 
 
 def create(id, name, desc=None):

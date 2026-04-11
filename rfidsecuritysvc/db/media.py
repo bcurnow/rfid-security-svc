@@ -11,9 +11,9 @@ def get(conn: sqlite3.Connection, id: str) -> sqlite3.Row:
 
 
 @with_dbconn
-def list(conn: sqlite3.Connection, excludeAssociated: bool =  False) -> list[sqlite3.Row]:
+def list(conn: sqlite3.Connection, exclude_associated: bool =  False) -> list[sqlite3.Row]:
     with conn:
-        if excludeAssociated:
+        if exclude_associated:
             return conn.execute('SELECT media.* FROM media LEFT JOIN guest_media ON guest_media.media_id = media.id where guest_media.media_id IS NULL ORDER BY media.id').fetchall()
         return conn.execute('SELECT * FROM media ORDER BY id').fetchall()
 
