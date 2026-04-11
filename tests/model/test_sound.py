@@ -2,7 +2,7 @@ import base64
 from datetime import datetime, timezone
 from unittest.mock import patch
 
-import rfidsecuritysvc.model.sound as model
+from rfidsecuritysvc.model import sound as model
 from rfidsecuritysvc.model.sound import Sound
 
 

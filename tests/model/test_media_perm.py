@@ -2,7 +2,7 @@ import pytest
 
 from unittest.mock import patch
 
-import rfidsecuritysvc.model.media_perm as model
+from rfidsecuritysvc.model import media_perm as model
 from rfidsecuritysvc.exception import MediaNotFoundError, PermissionNotFoundError
 from rfidsecuritysvc.model.media_perm import MediaPerm
 from rfidsecuritysvc.model.media import Media

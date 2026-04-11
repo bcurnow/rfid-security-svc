@@ -2,14 +2,13 @@ import pytest
 
 from unittest.mock import patch
 
-import rfidsecuritysvc.model.guest_media as model
+from rfidsecuritysvc.model import guest_media as model
 from rfidsecuritysvc.exception import GuestNotFoundError, MediaNotFoundError, SoundNotFoundError
 from rfidsecuritysvc.model.color import Color
 from rfidsecuritysvc.model.guest import Guest
 from rfidsecuritysvc.model.guest_media import GuestMedia
 from rfidsecuritysvc.model.media import Media
 from rfidsecuritysvc.model.sound import Sound
-
 
 def test_GuestMedia(assert_model, open_door_guest, open_door_media, default_sound, default_color):
     assert_model(_model(1, open_door_guest, open_door_media, default_sound, default_color), GuestMedia(1, open_door_guest, open_door_media, default_sound, default_color))
@@ -75,38 +74,39 @@ def test_list_noresults(table):
     assert models == []
 
 
-@patch('rfidsecuritysvc.model.guest_media.soundModel')
+@patch('rfidsecuritysvc.model.guest_media.sound_model')
 @patch('rfidsecuritysvc.model.guest_media.media')
 @patch('rfidsecuritysvc.model.guest_media.guest')
 @patch('rfidsecuritysvc.model.guest_media.table')
-def test_create(table, guest, media, sound, default_sound):
-    guest.get.return_value = Guest(1, 'first_name', 'last_name')
-    media.get.return_value = Media('test', 'test')
-    sound.get.return_value = default_sound
-    table.create.return_value = None
-    assert model.create(1, 'test', default_sound.id, 0xABCDEF) is None
-    guest.get.assert_called_once_with(1)
-    media.get.assert_called_once_with('test')
-    sound.get.assert_called_once_with(default_sound.id)
-    table.create.assert_called_once_with(1, 'test', default_sound.id, 0xABCDEF)
+def test_create(table, guest, media, sound):
+    guest.get.return_value = _default().guest
+    media.get.return_value = _default().media
+    sound.get.return_value = _default().sound
+    table.create.return_value = 1
+    assert model.create(_default().guest.id, _default().media.id, _default().sound.id, _default().color.int) == _default()
+    guest.get.assert_called_once_with(_default().guest.id)
+    media.get.assert_called_once_with(_default().media.id)
+    sound.get.assert_called_once_with(_default().sound.id)
+    table.create.assert_called_once_with(_default().guest.id, _default().media.id, _default().sound.id, _default().color.int) == 1
 
 
-@patch('rfidsecuritysvc.model.guest_media.soundModel')
+@patch('rfidsecuritysvc.model.guest_media.sound_model')
 @patch('rfidsecuritysvc.model.guest_media.media')
 @patch('rfidsecuritysvc.model.guest_media.guest')
 @patch('rfidsecuritysvc.model.guest_media.table')
 def test_create_no_prefs(table, guest, media, sound):
-    guest.get.return_value = Guest(1, 'first_name', 'last_name')
-    media.get.return_value = Media('test', 'test')
-    table.create.return_value = None
-    assert model.create(1, 'test', None, None) is None
-    guest.get.assert_called_once_with(1)
-    media.get.assert_called_once_with('test')
+    guest.get.return_value = _default().guest
+    media.get.return_value = _default().media
+    table.create.return_value = 1
+    expected =GuestMedia(1, _default().guest, _default().media, None, None)
+    assert model.create(_default().guest.id, _default().media.id, None, None) == expected
+    guest.get.assert_called_once_with(_default().guest.id)
+    media.get.assert_called_once_with(_default().media.id)
     sound.get.assert_not_called()
-    table.create.assert_called_once_with(1, 'test', None, None)
+    table.create.assert_called_once_with(_default().guest.id, _default().media.id, None, None)
 
 
-@patch('rfidsecuritysvc.model.guest_media.soundModel')
+@patch('rfidsecuritysvc.model.guest_media.sound_model')
 @patch('rfidsecuritysvc.model.guest_media.media')
 @patch('rfidsecuritysvc.model.guest_media.guest')
 @patch('rfidsecuritysvc.model.guest_media.table')
@@ -120,33 +120,33 @@ def test_create_no_guest(table, guest, media, sound):
     table.create.assert_not_called()
 
 
-@patch('rfidsecuritysvc.model.guest_media.soundModel')
+@patch('rfidsecuritysvc.model.guest_media.sound_model')
 @patch('rfidsecuritysvc.model.guest_media.media')
 @patch('rfidsecuritysvc.model.guest_media.guest')
 @patch('rfidsecuritysvc.model.guest_media.table')
 def test_create_no_media(table, guest, media, sound):
-    guest.get.return_value = Guest(1, 'first_name', 'last_name')
+    guest.get.return_value = _default().guest
     media.get.return_value = None
     with pytest.raises(MediaNotFoundError):
-        model.create(1, 'test', None, None)
-    guest.get.assert_called_once_with(1)
-    media.get.assert_called_once_with('test')
+        model.create(_default().guest.id, _default().media.id, None, None)
+    guest.get.assert_called_once_with(_default().guest.id)
+    media.get.assert_called_once_with(_default().media.id)
     sound.get.assert_not_called()
     table.create.assert_not_called()
 
 
-@patch('rfidsecuritysvc.model.guest_media.soundModel')
+@patch('rfidsecuritysvc.model.guest_media.sound_model')
 @patch('rfidsecuritysvc.model.guest_media.media')
 @patch('rfidsecuritysvc.model.guest_media.guest')
 @patch('rfidsecuritysvc.model.guest_media.table')
 def test_create_no_sound(table, guest, media, sound, default_sound):
-    guest.get.return_value = Guest(1, 'first_name', 'last_name')
-    media.get.return_value = Media('test', 'test')
+    guest.get.return_value = _default().guest
+    media.get.return_value = _default().media
     sound.get.return_value = None
     with pytest.raises(SoundNotFoundError):
-        model.create(1, 'test', default_sound.id, None) is None
-    guest.get.assert_called_once_with(1)
-    media.get.assert_called_once_with('test')
+        model.create(_default().guest.id, _default().media.id, default_sound.id, None)
+    guest.get.assert_called_once_with(_default().guest.id)
+    media.get.assert_called_once_with(_default().media.id)
     sound.get.assert_called_once_with(default_sound.id)
     table.create.assert_not_called()
 
@@ -158,7 +158,7 @@ def test_delete(table):
     table.delete.assert_called_with(1)
 
 
-@patch('rfidsecuritysvc.model.guest_media.soundModel')
+@patch('rfidsecuritysvc.model.guest_media.sound_model')
 @patch('rfidsecuritysvc.model.guest_media.media')
 @patch('rfidsecuritysvc.model.guest_media.guest')
 @patch('rfidsecuritysvc.model.guest_media.table')
@@ -174,7 +174,7 @@ def test_update(table, guest, media, sound, default_sound):
     table.update.assert_called_once_with(1, 1, 'test', default_sound.id, 0xABCDEF)
 
 
-@patch('rfidsecuritysvc.model.guest_media.soundModel')
+@patch('rfidsecuritysvc.model.guest_media.sound_model')
 @patch('rfidsecuritysvc.model.guest_media.media')
 @patch('rfidsecuritysvc.model.guest_media.guest')
 @patch('rfidsecuritysvc.model.guest_media.table')
@@ -189,7 +189,7 @@ def test_update_no_sound(table, guest, media, sound):
     table.update.assert_called_once_with(1, 1, 'test', None, 0xABCDEF)
 
 
-@patch('rfidsecuritysvc.model.guest_media.soundModel')
+@patch('rfidsecuritysvc.model.guest_media.sound_model')
 @patch('rfidsecuritysvc.model.guest_media.media')
 @patch('rfidsecuritysvc.model.guest_media.guest')
 @patch('rfidsecuritysvc.model.guest_media.table')
@@ -205,7 +205,7 @@ def test_update_SoundNotFoundError(table, guest, media, sound, default_sound):
     table.update.assert_not_called()
 
 
-@patch('rfidsecuritysvc.model.guest_media.soundModel')
+@patch('rfidsecuritysvc.model.guest_media.sound_model')
 @patch('rfidsecuritysvc.model.guest_media.media')
 @patch('rfidsecuritysvc.model.guest_media.guest')
 @patch('rfidsecuritysvc.model.guest_media.table')
@@ -220,7 +220,7 @@ def test_update_MediaNotFoundError(table, guest, media, sound, default_sound):
     table.update.assert_not_called()
 
 
-@patch('rfidsecuritysvc.model.guest_media.soundModel')
+@patch('rfidsecuritysvc.model.guest_media.sound_model')
 @patch('rfidsecuritysvc.model.guest_media.media')
 @patch('rfidsecuritysvc.model.guest_media.guest')
 @patch('rfidsecuritysvc.model.guest_media.table')

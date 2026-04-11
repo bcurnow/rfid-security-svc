@@ -1,6 +1,6 @@
 from unittest.mock import patch
 
-import rfidsecuritysvc.model.permission as model
+from rfidsecuritysvc.model import permission as model
 from rfidsecuritysvc.model.permission import Permission
 
 
