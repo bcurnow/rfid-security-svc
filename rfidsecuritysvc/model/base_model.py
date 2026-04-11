@@ -1,3 +1,5 @@
+from typing import Self
+
 class BaseModel:
     def to_json(self: Self) -> str:
         return self.__dict__.copy()
