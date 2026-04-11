@@ -1,11 +1,10 @@
 import pytest
 
-from rfidsecuritysvc.model.media import Media
-
-
 @pytest.fixture(scope='session')
 def medias():
     # The DB will return these ordered by id, please build the list accordingly
+    from rfidsecuritysvc.model.media import Media
+
     return [
         Media('NOT AUTHORIZED', 'Not Authorized', 'This media should never be used in a media_perm record.'),
         Media('TEST FOR AUTHORIZED NO GUEST', 'test for authorized media without a guest media record', None),
@@ -23,6 +22,8 @@ def medias():
 
 @pytest.fixture(scope='session')
 def creatable_media():
+    from rfidsecuritysvc.model.media import Media
+
     return Media('CREATABLE ID', 'creatable name', 'creatable desc')
 
 
@@ -96,6 +97,8 @@ def media_for_permissions(medias):
 
 @pytest.fixture(autouse=True, scope='session')
 def add_media_helpers(monkeypatch_session):
+    from rfidsecuritysvc.model.media import Media
+
     def create(self):
         return self.to_json()
 

@@ -1,10 +1,9 @@
 import pytest
 
-from rfidsecuritysvc.model.guest_media import GuestMedia
-
-
 @pytest.fixture(scope='session')
 def guest_medias(media_for_guests, guests, open_door_guest, open_door_media, not_authorized_media_guest, not_authorized_media, no_prefs_media_guest, no_prefs_media, default_sound, default_color):
+    from rfidsecuritysvc.model.guest_media import GuestMedia
+
     # The DB will return these ordered by id, please build the list accordingly
     guest_medias = []
     # Make sure we have enough guests for the media provided
@@ -23,6 +22,8 @@ def guest_medias(media_for_guests, guests, open_door_guest, open_door_media, not
 
 @pytest.fixture(scope='session')
 def creatable_guest_media(guest_medias, guest_for_creatable_guest_media, media_for_creatable_guest_media, default_sound, default_color):
+    from rfidsecuritysvc.model.guest_media import GuestMedia
+
     return GuestMedia(len(guest_medias) + 1, guest_for_creatable_guest_media, media_for_creatable_guest_media, default_sound, default_color)
 
 
@@ -35,6 +36,8 @@ def open_door_guest_media(guest_medias, open_door_guest, open_door_media):
 
 @pytest.fixture(autouse=True, scope='session')
 def add_guest_media_helpers(monkeypatch_session):
+    from rfidsecuritysvc.model.guest_media import GuestMedia
+
     def convert(self):
         sound = None
         color = None

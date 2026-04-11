@@ -1,8 +1,5 @@
 import pytest
 
-from rfidsecuritysvc.model import BaseModel
-
-
 @pytest.fixture(scope='session')
 def open_door(open_door_media, open_door_permission):
     """
@@ -14,6 +11,8 @@ def open_door(open_door_media, open_door_permission):
 
 @pytest.fixture(scope='session')
 def assert_model():
+    from rfidsecuritysvc.model.base_model import BaseModel
+
     def go(expected, actual):
         if isinstance(expected, BaseModel):
             expected = expected.to_json()

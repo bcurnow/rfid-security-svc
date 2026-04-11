@@ -1,10 +1,9 @@
 import pytest
 
-from rfidsecuritysvc.model.permission import Permission
-
-
 @pytest.fixture(scope='session')
 def permissions():
+    from rfidsecuritysvc.model.permission import Permission
+
     # The DB will return these ordered by id, please build the list accordingly
     return [
         Permission(1, 'Open Door', 'Opens the door'),
@@ -27,6 +26,8 @@ def no_desc_permission(permissions):
 
 @pytest.fixture(scope='session')
 def creatable_permission(permissions):
+    from rfidsecuritysvc.model.permission import Permission
+
     return Permission(len(permissions) + 1, 'creatable name', 'creatable desc')
 
 
@@ -55,6 +56,8 @@ def permission_for_creatable_media_perm(permissions):
 
 @pytest.fixture(autouse=True, scope='session')
 def add_permission_helpers(monkeypatch_session):
+    from rfidsecuritysvc.model.permission import Permission
+
     def convert(self):
         copy = self.to_json()
         del copy['id']

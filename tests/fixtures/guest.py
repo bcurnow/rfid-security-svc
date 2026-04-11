@@ -1,10 +1,9 @@
 import pytest
 
-from rfidsecuritysvc.model.guest import Guest
-
-
 @pytest.fixture(scope='session')
 def guests(default_sound, default_color):
+    from rfidsecuritysvc.model.guest import Guest
+
     # The DB will return these ordered by id, please build the list accordingly
     return [
         Guest(1, 'Mickey', 'Mouse', default_sound, default_color),
@@ -19,6 +18,8 @@ def guests(default_sound, default_color):
 
 @pytest.fixture(scope='session')
 def creatable_guest(guests, default_sound, default_color):
+    from rfidsecuritysvc.model.guest import Guest
+
     return Guest(len(guests) + 1, 'New', 'Guest', default_sound, default_color)
 
 
@@ -54,6 +55,8 @@ def no_prefs_media_guest(guests):
 
 @pytest.fixture(autouse=True, scope='session')
 def add_guest_helpers(monkeypatch_session):
+    from rfidsecuritysvc.model.guest import Guest
+
     def convert(self):
         sound = None
         if self.sound:

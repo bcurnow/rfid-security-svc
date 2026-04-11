@@ -1,11 +1,10 @@
 import pytest
 
-from rfidsecuritysvc.model.media_perm import MediaPerm
-
-
 @pytest.fixture(scope='session')
 def media_perms(media_for_permissions, open_door_media, open_door_permission, authorized_media_no_guest, default_permission):
     # The DB will return these ordered by id, please build the list accordingly
+    from rfidsecuritysvc.model.media_perm import MediaPerm
+
     media_perms = []
     for i in range(len(media_for_permissions)):
         media_perms.append(MediaPerm(i + 1, media_for_permissions[i], default_permission))
@@ -16,6 +15,8 @@ def media_perms(media_for_permissions, open_door_media, open_door_permission, au
 
 @pytest.fixture(scope='session')
 def creatable_media_perm(media_perms, media_for_creatable_media_perm, permission_for_creatable_media_perm):
+    from rfidsecuritysvc.model.media_perm import MediaPerm
+
     return MediaPerm(len(media_perms) + 1, media_for_creatable_media_perm, permission_for_creatable_media_perm)
 
 
@@ -51,6 +52,8 @@ def media_perm_to_row():
 
 @pytest.fixture(autouse=True, scope='session')
 def add_media_perm_helpers(monkeypatch_session):
+    from rfidsecuritysvc.model.media_perm import MediaPerm
+
     def convert(self):
         return {
             'media_id': self.media.id,

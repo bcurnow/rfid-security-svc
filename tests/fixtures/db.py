@@ -4,9 +4,6 @@ import pytest
 from types import ModuleType
 from unittest.mock import Mock, PropertyMock
 
-from rfidsecuritysvc.db import dbms
-
-
 class SQLStringNotFound(Exception):
     pass
 
@@ -158,6 +155,8 @@ class MockDb(object):
 
 @pytest.fixture
 def mockdb(request, monkeypatch):
+    from rfidsecuritysvc.db import dbms
+
     db = MockDb()
 
     # Save the original method

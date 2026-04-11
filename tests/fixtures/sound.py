@@ -3,9 +3,6 @@ import os
 
 import pytest
 
-from rfidsecuritysvc.model.sound import Sound
-
-
 @pytest.fixture(scope='session')
 def wav_content():
     test_wav = os.path.join(os.path.dirname(__file__), 'test.wav')
@@ -15,6 +12,8 @@ def wav_content():
 
 @pytest.fixture(scope='session')
 def sounds(wav_content):
+    from rfidsecuritysvc.model.sound import Sound
+
     return [
         Sound(1, 'test1.wav', '2021-09-25 23:13:25', wav_content),
         Sound(2, 'test2.wav', '2021-09-25 23:13:25', wav_content),
@@ -23,6 +22,8 @@ def sounds(wav_content):
 
 @pytest.fixture(scope='session')
 def creatable_sound(sounds, wav_content):
+    from rfidsecuritysvc.model.sound import Sound
+
     return Sound(len(sounds) + 1, 'creatable.wav', '2021-09-25 23:13:25', wav_content)
 
 
@@ -33,6 +34,8 @@ def default_sound(sounds):
 
 @pytest.fixture(autouse=True, scope='session')
 def add_sound_helpers(monkeypatch_session):
+    from rfidsecuritysvc.model.sound import Sound
+
     def convert(self):
         # Can't use eithe of the existing to_json methods as one doesn't contain
         # content and the other base64 encodes it
