@@ -1,4 +1,4 @@
-from rfidsecuritysvc.model import BaseModel
+from rfidsecuritysvc.model.base_model import BaseModel
 
 
 class ExampleModel(BaseModel):
