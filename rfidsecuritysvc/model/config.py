@@ -1,5 +1,5 @@
+from .base_model import BaseModel
 from rfidsecuritysvc.db import config as table
-from rfidsecuritysvc.model import BaseModel
 
 
 class Config(BaseModel):
@@ -17,7 +17,9 @@ def list():
 
 
 def create(key, value):
-    return table.create(key, value)
+    table.create(key, value)
+    # We can just return what was passed in because there's no other primary key
+    return Config(key, value)
 
 
 def delete(key):

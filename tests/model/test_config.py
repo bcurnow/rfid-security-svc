@@ -43,9 +43,9 @@ def test_list_noresults(table):
 
 @patch('rfidsecuritysvc.model.config.table')
 def test_create(table):
-    table.create.return_value = None
-    assert model.create('test', 'test') is None
-    table.create.assert_called_once_with('test', 'test')
+    table.create.return_value = _default()
+    assert model.create(_default().key, _default().value) == _default()
+    table.create.assert_called_once_with(_default().key, _default().value)
 
 
 @patch('rfidsecuritysvc.model.config.table')
