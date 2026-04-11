@@ -1,6 +1,5 @@
+from .base_model import BaseModel
 from rfidsecuritysvc.db import permission as table
-from rfidsecuritysvc.model import BaseModel
-
 
 class Permission(BaseModel):
     def __init__(self, id, name, desc=None):

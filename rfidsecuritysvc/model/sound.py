@@ -1,9 +1,7 @@
 import base64
 from datetime import datetime, timezone
-
+from .base_model import BaseModel
 from rfidsecuritysvc.db import sound as table
-from rfidsecuritysvc.model import BaseModel
-
 
 class Sound(BaseModel):
     def __init__(self, id, name, last_update_timestamp, content=None):
