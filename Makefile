@@ -45,15 +45,15 @@ build-prod:
 docker:
 	@mkdir -p $(ROOT_DIR)/rfid-db
 	@if [[ -e /dev/input/rfid && -c /dev/input/rfid ]]; then \
-	  docker run --name rfid-security-svc -it -p 5000:5000 --mount src=$(ROOT_DIR)/rfid-db,target=/rfid-db,type=bind--mount src="$(ROOT_DIR)",target=/rfid-security-svc,type=bind --device=/dev/input/rfid:/dev/input/rfid:r $(IMAGE_NAME):latest /bin/bash; \
+	  docker run --rm --name rfid-security-svc -it -p 5000:5000 --mount src=$(ROOT_DIR)/rfid-db,target=/rfid-db,type=bind--mount src="$(ROOT_DIR)",target=/rfid-security-svc,type=bind --device=/dev/input/rfid:/dev/input/rfid:r $(IMAGE_NAME):latest /bin/bash; \
 	else \
 	  echo "Did not find /dev/input/rfid, skipping --device"; \
-	  docker run --name rfid-security-svc -it -p 5000:5000 --mount src=$(ROOT_DIR)/rfid-db,target=/rfid-db,type=bind --mount src="$(ROOT_DIR)",target=/rfid-security-svc,type=bind $(IMAGE_NAME):latest /bin/bash; \
+	  docker run --rm --name rfid-security-svc -it -p 5000:5000 --mount src=$(ROOT_DIR)/rfid-db,target=/rfid-db,type=bind --mount src="$(ROOT_DIR)",target=/rfid-security-svc,type=bind $(IMAGE_NAME):latest /bin/bash; \
 	fi
 
 docker-prod:
 	@mkdir -p $(ROOT_DIR)/rfid-db
-	docker run --name rfid-security-svc -p 5000:5000 --mount src=$(ROOT_DIR)/rfid-db,target=/rfid-db,type=bind $(IMAGE_NAME):production $(ARGS)
+	docker run --rm --name rfid-security-svc -p 5000:5000 --mount src=$(ROOT_DIR)/rfid-db,target=/rfid-db,type=bind $(IMAGE_NAME):production $(ARGS)
 
 generate-key:
 	@rfidsecuritysvc-genkey
