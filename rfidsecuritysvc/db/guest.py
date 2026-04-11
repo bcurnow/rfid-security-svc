@@ -6,7 +6,7 @@ import rfidsecuritysvc.exception as exception
 
 
 @with_dbconn
-def get(conn, id):
+def get(conn: sqlite3.Connection, id: int) -> sqlite3.Row:
     with conn:
         return conn.execute(
             textwrap.dedent("""
@@ -29,7 +29,7 @@ def get(conn, id):
 
 
 @with_dbconn
-def list(conn):
+def list(conn: sqlite3.Connection) -> list[sqlite3.Row]:
     with conn:
         return conn.execute(
             textwrap.dedent("""
@@ -50,7 +50,7 @@ def list(conn):
 
 
 @with_dbconn
-def create(conn, first_name, last_name, sound=None, color=None):
+def create(conn: sqlite3.Connection, first_name: str, last_name: str, sound: int = None, color: int = None) -> int:
     try:
         with conn as conn:
             return conn.execute(
@@ -68,13 +68,13 @@ def create(conn, first_name, last_name, sound=None, color=None):
 
 
 @with_dbconn
-def delete(conn, id):
+def delete(conn: sqlite3.Connection, id: int) -> int:
     with conn:
         return conn.execute('DELETE FROM guest WHERE id = ?', (id,)).rowcount
 
 
 @with_dbconn
-def update(conn, id, first_name, last_name, sound=None, color=None):
+def update(conn: sqlite3.Connection, id: int, first_name: str, last_name: str, sound: int = None, color: int = None) -> int:
     with conn:
         count = conn.execute(
             textwrap.dedent("""

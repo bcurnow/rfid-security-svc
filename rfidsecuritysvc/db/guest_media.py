@@ -35,19 +35,19 @@ SELECT_BASE = (
 
 
 @with_dbconn
-def get(conn, id):
+def get(conn: sqlite3.Connection, id: int) -> sqlite3.Row:
     with conn:
         return conn.execute(f'{SELECT_BASE} WHERE guest_media.id = ? ORDER BY guest_media.id', (id,)).fetchone()
 
 
 @with_dbconn
-def get_by_media(conn, media_id):
+def get_by_media(conn: sqlite3.Connection, media_id: int) -> sqlite3.Row:
     with conn:
         return conn.execute(f'{SELECT_BASE} WHERE guest_media.media_id = ? ORDER BY guest_media.id', (media_id,)).fetchone()
 
 
 @with_dbconn
-def list(conn, guest_id=None):
+def list(conn: sqlite3.Connection, guest_id: int = None) -> list[sqlite3.Row]:
     with conn:
         if guest_id:
             return conn.execute(f'{SELECT_BASE} WHERE guest_media.guest_id = ? ORDER BY guest_media.id', (guest_id,)).fetchall()
@@ -56,7 +56,7 @@ def list(conn, guest_id=None):
 
 
 @with_dbconn
-def create(conn, guest_id, media_id, sound=None, color=None):
+def create(conn: sqlite3.Connection, guest_id: int, media_id: int, sound: int = None, color: int = None) -> int:
     try:
         with conn:
             return conn.execute('INSERT INTO guest_media (guest_id, media_id, sound, color) VALUES (?,?,?,?) RETURNING id', (guest_id, media_id, sound, color)).fetchone()[0]
@@ -65,13 +65,13 @@ def create(conn, guest_id, media_id, sound=None, color=None):
 
 
 @with_dbconn
-def delete(conn, id):
+def delete(conn: sqlite3.Connection, id: int) -> int:
     with conn:
         return conn.execute('DELETE FROM guest_media WHERE id = ?', (id,)).rowcount
 
 
 @with_dbconn
-def update(conn, id, guest_id, media_id, sound=None, color=None):
+def update(conn: sqlite3.Connection, id: int, guest_id: int, media_id: int, sound: int = None, color: int = None) -> int:
     with conn:
         count = conn.execute(
             textwrap.dedent("""

@@ -5,13 +5,13 @@ from rfidsecuritysvc import exception as exception
 
 
 @with_dbconn
-def get(conn, id):
+def get(conn: sqlite3.Connection, id: str) -> sqlite3.Row:
     with conn:
         return conn.execute('SELECT * FROM media WHERE id = ?', (id,)).fetchone()
 
 
 @with_dbconn
-def list(conn, excludeAssociated=False):
+def list(conn: sqlite3.Connection, excludeAssociated: bool =  False) -> list[sqlite3.Row]:
     with conn:
         if excludeAssociated:
             return conn.execute('SELECT media.* FROM media LEFT JOIN guest_media ON guest_media.media_id = media.id where guest_media.media_id IS NULL ORDER BY media.id').fetchall()
@@ -19,7 +19,7 @@ def list(conn, excludeAssociated=False):
 
 
 @with_dbconn
-def create(conn, id, name, desc=None):
+def create(conn: sqlite3.Connection, id: str, name: str, desc: str = None) -> str:
     try:
         # Always make sure the ID is in upper case
         id = id.upper()
@@ -31,13 +31,13 @@ def create(conn, id, name, desc=None):
 
 
 @with_dbconn
-def delete(conn, id):
+def delete(conn: sqlite3.Connection, id: str) -> int:
     with conn:
         return conn.execute('DELETE FROM media WHERE id = ?', (id,)).rowcount
 
 
 @with_dbconn
-def update(conn, id, name, desc):
+def update(conn: sqlite3.Connection, id: str, name: str, desc: str) -> int:
     with conn:
         count = conn.execute('UPDATE media SET name = ?, desc = ? WHERE id = ?', (name, desc, id)).rowcount
     if count == 0:

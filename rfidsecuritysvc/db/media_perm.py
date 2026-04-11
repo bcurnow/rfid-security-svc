@@ -6,7 +6,7 @@ import rfidsecuritysvc.exception as exception
 
 
 @with_dbconn
-def get(conn, id):
+def get(conn: sqlite3.Connection, id: int) -> sqlite3.Row:
     with conn:
         return conn.execute(
             textwrap.dedent("""
@@ -30,7 +30,7 @@ def get(conn, id):
 
 
 @with_dbconn
-def get_by_media_and_perm(conn, media_id, permission_name):
+def get_by_media_and_perm(conn: sqlite3.Connection, media_id: str, permission_name: str) -> sqlite3.Row:
     with conn:
         return conn.execute(
             textwrap.dedent("""
@@ -54,7 +54,7 @@ def get_by_media_and_perm(conn, media_id, permission_name):
 
 
 @with_dbconn
-def list(conn, media_id=None):
+def list(conn: sqlite3.Connection, media_id: str  = None) -> list[sqlite3.Row]:
     with conn:
         if media_id:
             return conn.execute(
@@ -97,7 +97,7 @@ def list(conn, media_id=None):
 
 
 @with_dbconn
-def create(conn, media_id, permission_id):
+def create(conn: sqlite3.Connection, media_id: str, permission_id: int) -> int:
     try:
         with conn:
             return conn.execute('INSERT INTO media_perm (media_id, permission_id) VALUES (?,?) RETURNING id', (media_id, permission_id)).fetchone()[0]
@@ -106,13 +106,13 @@ def create(conn, media_id, permission_id):
 
 
 @with_dbconn
-def delete(conn, id):
+def delete(conn: sqlite3.Connection, id: int) -> int:
     with conn:
         return conn.execute('DELETE FROM media_perm WHERE id = ?', (id,)).rowcount
 
 
 @with_dbconn
-def update(conn, id, media_id, permission_id):
+def update(conn: sqlite3.Connection, id: int, media_id: str, permission_id: int) -> int:
     with conn:
         count = conn.execute('UPDATE media_perm SET media_id = ?, permission_id = ? WHERE id = ?', (media_id, permission_id, id)).rowcount
     if count == 0:
