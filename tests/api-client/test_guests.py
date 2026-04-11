@@ -28,7 +28,7 @@ def test_search_noresults(model, rh):
 
 
 def test_post(rh, creatable_guest):
-    rh.assert_response(rh.open('post', f'{api}', creatable_guest.test_create()), 201)
+    rh.assert_response(rh.open('post', f'{api}', creatable_guest.test_create()), 201, creatable_guest.to_json())
     rh.assert_response(rh.open('get', f'{api}/{creatable_guest.id}'), 200)
     rh.assert_response(rh.open('delete', f'{api}/{creatable_guest.id}'), 200, headers={RECORD_COUNT_HEADER: '1'})
     rh.assert_response(rh.open('get', f'{api}/{creatable_guest.id}'), 404)

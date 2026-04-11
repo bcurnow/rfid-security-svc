@@ -1,9 +1,10 @@
+from .import sound as sound_model
+from .base_model import BaseModel
+from .sound import Sound
+from .base_model import BaseModel
+from .color import Color
+from rfidsecuritysvc.exception import SoundNotFoundError
 from rfidsecuritysvc.db import guest as table
-from rfidsecuritysvc import exception
-from rfidsecuritysvc.model import BaseModel, sound as sound_model
-from rfidsecuritysvc.model.sound import Sound
-from rfidsecuritysvc.model.color import Color
-
 
 class Guest(BaseModel):
     def __init__(self, id, first_name, last_name, sound=None, color=None):
@@ -34,19 +35,25 @@ def create(first_name, last_name, sound=None, color=None):
     if sound:
         s = sound_model.get(sound)
         if not s:
-            raise exception.SoundNotFoundError
-    return table.create(first_name, last_name, sound, color)
+            raise SoundNotFoundError
+    id = table.create(first_name, last_name, sound, color)
 
+    if sound is None and color is None:
+        # We actually have everything we need to return now
+        return Guest(id, first_name, last_name, None, None)
+    
+    # We don't have everything we need, instead of complicate sets of checking for sound and color and handling exceptions, etc. we'll just call get(id)
+    return get(id)
 
 def delete(id):
     return table.delete(id)
 
 
-def update(id, first_name, last_name, sound=None, color=None):
+def update(id, first_name, last_name, sound=None, color=None):    
     if sound:
         s = sound_model.get(sound)
         if not s:
-            raise exception.SoundNotFoundError
+            raise SoundNotFoundError
     return table.update(id, first_name, last_name, sound, color)
 
 

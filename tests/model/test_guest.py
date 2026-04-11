@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import patch
 
-import rfidsecuritysvc.model.guest as model
+from rfidsecuritysvc.model import guest as model
 from rfidsecuritysvc.model.color import Color
 from rfidsecuritysvc.model.guest import Guest
 from rfidsecuritysvc.model.sound import Sound
@@ -47,12 +47,15 @@ def test_list_noresults(table):
 
 @patch('rfidsecuritysvc.model.guest.sound_model')
 @patch('rfidsecuritysvc.model.guest.table')
-def test_create(table, sound, default_sound):
+def test_create(table, sound, default_color):
+    default_sound = Sound(1, 'test_create', '2021-09-25 23:13:25')
     sound.get.return_value = default_sound
-    table.create.return_value = None
-    assert model.create('first', 'last', default_sound.id, 0xABCDEF) is None
+    table.create.return_value = 1
+    expected = Guest(1, 'first', 'last', default_sound, default_color)
+    table.get.return_value = expected.test_to_row()
+    assert model.create('first', 'last', default_sound.id, default_color.int) == expected
     sound.get.assert_called_once_with(default_sound.id)
-    table.create.assert_called_once_with('first', 'last', default_sound.id, 0xABCDEF)
+    table.create.assert_called_once_with('first', 'last', default_sound.id, default_color.int)
 
 
 @patch('rfidsecuritysvc.model.guest.sound_model')
@@ -68,11 +71,10 @@ def test_create_SoundNotFoundError(table, sound, default_sound):
 @patch('rfidsecuritysvc.model.guest.sound_model')
 @patch('rfidsecuritysvc.model.guest.table')
 def test_create_no_prefs(table, sound, default_sound):
-    table.create.return_value = None
-    assert model.create('first', 'last', None, None) is None
+    table.create.return_value = 1
+    assert model.create('first', 'last', None, None) == Guest(1, 'first', 'last', None, None)
     sound.get.assert_not_called()
     table.create.assert_called_once_with('first', 'last', None, None)
-
 
 @patch('rfidsecuritysvc.model.guest.table')
 def test_delete(table):

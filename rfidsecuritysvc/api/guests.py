@@ -16,8 +16,10 @@ def search():
 
 def post(body):
     try:
-        model.create(**body)
-        return None, 201
+        m = model.create(**body)
+        if m:
+            return m.to_json(), 201
+        return f'Unable to retrieve newly inserted object.', 404
     except exception.SoundNotFoundError:
         return f'Sound with id "{body["sound"]}" does not exist.', 400
     except exception.DuplicateGuestError:
