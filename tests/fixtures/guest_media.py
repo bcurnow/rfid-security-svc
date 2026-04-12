@@ -1,9 +1,13 @@
 import pytest
+from _pytest.monkeypatch import MonkeyPatch
+from rfidsecuritysvc.model.guest import Guest
+from rfidsecuritysvc.model.media import Media
+from rfidsecuritysvc.model.sound import Sound
+from rfidsecuritysvc.model.color import Color
+from rfidsecuritysvc.model.guest_media import GuestMedia
 
 @pytest.fixture(scope='session')
-def guest_medias(media_for_guests, guests, open_door_guest, open_door_media, not_authorized_media_guest, not_authorized_media, no_prefs_media_guest, no_prefs_media, default_sound, default_color):
-    from rfidsecuritysvc.model.guest_media import GuestMedia
-
+def guest_medias(media_for_guests: list[Media], guests: list[Guest], open_door_guest: Guest, open_door_media: Media, no_prefs_media_guest: Guest, no_prefs_media: Media, default_sound: Sound, default_color: Color) -> list[GuestMedia]:
     # The DB will return these ordered by id, please build the list accordingly
     guest_medias = []
     # Make sure we have enough guests for the media provided
@@ -21,23 +25,19 @@ def guest_medias(media_for_guests, guests, open_door_guest, open_door_media, not
 
 
 @pytest.fixture(scope='session')
-def creatable_guest_media(guest_medias, guest_for_creatable_guest_media, media_for_creatable_guest_media, default_sound, default_color):
-    from rfidsecuritysvc.model.guest_media import GuestMedia
-
+def creatable_guest_media(guest_medias: list[GuestMedia], guest_for_creatable_guest_media: Guest, media_for_creatable_guest_media: Media, default_sound: Sound, default_color: Color) -> GuestMedia:
     return GuestMedia(len(guest_medias) + 1, guest_for_creatable_guest_media, media_for_creatable_guest_media, default_sound, default_color)
 
 
 @pytest.fixture(scope='session')
-def open_door_guest_media(guest_medias, open_door_guest, open_door_media):
+def open_door_guest_media(guest_medias: list[Guest], open_door_guest: Guest, open_door_media: Media) -> GuestMedia:
     for gm in guest_medias:
         if gm.guest.id == open_door_guest.id and gm.media.id == open_door_media.id:
             return gm
 
 
 @pytest.fixture(autouse=True, scope='session')
-def add_guest_media_helpers(monkeypatch_session):
-    from rfidsecuritysvc.model.guest_media import GuestMedia
-
+def add_guest_media_helpers(monkeypatch_session: MonkeyPatch) -> None:
     def convert(self):
         sound = None
         color = None

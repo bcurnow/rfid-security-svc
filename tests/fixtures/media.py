@@ -1,10 +1,10 @@
 import pytest
+from _pytest.monkeypatch import MonkeyPatch
+from rfidsecuritysvc.model.media import Media
 
 @pytest.fixture(scope='session')
-def medias():
+def medias() -> list[Media]:
     # The DB will return these ordered by id, please build the list accordingly
-    from rfidsecuritysvc.model.media import Media
-
     return [
         Media('NOT AUTHORIZED', 'Not Authorized', 'This media should never be used in a media_perm record.'),
         Media('TEST FOR AUTHORIZED NO GUEST', 'test for authorized media without a guest media record', None),
@@ -21,48 +21,46 @@ def medias():
 
 
 @pytest.fixture(scope='session')
-def creatable_media():
-    from rfidsecuritysvc.model.media import Media
-
+def creatable_media() -> Media:
     return Media('CREATABLE ID', 'creatable name', 'creatable desc')
 
 
 @pytest.fixture(scope='session')
-def no_desc_media(medias):
+def no_desc_media(medias) -> Media:
     for m in medias:
         if m.id == 'TEST WITHOUT DESC':
             return m
 
 
 @pytest.fixture(scope='session')
-def no_prefs_media(no_desc_media):
+def no_prefs_media(no_desc_media) -> Media:
     """For use when building GuestMedia records"""
     return no_desc_media
 
 
 @pytest.fixture(scope='session')
-def open_door_media(medias):
+def open_door_media(medias: list[Media]) -> Media:
     for m in medias:
         if m.id == 'TEST OPEN DOOR':
             return m
 
 
 @pytest.fixture(scope='session')
-def not_authorized_media(medias):
+def not_authorized_media(medias: list[Media]) -> Media:
     for m in medias:
         if m.id == 'NOT AUTHORIZED':
             return m
 
 
 @pytest.fixture(scope='session')
-def authorized_media_no_guest(medias):
+def authorized_media_no_guest(medias: list[Media]) -> Media:
     for m in medias:
         if m.id == 'TEST FOR AUTHORIZED NO GUEST':
             return m
 
 
 @pytest.fixture(scope='session')
-def media_for_creatable_media_perm(medias):
+def media_for_creatable_media_perm(medias: list[Media]) -> Media:
     """This media should be used when creating a media_perm record."""
     for m in medias:
         if m.id == 'TEST FOR MEDIAPERM CREATION':
@@ -70,7 +68,7 @@ def media_for_creatable_media_perm(medias):
 
 
 @pytest.fixture(scope='session')
-def media_for_creatable_guest_media(medias):
+def media_for_creatable_guest_media(medias: list[Media]) -> Media:
     """This media should be used when creating a guest_media record."""
     for m in medias:
         if m.id == 'TEST FOR GUESTMEDIA CREATION':
@@ -78,27 +76,25 @@ def media_for_creatable_guest_media(medias):
 
 
 @pytest.fixture(scope='session')
-def media_for_guests(medias):
+def media_for_guests(medias: list[Media]) -> list[Media]:
     """Each media returned should be associated with a guest"""
     return medias[4:9]
 
 
 @pytest.fixture(scope='session')
-def media_without_guests(medias):
+def media_without_guests(medias: list[Media]) -> list[Media]:
     """Each media returned should NOT be associated with a guest"""
     return medias[0:4]
 
 
 @pytest.fixture(scope='session')
-def media_for_permissions(medias):
+def media_for_permissions(medias: list[Media]) -> list[Media]:
     """Each media returned should be associated with a permission"""
     return medias[4:]
 
 
 @pytest.fixture(autouse=True, scope='session')
-def add_media_helpers(monkeypatch_session):
-    from rfidsecuritysvc.model.media import Media
-
+def add_media_helpers(monkeypatch_session: MonkeyPatch) -> None:
     def create(self):
         return self.to_json()
 

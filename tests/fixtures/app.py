@@ -2,16 +2,25 @@ import os
 import pytest
 import tempfile
 from datetime import datetime, timezone
-
 from starlette.testclient import TestClient
-
+from connexion import AsyncApp
+from collections.abc import Generator
 from rfidsecuritysvc import create_app
 from rfidsecuritysvc.db import config, guest, guest_media, media, permission, media_perm, sound
 from rfidsecuritysvc.db.dbms import close_db
+from rfidsecuritysvc.model.config import Config
+from rfidsecuritysvc.model.guest import Guest
+from rfidsecuritysvc.model.guest_media import GuestMedia
+from rfidsecuritysvc.model.media import Media
+from rfidsecuritysvc.model.permission import Permission
+from rfidsecuritysvc.model.media_perm import MediaPerm
+from rfidsecuritysvc.model.sound import Sound
+
+
 
 
 @pytest.fixture(scope='session')
-def app(configs, guests, guest_medias, medias, permissions, media_perms, sounds):
+def app(configs: list[Config], guests: list[Guest], guest_medias: list[GuestMedia], medias: list[Media], permissions: list[Permission], media_perms: list[MediaPerm], sounds: list[Sound]) -> Generator[AsyncApp, None, None]:
     """A Connexion test application"""
     db_fd, db_path = tempfile.mkstemp()
 
@@ -50,5 +59,5 @@ def app(configs, guests, guest_medias, medias, permissions, media_perms, sounds)
 
 
 @pytest.fixture(scope='session')
-def client(app):
+def client(app: AsyncApp) -> TestClient:
     return TestClient(app)

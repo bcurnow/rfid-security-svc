@@ -1,7 +1,11 @@
 import pytest
+from typing import Any, Callable, Mapping
+from rfidsecuritysvc.model.base_model import BaseModel
+from rfidsecuritysvc.model.media import Media
+from rfidsecuritysvc.model.permission import Permission
 
 @pytest.fixture(scope='session')
-def open_door(open_door_media, open_door_permission):
+def open_door(open_door_media: Media, open_door_permission: Permission) -> tuple[Media, Permission]:
     """
     This fixture returns a tuple containing the Media and Permission objects corresponding to the open door test
     data
@@ -10,10 +14,8 @@ def open_door(open_door_media, open_door_permission):
 
 
 @pytest.fixture(scope='session')
-def assert_model():
-    from rfidsecuritysvc.model.base_model import BaseModel
-
-    def go(expected, actual):
+def assert_model() -> Callable[[Any, Any], None]:
+    def go(expected: Any, actual: Any) -> None:
         if isinstance(expected, BaseModel):
             expected = expected.to_json()
         if isinstance(actual, BaseModel):
@@ -24,7 +26,7 @@ def assert_model():
     return go
 
 
-def _assert_keys(one, two):
+def _assert_keys(one: Mapping[str, Any], two: Mapping[str, Any]) -> None:
     for k, v in one.items():
         assert k in two
         assert two[k] == v

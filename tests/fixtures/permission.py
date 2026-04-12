@@ -1,4 +1,6 @@
 import pytest
+from _pytest.monkeypatch import MonkeyPatch
+from rfidsecuritysvc.model.permission import Permission
 
 @pytest.fixture(scope='session')
 def permissions():

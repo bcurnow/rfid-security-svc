@@ -1,24 +1,19 @@
 import pytest
+from rfidsecuritysvc.model.config import Config
 
 @pytest.fixture(scope='session')
-def configs(test_api_key):
-    from rfidsecuritysvc.model.config import Config
-
+def configs(test_api_key: str) -> list[Config]:
     # The DB will return these ordered by key, please build the list accordingly
     return [Config('ADMIN_API_KEY', test_api_key)]
 
 
 @pytest.fixture(scope='session')
-def creatable_config():
-    from rfidsecuritysvc.model.config import Config
-
+def creatable_config() -> Config:
     return Config('creatable key', 'creatable value')
 
 
 @pytest.fixture(autouse=True, scope='session')
-def add_config_helpers(monkeypatch_session):
-    from rfidsecuritysvc.model.config import Config
-
+def add_config_helpers(monkeypatch_session) -> None:
     def convert(self):
         return self.to_json()
 

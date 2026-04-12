@@ -1,17 +1,23 @@
 import hashlib
 import importlib
 import pytest
+from pytest import FixtureRequest
+from _pytest.monkeypatch import MonkeyPatch
+from collections.abc import Generator
 from types import ModuleType
+from typing import Self, Any, Callable, Mapping
 from unittest.mock import Mock, PropertyMock
+import sqlite3
+from rfidsecuritysvc.db import dbms
 
 class SQLStringNotFound(Exception):
     pass
 
 
 class MockDb(object):
-    def __init__(self):
+    def __init__(self: Self) -> None:
         # Create a mock for the overall database connection
-        self._conn = Mock()
+        self._conn = Mock(spec = sqlite3.Connection)
         self._setup_conn()
         # Need a global index to see which execute we're on
         self._conn_execute_return_value_index = 0
@@ -21,7 +27,7 @@ class MockDb(object):
         self.commit = False
         self.rollback = False
 
-    def _setup_conn(self):
+    def _setup_conn(self: Self) -> sqlite3.Connection:
         # Setup a local variable because we can't use self._conn within the class we define
         conn = self._conn
 
@@ -44,7 +50,7 @@ class MockDb(object):
         conn.__enter__ = mock_context_manager.__enter__
         conn.__exit__ = mock_context_manager.__exit__
 
-    def get_return_value_for_execute(self, *args, **kwargs):
+    def get_return_value_for_execute(self: Self, *args: tuple[Any, ...], **kwargs: Mapping[str, Any]):
         key = hashlib.sha256(bytes(args[0], 'utf-8')).hexdigest()
         if key not in self._executes:
             raise SQLStringNotFound(f'"{args[0]}"')
@@ -59,7 +65,7 @@ class MockDb(object):
         self._conn_execute_return_value_index += 1
         return rv
 
-    def with_dbconn(self, func):
+    def with_dbconn(self: Self, func: Callable[[Mock], Any]) -> Callable[..., Any]:
         """This function replaces the with_dbconn decorator from rfidsecuritysvc.db.dbms with one that provides the MockDB"""
 
         def with_dbconn_impl(*args, **kwargs):
@@ -67,7 +73,7 @@ class MockDb(object):
 
         return with_dbconn_impl
 
-    def add_execute(self, sql, sql_args=None, cursor_return=None, rowcount=None):
+    def add_execute(self: Self, sql: str, sql_args: tuple | None = None, cursor_return: list | tuple | Any | None = None, rowcount: int | None =None) -> None:
         index = 0
         key = hashlib.sha256(bytes(sql, 'utf-8')).hexdigest()
 
@@ -84,15 +90,15 @@ class MockDb(object):
         execute['sql_args'] = sql_args
         self._add_cursor(execute, cursor_return, rowcount)
 
-    def add_commit(self, side_effect=None):
+    def add_commit(self: Self, side_effect: Any = None) -> None:
         self.commit = True
         self._conn.commit.side_effect = side_effect
 
-    def add_rollback(self, side_effect=None):
+    def add_rollback(self: Self, side_effect: Any = None) -> None:
         self.rollbackup = True
         self._conn.rollback.side_effect = side_effect
 
-    def assert_db(self):
+    def assert_db(self: Self) -> None:
         if len(self._executes) == 0:
             self._conn.execute.assert_not_called()
 
@@ -117,7 +123,7 @@ class MockDb(object):
         if self.rollback:
             self._conn.rollback.assert_called_once()
 
-    def _add_cursor(self, execute, cursor_return, rowcount):
+    def _add_cursor(self: Self, execute: Mapping[str, Any], cursor_return, rowcount) -> None:
         """Creates a cursor mock and populates the return value"""
         cursor = Mock()
         execute['cursor'] = cursor
@@ -145,7 +151,7 @@ class MockDb(object):
             execute['rowcount_mock'] = p
             type(cursor).rowcount = p
 
-    def _is_iterable(self, arg):
+    def _is_iterable(self: Self, arg: Any) -> bool:
         """
         Returns true if the passed in object has an __iter__ attribute but is neither a string nor an array of bytes
         (which are iterable but not in the way we mean)
@@ -154,9 +160,7 @@ class MockDb(object):
 
 
 @pytest.fixture
-def mockdb(request, monkeypatch):
-    from rfidsecuritysvc.db import dbms
-
+def mockdb(request: FixtureRequest, monkeypatch: MonkeyPatch) -> Generator[MockDb, None, None]:
     db = MockDb()
 
     # Save the original method

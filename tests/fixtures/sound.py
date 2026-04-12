@@ -1,17 +1,18 @@
 import io
 import os
-
 import pytest
+from _pytest.monkeypatch import MonkeyPatch
+from rfidsecuritysvc.model.sound import Sound
 
 @pytest.fixture(scope='session')
-def wav_content():
+def wav_content() -> bytes:
     test_wav = os.path.join(os.path.dirname(__file__), 'test.wav')
     with open(test_wav, 'rb') as f:
         return f.read()
 
 
 @pytest.fixture(scope='session')
-def sounds(wav_content):
+def sounds(wav_content: bytes) -> list[Sound]:
     from rfidsecuritysvc.model.sound import Sound
 
     return [
@@ -21,19 +22,19 @@ def sounds(wav_content):
 
 
 @pytest.fixture(scope='session')
-def creatable_sound(sounds, wav_content):
+def creatable_sound(sounds: list[Sound], wav_content: bytes) -> Sound:
     from rfidsecuritysvc.model.sound import Sound
 
     return Sound(len(sounds) + 1, 'creatable.wav', '2021-09-25 23:13:25', wav_content)
 
 
 @pytest.fixture(scope='session')
-def default_sound(sounds):
+def default_sound(sounds: list[Sound]) -> Sound:
     return sounds[0]
 
 
 @pytest.fixture(autouse=True, scope='session')
-def add_sound_helpers(monkeypatch_session):
+def add_sound_helpers(monkeypatch_session: MonkeyPatch) -> None:
     from rfidsecuritysvc.model.sound import Sound
 
     def convert(self):

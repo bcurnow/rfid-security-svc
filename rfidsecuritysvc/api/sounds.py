@@ -1,9 +1,9 @@
 import rfidsecuritysvc.exception as exception
 from rfidsecuritysvc.api import RECORD_COUNT_HEADER
 from rfidsecuritysvc.model import sound as model
-from typing import Any
+from typing import Any, Mapping
 
-def get(id: int) -> tuple[dict | str, int]:
+def get(id: int) -> dict | tuple[str, int]:
     m = model.get(id)
     if m:
         return m.to_json_with_content()
@@ -11,11 +11,11 @@ def get(id: int) -> tuple[dict | str, int]:
     return f'Object with id "{id}" does not exist.', 404
 
 
-def search() -> list[dict]:
+def search() -> list[dict[str, Any]]:
     return [m.to_json() for m in model.list()]
 
 
-def post(body: dict[str, Any], content: Any) -> tuple[str | None, int]:
+def post(body: Mapping[str, Any], content: Any) -> tuple[str | None, int]:
     if content is None or content.content_type != 'audio/wav':
         return 'audio/wav data is required', 415
     file_content = content.file.read()
@@ -30,11 +30,11 @@ def post(body: dict[str, Any], content: Any) -> tuple[str | None, int]:
         return f'Object with name "{name}" already exists.', 409
 
 
-def delete(id: int) -> tuple[None, int, dict]:
+def delete(id: int) -> tuple[None, int, dict[str, str]]:
     return None, 200, {RECORD_COUNT_HEADER: str(model.delete(id))}
 
 
-def put(id: int, body: dict[str, Any], content: Any) -> tuple[None, int, dict]:
+def put(id: int, body: Mapping[str, Any], content: Any) -> tuple[None, int, dict[str, str]]:
     if content is None or content.content_type != 'audio/wav':
         return 'audio/wav data is required', 415
     file_content = content.file.read()

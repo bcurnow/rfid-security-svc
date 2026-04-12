@@ -1,7 +1,7 @@
 import pytest
 
-@pytest.fixture(scope='session')
-def default_color():
-    from rfidsecuritysvc.model.color import Color
+from rfidsecuritysvc.model.color import Color
 
+@pytest.fixture(scope='session')
+def default_color() -> Color:
     return Color(0xABCDEF)

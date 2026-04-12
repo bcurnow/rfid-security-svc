@@ -1,17 +1,25 @@
 import json
 import pytest
-
+from typing import Self, Callable, Mapping, Any
+from collections.abc import Generator
+from _pytest.monkeypatch import MonkeyPatch
+from starlette.testclient import TestClient
+from httpx import Response
+from connexion import AsyncApp
 from rfidsecuritysvc.model.base_model import BaseModel
 
 
 class ResponseHandler:
-    def __init__(self, client, api_base, app, assert_model):
+    def __init__(self: Self, client: TestClient, api_base: str, app: AsyncApp, assert_model: Callable[[BaseModel, dict[str, Any]], None]):
         self._client = client
         self._api_base = api_base
         self._app = app
         self._assert_model = assert_model
 
-    def open(self, method, api, data=None, content_type='application/json', headers={}):
+    def open(self: Self, method: str, api: str, data: Mapping[Any, Any] = None, content_type: str = 'application/json', headers: Mapping[str, str] = None) -> Response:
+        if headers is None:
+            headers = {}
+
         # Add the default testing authorization header so the calls succeed
         request_headers = {'X-RFIDSECURITYSVC-API-KEY': 'testing'}
         request_headers.update(headers)
@@ -92,20 +100,18 @@ def rh(client, api_base, app, assert_model):
 
 
 @pytest.fixture(scope='session')
-def test_api_key():
+def test_api_key() -> str:
     # This value is 'testing'
     return 'pbkdf2:sha256:150000$gQ68PeFG$8171ee457bac33eff68dce8d2d1dc84c32d9b39ef21c0623ebfa384a210cb44d'
 
 
 @pytest.fixture(scope='session')
-def api_base():
+def api_base() -> str:
     return '/api/v1.0/'
 
 
 @pytest.fixture(scope='session')
-def monkeypatch_session():
-    from _pytest.monkeypatch import MonkeyPatch
-
+def monkeypatch_session() -> Generator[MonkeyPatch, None, None]:
     m = MonkeyPatch()
     yield m
     m.undo()

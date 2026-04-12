@@ -74,7 +74,7 @@ def ensure_api_key() -> None:
         _print_new_key_warning(key)
 
 
-def verify_api_key(apikey: str, required_scopes=None) -> dict:
+def verify_api_key(apikey: str, required_scopes=None) -> dict[str, str]:
     """Verify API key - called by Connexion security handler."""
     if not apikey:
         raise OAuthProblem('Invalid authentication: ""')
