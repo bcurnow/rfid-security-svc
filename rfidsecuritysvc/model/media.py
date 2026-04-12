@@ -1,35 +1,35 @@
 from .base_model import BaseModel
 from rfidsecuritysvc.db import media as table
-
+from typing import Self
+import sqlite3
 
 class Media(BaseModel):
-    def __init__(self, id, name, desc=None):
+    def __init__(self: Self, id: str, name: str, desc: str = None) -> None:
         self.id = id
         self.name = name
         self.desc = desc
 
-
-def get(id):
+def get(id: str) -> Media:
     return __model(table.get(id))
 
 
-def list(exclude_associated=False):
+def list(exclude_associated: bool = False) -> list[Media]:
     return [__model(row) for row in table.list(exclude_associated)]
 
 
-def create(id, name, desc=None):
+def create(id: str, name: str, desc: str = None) -> Media:
     return table.create(id, name, desc)
 
 
-def delete(id):
+def delete(id: str) -> int:
     return table.delete(id)
 
 
-def update(id, name, desc=None):
+def update(id: str, name: str, desc: str = None) -> int:
     return table.update(id, name, desc)
 
 
-def __model(row):
+def __model(row: sqlite3.Row) -> Media:
     if row is None:
         return
     return Media(row['id'], row['name'], row['desc'])

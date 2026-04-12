@@ -1,16 +1,16 @@
 import rfidsecuritysvc.exception as exception
 from rfidsecuritysvc.api import RECORD_COUNT_HEADER
 from rfidsecuritysvc.model import media_perm as model
+from typing import Any
 
-
-def get(id):
+def get(id: int) -> tuple[dict | str, int]:
     m = model.get(id)
     if m:
         return m.to_json()
     return f'Object with id "{id}" does not exist.', 404
 
 
-def search(media_id=None):
+def search(media_id: str = None) -> list[dict]:
     results = []
     for m in model.list(media_id):
         results.append(m.to_json())
@@ -18,7 +18,7 @@ def search(media_id=None):
     return results
 
 
-def post(body):
+def post(body: dict[str, Any]) -> tuple[None | str, int]:
     try:
         model.create(**body)
         return None, 201
@@ -30,11 +30,11 @@ def post(body):
         return f'No permission found with id "{body["permission_id"]}".', 400
 
 
-def delete(id):
+def delete(id: int) -> tuple[None, int, dict]:
     return None, 200, {RECORD_COUNT_HEADER: str(model.delete(id))}
 
 
-def put(id, body):
+def put(id: int, body: dict[str, Any]) -> tuple[None, int, dict]:
     try:
         return None, 200, {RECORD_COUNT_HEADER: str(model.update(id, **body))}
     except exception.MediaPermNotFoundError:

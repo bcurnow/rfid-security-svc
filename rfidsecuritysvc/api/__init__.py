@@ -1,1 +1,1 @@
-RECORD_COUNT_HEADER = 'x-record-count'
+RECORD_COUNT_HEADER: str = 'x-record-count'

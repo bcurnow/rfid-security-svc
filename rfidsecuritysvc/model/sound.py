@@ -2,9 +2,11 @@ import base64
 from datetime import datetime, timezone
 from .base_model import BaseModel
 from rfidsecuritysvc.db import sound as table
+from typing import Self
+import sqlite3
 
 class Sound(BaseModel):
-    def __init__(self, id, name, last_update_timestamp, content=None):
+    def __init__(self: Self, id: int, name: str, last_update_timestamp: str, content: str = None) -> None:
         self.id = id
         self.name = name
         # All time in the database is stored as a string in ISO8601 format in UTC, however,
@@ -14,13 +16,13 @@ class Sound(BaseModel):
         self.last_update_timestamp = t.isoformat(timespec='seconds')
         self.content = content
 
-    def to_json(self):
+    def to_json(self: Self) -> str:
         """Override the base method to ensure that we don't show binary content everywhere"""
         cp = super().to_json()
         del cp['content']
         return cp
 
-    def to_json_with_content(self):
+    def to_json_with_content(self: Self) -> str:
         """This method must be explicitly called to get the content"""
         # In order to translate to JSON, this must be encoded first
         json = self.to_json()
@@ -30,31 +32,31 @@ class Sound(BaseModel):
         return json
 
 
-def get(id):
+def get(id: int) -> Sound:
     return __model(table.get(id))
 
 
-def get_by_name(name):
+def get_by_name(name: str) -> Sound:
     return __model(table.get_by_name(name))
 
 
-def list():
+def list() -> list[Sound]:
     return [_model_light(row) for row in table.list()]
 
 
-def create(name, content):
+def create(name: str, content: str) -> Sound:
     return table.create(name, content)
 
 
-def delete(id):
+def delete(id: int) -> int:
     return table.delete(id)
 
 
-def update(id, name, content=None):
+def update(id: int, name: str, content: str = None) -> int:
     return table.update(id, name, content)
 
 
-def __model(row):
+def __model(row: sqlite3.Row) -> Sound:
     if row is None:
         return
     c = _model_light(row)
@@ -62,5 +64,5 @@ def __model(row):
     return c
 
 
-def _model_light(row):
+def _model_light(row: sqlite3.Row) -> Sound:
     return Sound(row['id'], row['name'], row['last_update_timestamp'])

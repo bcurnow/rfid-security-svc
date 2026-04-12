@@ -5,16 +5,18 @@ from .base_model import BaseModel
 from .color import Color
 from rfidsecuritysvc.exception import SoundNotFoundError
 from rfidsecuritysvc.db import guest as table
+from typing import Self
+import sqlite3
 
 class Guest(BaseModel):
-    def __init__(self, id, first_name, last_name, sound=None, color=None):
+    def __init__(self: Self, id: int, first_name: str, last_name: str, sound: int = None, color: int = None):
         self.id = id
         self.first_name = first_name
         self.last_name = last_name
         self.sound = sound
         self.color = color
 
-    def to_json(self):
+    def to_json(self: Self) -> str:
         copy = super().to_json()
         if self.sound:
             copy['sound'] = self.sound.to_json()
@@ -23,15 +25,15 @@ class Guest(BaseModel):
         return copy
 
 
-def get(id):
+def get(id: int) -> Guest:
     return __model(table.get(id))
 
 
-def list():
+def list() -> list[Guest]:
     return [__model(row) for row in table.list()]
 
 
-def create(first_name, last_name, sound=None, color=None):
+def create(first_name: str, last_name: str, sound: int = None, color: int = None) -> Guest:
     if sound:
         s = sound_model.get(sound)
         if not s:
@@ -45,11 +47,11 @@ def create(first_name, last_name, sound=None, color=None):
     # We don't have everything we need, instead of complicate sets of checking for sound and color and handling exceptions, etc. we'll just call get(id)
     return get(id)
 
-def delete(id):
+def delete(id: int) -> int:
     return table.delete(id)
 
 
-def update(id, first_name, last_name, sound=None, color=None):    
+def update(id: int, first_name: str, last_name: str, sound: int = None, color: int = None) -> int:    
     if sound:
         s = sound_model.get(sound)
         if not s:
@@ -57,7 +59,7 @@ def update(id, first_name, last_name, sound=None, color=None):
     return table.update(id, first_name, last_name, sound, color)
 
 
-def __model(row):
+def __model(row: sqlite3.Row) -> Guest:
     if row is None:
         return
 

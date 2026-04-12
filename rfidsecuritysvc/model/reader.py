@@ -7,7 +7,7 @@ from rfidsecuritysvc.model import config
 RFID_SERVICE_URL_CONFIG_KEY = 'RFID_SERVICE_URL'
 
 
-def read(timeout):
+def read(timeout: int) -> str:
     logger = logging.getLogger(__name__)
     url = config.get(RFID_SERVICE_URL_CONFIG_KEY)
 

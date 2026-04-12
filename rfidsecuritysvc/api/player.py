@@ -3,7 +3,7 @@ from connexion.context import request
 from rfidsecuritysvc.model import sound as model
 
 
-def get(name):
+def get(name: str) -> tuple[dict | str, int, dict]:
     m = model.get_by_name(name)
     if m:
         # IOS (and maybe others) require that the server support Range requests

@@ -6,10 +6,10 @@ from connexion.resolver import RestyResolver
 from connexion.options import SwaggerUIOptions
 from rfidsecuritysvc.db.dbms import init_db, close_db
 from rfidsecuritysvc.model.authorized import ensure_api_key
-
+from typing import Any, AsyncIterator
 
 @asynccontextmanager
-async def lifespan(app: AsyncApp):
+async def lifespan(app: AsyncApp) -> AsyncIterator[None]:
     """Handle application startup and shutdown events."""
     # Startup
     if init_db():
@@ -18,7 +18,7 @@ async def lifespan(app: AsyncApp):
     close_db()
 
 
-def create_app(test_config=None):
+def create_app(test_config: dict = None) -> AsyncApp:
     """Create and configure the Connexion application."""
 
     if test_config is not None:

@@ -563,7 +563,6 @@ paths:
         Takes a id and deletes that record. This method does not fail if the media does not exist as this is considered success.
       parameters:
       - name: id
-        in: path
         description: The id of the media to delete.
         required: true
         schema:
@@ -604,6 +603,7 @@ paths:
             example:
               name: Anna's MagicBand
               desc: This is the MagicBand that Anna got from Elsa
+        in: path`
       responses:
         "200":
           description: Record was updated.
