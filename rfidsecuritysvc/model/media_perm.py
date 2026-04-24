@@ -40,7 +40,9 @@ def create(media_id: str, permission_id: int) -> int:
     if not p:
         raise PermissionNotFoundError
 
-    return table.create(media_id, permission_id)
+    id = table.create(media_id, permission_id)
+    return get(id)
+
 
 
 def delete(id):

@@ -20,8 +20,7 @@ def search(exclude_associated: bool = False) -> list[dict[str, Any]]:
 
 def post(body: Mapping[str, Any]) -> tuple[None | str, int]:
     try:
-        model.create(**body)
-        return None, 201
+        return model.create(**body).to_json(), 201
     except exception.DuplicateMediaError:
         return f'Object with id "{body["id"]}" or name "{body["name"]}" already exists.', 409
 

@@ -30,7 +30,7 @@ def test_search_noresults(model, rh):
 
 
 def test_post(rh, creatable_permission):
-    rh.assert_response(rh.open('post', f'{api}', creatable_permission), 201)
+    rh.assert_response(rh.open('post', f'{api}', creatable_permission), 201, creatable_permission.to_json())
     rh.assert_response(rh.open('get', f'{api}/{creatable_permission.id}'), 200)
     rh.assert_response(rh.open('delete', f'{api}/{creatable_permission.id}'), 200, headers={RECORD_COUNT_HEADER: '1'})
     rh.assert_response(rh.open('get', f'{api}/{creatable_permission.id}'), 404)

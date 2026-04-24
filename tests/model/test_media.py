@@ -57,15 +57,15 @@ def test_list_exclude_associated(table):
 
 @patch('rfidsecuritysvc.model.media.table')
 def test_create(table):
-    table.create.return_value = None
-    assert model.create('test', 'test', 'test') is None
-    table.create.assert_called_once_with('test', 'test', 'test')
+    table.create.return_value = _default().id
+    assert model.create(_default().id, _default().name, _default().desc) == _default()
+    table.create.assert_called_once_with(_default().id, _default().name, _default().desc)
 
 
 @patch('rfidsecuritysvc.model.media.table')
 def test_create_optional_desc(table):
-    table.create.return_value = None
-    assert model.create('test', 'test') is None
+    table.create.return_value = 'test'
+    assert model.create('test', 'test') == Media('test', 'test', None)
     table.create.assert_called_once_with('test', 'test', None)
 
 

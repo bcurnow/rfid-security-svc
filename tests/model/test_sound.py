@@ -82,9 +82,11 @@ def test_list_noresults(table):
 
 @patch('rfidsecuritysvc.model.sound.table')
 def test_create(table):
-    table.create.return_value = None
-    assert model.create('test', 'binary content') is None
-    table.create.assert_called_once_with('test', 'binary content')
+    table.create.return_value = _default().id
+    table.get.return_value = _default().test_to_row()
+    assert model.create(_default().name, _default().content) == _default()
+    table.create.assert_called_once_with(_default().name, _default().content)
+    table.get.assert_called_once_with(_default().id)
 
 
 @patch('rfidsecuritysvc.model.sound.table')

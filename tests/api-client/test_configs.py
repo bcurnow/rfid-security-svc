@@ -26,7 +26,7 @@ def test_search_noresults(model, rh):
 
 
 def test_post(rh, creatable_config):
-    rh.assert_response(rh.open('post', f'{api}', creatable_config), 201)
+    rh.assert_response(rh.open('post', f'{api}', creatable_config), 201, creatable_config.to_json())
     rh.assert_response(rh.open('get', f'{api}/{creatable_config.key}'), 200)
     rh.assert_response(rh.open('delete', f'{api}/{creatable_config.key}'), 200, headers={RECORD_COUNT_HEADER: '1'})
     rh.assert_response(rh.open('get', f'{api}/{creatable_config.key}'), 404)

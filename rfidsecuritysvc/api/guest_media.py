@@ -20,8 +20,7 @@ def search(guest_id: int = None) -> list[dict[str, Any]]:
 
 def post(body: Mapping[str, Any]) -> tuple[None | str, int]:
     try:
-        model.create(**body)
-        return None, 201
+        return model.create(**body).to_json(), 201
     except exception.DuplicateGuestMediaError:
         return f'Media with media_id "{body["media_id"]} is already associated with a guest.', 409
     except exception.GuestNotFoundError:

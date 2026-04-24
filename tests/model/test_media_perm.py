@@ -16,8 +16,8 @@ def test_MediaPerm(assert_model, open_door_media, open_door_permission):
 @patch('rfidsecuritysvc.model.media_perm.table')
 def test_get(table, media_perm_to_row):
     table.get.return_value = media_perm_to_row(_default())
-    assert model.get(1) == _default()
-    table.get.assert_called_once_with(1)
+    assert model.get(_default().id) == _default()
+    table.get.assert_called_once_with(_default().id)
 
 
 @patch('rfidsecuritysvc.model.media_perm.table')
@@ -67,14 +67,22 @@ def test_list_noresults(table):
 @patch('rfidsecuritysvc.model.media_perm.media')
 @patch('rfidsecuritysvc.model.media_perm.permission')
 @patch('rfidsecuritysvc.model.media_perm.table')
-def test_create(table, permission, media):
-    media.get.return_value = Media('test', 'test')
-    permission.get.return_value = Permission(1, 'test')
-    table.create.return_value = None
-    assert model.create('test', 1) is None
-    table.create.assert_called_once_with('test', 1)
-    media.get.assert_called_once_with('test')
-    permission.get.assert_called_once_with(1)
+def test_create(table, permission, media,  media_perm_to_row):
+    media.get.return_value = _default().media
+    permission.get.return_value = _default().permission
+    table.create.return_value = _default().id
+    table.get.return_value = media_perm_to_row(_default())
+    # Because I've mocked out media and permission, I need to also provide return values for the
+    # construtor calls (which I don't need to do in test_get because I don't mock those)
+    # Otherwise, the assert will fail because .media and .permission will be mocks instead of actual objects
+    media.Media.return_value = _default().media
+    permission.Permission.return_value = _default().permission
+    assert model.create(_default().media.id, _default().permission.id) == _default()
+    table.create.assert_called_once_with(_default().media.id, _default().permission.id)
+    media.get.assert_called_once_with(_default().media.id)
+    media.Media.assert_called_once()
+    permission.get.assert_called_once_with(_default().permission.id)
+    permission.Permission.assert_called_once()
 
 
 @patch('rfidsecuritysvc.model.media_perm.media')

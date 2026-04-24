@@ -24,8 +24,10 @@ def post(body: Mapping[str, Any], content: Any) -> tuple[str | None, int]:
     name = body['name']
 
     try:
-        model.create(name, file_content)
-        return None, 201
+        m = model.create(name, file_content)
+        if m:
+            return m.to_json(), 201
+        return f'Unable to retrieve newly inserted object.', 404    
     except exception.DuplicateSoundError:
         return f'Object with name "{name}" already exists.', 409
 

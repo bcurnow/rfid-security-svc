@@ -18,7 +18,8 @@ def list(exclude_associated: bool = False) -> list[Media]:
 
 
 def create(id: str, name: str, desc: str = None) -> Media:
-    return table.create(id, name, desc)
+    id = table.create(id, name, desc)
+    return Media(id, name, desc)
 
 
 def delete(id: str) -> int:

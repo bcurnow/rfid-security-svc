@@ -4,7 +4,7 @@ from typing import Self
 import sqlite3
 
 class Permission(BaseModel):
-    def __init__(self: Self, id: int, name: str, desc: str = None) -> NOne:
+    def __init__(self: Self, id: int, name: str, desc: str = None) -> None:
         self.id = id
         self.name = name
         self.desc = desc
@@ -22,7 +22,8 @@ def list() -> list[Permission]:
 
 
 def create(name: str, desc: str = None) -> Permission:
-    return table.create(name, desc)
+    id = table.create(name, desc)
+    return Permission(id, name, desc)
 
 
 def delete(id: int) -> int:

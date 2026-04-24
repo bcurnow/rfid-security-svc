@@ -20,8 +20,10 @@ def search(media_id: str = None) -> list[dict[str, Any]]:
 
 def post(body: Mapping[str, Any]) -> tuple[None | str, int]:
     try:
-        model.create(**body)
-        return None, 201
+        m = model.create(**body)
+        if m:
+            return m.to_json(), 201
+        return f'Unable to retrieve newly inserted object.', 404        
     except exception.DuplicateMediaPermError:
         return f'Object with media_id "{body["media_id"]}" and permission_id "{body["permission_id"]}" already exists.', 409
     except exception.MediaNotFoundError:

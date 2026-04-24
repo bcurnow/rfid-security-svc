@@ -45,7 +45,9 @@ def list() -> list[Sound]:
 
 
 def create(name: str, content: str) -> Sound:
-    return table.create(name, content)
+    id = table.create(name, content)
+    # Return the light form since the creator will have the content and there's no good reason to use more bandwidth
+    return get(id)
 
 
 def delete(id: int) -> int:

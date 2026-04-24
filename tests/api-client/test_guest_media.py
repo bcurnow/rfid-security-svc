@@ -33,7 +33,7 @@ def test_search_noresults(model, rh):
 
 def test_post(rh, creatable_guest_media):
     p = creatable_guest_media
-    rh.assert_response(rh.open('post', f'{api}', p), 201)
+    rh.assert_response(rh.open('post', f'{api}', p), 201, p.to_json())
     rh.assert_response(rh.open('get', f'{api}/{p.id}'), 200)
     rh.assert_response(rh.open('delete', f'{api}/{p.id}'), 200, headers={RECORD_COUNT_HEADER: '1'})
     rh.assert_response(rh.open('get', f'{api}/{p.id}'), 404)

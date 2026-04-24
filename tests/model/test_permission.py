@@ -54,15 +54,15 @@ def test_list_noresults(table):
 
 @patch('rfidsecuritysvc.model.permission.table')
 def test_create(table):
-    table.create.return_value = None
-    assert model.create('test', 'test') is None
-    table.create.assert_called_once_with('test', 'test')
+    table.create.return_value = _default().id
+    assert model.create(_default().name, _default().desc) == _default()
+    table.create.assert_called_once_with(_default().name, _default().desc)
 
 
 @patch('rfidsecuritysvc.model.permission.table')
 def test_create_optional_desc(table):
-    table.create.return_value = None
-    assert model.create('test') is None
+    table.create.return_value = 'test'
+    assert model.create('test') == Permission('test', 'test', None)
     table.create.assert_called_once_with('test', None)
 
 

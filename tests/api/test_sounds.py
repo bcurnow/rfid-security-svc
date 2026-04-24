@@ -31,7 +31,6 @@ def test_search(model):
     assert api.search() == [m.to_json(), m2.to_json()]
     model.list.assert_called_once()
 
-
 @patch('rfidsecuritysvc.api.sounds.model')
 def test_search_noresults(model):
     model.list.return_value = []

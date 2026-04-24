@@ -20,8 +20,7 @@ def search() -> list[dict[str, Any]]:
 
 def post(body: Mapping[str, Any]) -> tuple[None | str, int]:
     try:
-        model.create(**body)
-        return None, 201
+        return model.create(**body).to_json(), 201
     except exception.DuplicatePermissionError:
         return f'Object with name "{body["name"]}" already exists.', 409
 

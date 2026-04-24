@@ -17,7 +17,7 @@ def test_list(mockdb):
 
 
 def test_create(mockdb):
-    mockdb.add_execute('INSERT INTO config (key, value) VALUES (?,?)', ('test', 1))
+    mockdb.add_execute('INSERT INTO config (key, value) VALUES (?,?)', ('test', 1), (1,))
     mockdb.add_commit()
     assert db.create('test', 1) == 'test'
 

@@ -34,7 +34,7 @@ def test_search_exclude_associated(rh, media_without_guests):
 
 
 def test_post(rh, creatable_media):
-    rh.assert_response(rh.open('post', f'{api}', creatable_media), 201)
+    rh.assert_response(rh.open('post', f'{api}', creatable_media), 201, creatable_media.to_json())
     rh.assert_response(rh.open('get', f'{api}/{creatable_media.id}'), 200)
     rh.assert_response(rh.open('delete', f'{api}/{creatable_media.id}'), 200, headers={RECORD_COUNT_HEADER: '1'})
     rh.assert_response(rh.open('get', f'{api}/{creatable_media.id}'), 404)

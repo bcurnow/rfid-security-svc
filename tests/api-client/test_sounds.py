@@ -29,7 +29,7 @@ def test_search_noresults(model, rh):
 
 
 def test_post(rh, creatable_sound):
-    rh.assert_response(rh.open('post', f'{api}', creatable_sound.test_to_multipart(), 'multipart/form-data'), 201)
+    rh.assert_response(rh.open('post', f'{api}', creatable_sound.test_to_multipart(), 'multipart/form-data'), 201, creatable_sound.to_json())
     rh.assert_response(rh.open('get', f'{api}/{creatable_sound.id}'), 200)
     rh.assert_response(rh.open('delete', f'{api}/{creatable_sound.id}'), 200, headers={RECORD_COUNT_HEADER: '1'})
     rh.assert_response(rh.open('get', f'{api}/{creatable_sound.id}'), 404)

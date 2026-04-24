@@ -40,8 +40,8 @@ def test_search_noresults(model):
 
 @patch('rfidsecuritysvc.api.configs.model')
 def test_post(model):
-    model.create.return_value = None
-    assert api.post(m.to_json()) == (None, 201)
+    model.create.return_value = m
+    assert api.post(m.to_json()) == (m.to_json(), 201)
     model.create.assert_called_once_with(**m.to_json())
 
 
