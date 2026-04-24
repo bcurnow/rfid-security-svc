@@ -1,12 +1,13 @@
 import json
 import pytest
 from typing import Self, Callable, Mapping, Any
-from collections.abc import Generator
+from collections.abc import Generator, Mapping
 from _pytest.monkeypatch import MonkeyPatch
 from starlette.testclient import TestClient
 from httpx import Response
 from connexion import AsyncApp
 from rfidsecuritysvc.model.base_model import BaseModel
+from rfidsecuritysvc.model.sound import Sound
 
 
 class ResponseHandler:
@@ -83,6 +84,16 @@ class ResponseHandler:
             else:
                 if isinstance(expected, BaseModel):
                     self._assert_model(expected, actual)
+                elif isinstance(expected, Mapping):
+                    # Sound has a last_update_timestamp field which is populated by a trigger
+                    # This is really hard to test so we're just going to assert it's not null and then
+                    # remove it from the comparison
+                    if 'last_update_timestamp' in expected and 'last_update_timestamp' in actual:
+                        assert actual['last_update_timestamp'] != None
+                        actual['last_update_timestamp'] = None
+                        expected['last_update_timestamp'] = None
+                    else:
+                        assert expected == actual
                 else:
                     assert expected == actual
 
