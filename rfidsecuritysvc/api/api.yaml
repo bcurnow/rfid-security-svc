@@ -10,8 +10,8 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
 servers:
-- url: /api/v1.0
-  description: Version 1.0.
+  - url: /api/v1.0
+    description: Version 1.0.
 tags:
   - name: authorized
     description: Authorization APIs
@@ -40,32 +40,32 @@ paths:
       description: |
         Checks if the supplied media_id has the supplied permission
       parameters:
-      - name: media_id
-        in: path
-        description: The media_id to check
-        required: true
-        schema:
-          type: string
-          example: 80558ABA5C3504
-      - name: perm_name
-        in: path
-        description: The permission name to check
-        required: true
-        schema:
-          type: string
-          example: Open Door
+        - name: media_id
+          in: path
+          description: The media_id to check
+          required: true
+          schema:
+            type: string
+            example: 80558ABA5C3504
+        - name: perm_name
+          in: path
+          description: The permission name to check
+          required: true
+          schema:
+            type: string
+            example: Open Door
       responses:
-        "200":
+        '200':
           description: Media has the supplied permission.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MediaConfig"
-        "400":
+                $ref: '#/components/schemas/MediaConfig'
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "403":
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
           description: Media does not have the supplied permission
   /configs:
     get:
@@ -75,18 +75,18 @@ paths:
       description: |
         Retrieves all the config records. This implementation does not currently support pagination.
       responses:
-        "200":
+        '200':
           description: Array of Config objects.
           content:
-           application/json:
-             schema:
-               type: array
-               items:
-                 $ref: "#/components/schemas/Config"
-        "400":
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Config'
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
     post:
       tags:
         - config
@@ -98,15 +98,19 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Config"
+              $ref: '#/components/schemas/Config'
       responses:
-        "201":
+        '201':
           description: New record created.
-        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Config'
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "409":
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '409':
           description: Record already exists.
   /configs/{key}:
     get:
@@ -116,25 +120,25 @@ paths:
       description: |
         Takes a key and returns the config.
       parameters:
-      - name: key
-        in: path
-        description: The key of the requested config.
-        required: true
-        schema:
-          type: string
-          example: Admin User
+        - name: key
+          in: path
+          description: The key of the requested config.
+          required: true
+          schema:
+            type: string
+            example: Admin User
       responses:
-        "200":
+        '200':
           description: Config object.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Config"
-        "400":
+                $ref: '#/components/schemas/Config'
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "404":
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
           description: Record not found.
     delete:
       tags:
@@ -143,25 +147,25 @@ paths:
       description: |
         Takes a key and deletes that record. This method does not fail if the config does not exist as this is considered success.
       parameters:
-      - name: key
-        in: path
-        description: The key of the config to delete.
-        required: true
-        schema:
-          type: string
-          example: Admin User
+        - name: key
+          in: path
+          description: The key of the config to delete.
+          required: true
+          schema:
+            type: string
+            example: Admin User
       responses:
-        "200":
+        '200':
           description: Record was either deleted or did not exist.
           headers:
             x-record-count:
               schema:
                 type: integer
               description: The actual number of records deleted, could be zero if the record did not exist.
-        "400":
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
     put:
       tags:
         - config
@@ -169,35 +173,35 @@ paths:
       description: |
         Accepts a JSON payload containing a full config record and updates it. The key is optional in the object and will be ignored.
       parameters:
-      - name: key
-        in: path
-        description: The key of the config to update.
-        required: true
-        schema:
-          type: string
-          example: Admin User
+        - name: key
+          in: path
+          description: The key of the config to update.
+          required: true
+          schema:
+            type: string
+            example: Admin User
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/SimpleConfig"
+              $ref: '#/components/schemas/SimpleConfig'
             example:
               value: admin
       responses:
-        "200":
+        '200':
           description: Record was updated.
           headers:
             x-record-count:
               schema:
                 type: integer
               description: The actual number of records updated or created
-        "201":
+        '201':
           description: Record did not exist and was created.
-        "400":
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
   /guests:
     get:
       tags:
@@ -206,18 +210,18 @@ paths:
       description: |
         Retrieves all the guest records. This implementation does not currently support pagination.
       responses:
-        "200":
+        '200':
           description: Array of Guest objects.
           content:
-           application/json:
-             schema:
-               type: array
-               items:
-                 $ref: "#/components/schemas/Guest"
-        "400":
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Guest'
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
     post:
       tags:
         - guest
@@ -229,21 +233,21 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/InputGuest"
+              $ref: '#/components/schemas/InputGuest'
       responses:
-        "201":
+        '201':
           description: New record created.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Guest"
-        "409":
+                $ref: '#/components/schemas/Guest'
+        '409':
           description: Record already exists.
-        "400":
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "404":
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
           description: Newly inserted record could not be found.
   /guests/{id}:
     get:
@@ -253,25 +257,25 @@ paths:
       description: |
         Takes a id and returns the guest.
       parameters:
-      - name: id
-        in: path
-        description: The id of the requested guest.
-        required: true
-        schema:
-          type: integer
-          example: 1
+        - name: id
+          in: path
+          description: The id of the requested guest.
+          required: true
+          schema:
+            type: integer
+            example: 1
       responses:
-        "200":
+        '200':
           description: Guest object.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Guest"
-        "400":
+                $ref: '#/components/schemas/Guest'
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "404":
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
           description: Record not found.
     delete:
       tags:
@@ -280,25 +284,25 @@ paths:
       description: |
         Takes a id and deletes that record. This method does not fail if the guest does not exist as this is considered success.
       parameters:
-      - name: id
-        in: path
-        description: The id of the guest to delete.
-        required: true
-        schema:
-          type: integer
-          example: 1
+        - name: id
+          in: path
+          description: The id of the guest to delete.
+          required: true
+          schema:
+            type: integer
+            example: 1
       responses:
-        "200":
+        '200':
           description: Record was either deleted or did not exist.
           headers:
             x-record-count:
               schema:
                 type: integer
               description: The actual number of records deleted, could be zero if the record did not exist.
-        "400":
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
     put:
       tags:
         - guest
@@ -306,38 +310,38 @@ paths:
       description: |
         Accepts a JSON payload containing a guest record and updates it. The id must not be present in the payload.
       parameters:
-      - name: id
-        in: path
-        description: The id of the guest to update.
-        required: true
-        schema:
-          type: integer
-          example: 1
+        - name: id
+          in: path
+          description: The id of the guest to update.
+          required: true
+          schema:
+            type: integer
+            example: 1
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/InputGuest"
+              $ref: '#/components/schemas/InputGuest'
             example:
               first_name: Mickey
               last_name: Mouse
               sound: 1
               color: 16777215
       responses:
-        "200":
+        '200':
           description: Record was updated.
           headers:
             x-record-count:
               schema:
                 type: integer
               description: The actual number of records updated or created
-        "201":
+        '201':
           description: Record did not exist and was created.
-        "400":
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
   /guest-media:
     get:
       tags:
@@ -353,18 +357,18 @@ paths:
             type: integer
             example: 1
       responses:
-        "200":
+        '200':
           description: Array of GuestMedia objects.
           content:
-           application/json:
-             schema:
-               type: array
-               items:
-                 $ref: "#/components/schemas/GuestMedia"
-        "400":
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GuestMedia'
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
     post:
       tags:
         - guest-media
@@ -376,16 +380,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/InputGuestMedia"
+              $ref: '#/components/schemas/InputGuestMedia'
       responses:
-        "201":
+        '201':
           description: New record created.
-        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GuestMedia'
+        '409':
           description: Record already exists.
-        "400":
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
   /guest-media/{id}:
     get:
       tags:
@@ -394,25 +402,25 @@ paths:
       description: |
         Takes a id and returns the guest media.
       parameters:
-      - name: id
-        in: path
-        description: The id of the requested guest media.
-        required: true
-        schema:
-          type: integer
-          example: 1
+        - name: id
+          in: path
+          description: The id of the requested guest media.
+          required: true
+          schema:
+            type: integer
+            example: 1
       responses:
-        "200":
+        '200':
           description: GuestMedia object.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GuestMedia"
-        "400":
+                $ref: '#/components/schemas/GuestMedia'
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "404":
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
           description: Record not found.
     delete:
       tags:
@@ -421,25 +429,25 @@ paths:
       description: |
         Takes a id and deletes that record. This method does not fail if the guest media does not exist as this is considered success.
       parameters:
-      - name: id
-        in: path
-        description: The id of the guest media to delete.
-        required: true
-        schema:
-          type: integer
-          example: 1
+        - name: id
+          in: path
+          description: The id of the guest media to delete.
+          required: true
+          schema:
+            type: integer
+            example: 1
       responses:
-        "200":
+        '200':
           description: Record was either deleted or did not exist.
           headers:
             x-record-count:
               schema:
                 type: integer
               description: The actual number of records deleted, could be zero if the record did not exist.
-        "400":
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
     put:
       tags:
         - guest-media
@@ -447,38 +455,38 @@ paths:
       description: |
         Accepts a JSON payload containing a guest media record and updates it. The id must not be present in the payload.
       parameters:
-      - name: id
-        in: path
-        description: The id of the guest to update.
-        required: true
-        schema:
-          type: integer
-          example: 1
+        - name: id
+          in: path
+          description: The id of the guest to update.
+          required: true
+          schema:
+            type: integer
+            example: 1
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/InputGuestMedia"
+              $ref: '#/components/schemas/InputGuestMedia'
             example:
               guest_id: 1
               media_id: 80558ABA5C3504
               sound: 1
               color: 16777215
       responses:
-        "200":
+        '200':
           description: Record was updated.
           headers:
             x-record-count:
               schema:
                 type: integer
               description: The actual number of records updated or created
-        "201":
+        '201':
           description: Record did not exist and was created.
-        "400":
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
   /media:
     get:
       tags:
@@ -494,18 +502,18 @@ paths:
             type: boolean
             example: true
       responses:
-        "200":
+        '200':
           description: Array of Media objects.
           content:
-           application/json:
-             schema:
-               type: array
-               items:
-                 $ref: "#/components/schemas/Media"
-        "400":
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Media'
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
     post:
       tags:
         - media
@@ -517,16 +525,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Media"
+              $ref: '#/components/schemas/Media'
       responses:
-        "201":
+        '201':
           description: New record created.
-        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Media'
+        '409':
           description: Record already exists.
-        "400":
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
   /media/{id}:
     get:
       tags:
@@ -535,25 +547,25 @@ paths:
       description: |
         Takes a id and returns the media.
       parameters:
-      - name: id
-        in: path
-        description: The id of the requested media.
-        required: true
-        schema:
-          type: string
-          example: 80558ABA5C3504
+        - name: id
+          in: path
+          description: The id of the requested media.
+          required: true
+          schema:
+            type: string
+            example: 80558ABA5C3504
       responses:
-        "200":
+        '200':
           description: Media object.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Media"
-        "400":
+                $ref: '#/components/schemas/Media'
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "404":
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
           description: Record not found.
     delete:
       tags:
@@ -562,25 +574,25 @@ paths:
       description: |
         Takes a id and deletes that record. This method does not fail if the media does not exist as this is considered success.
       parameters:
-      - name: id
-        in: path
-        description: The id of the media to delete.
-        required: true
-        schema:
-          type: string
-          example: 80558ABA5C3504
+        - name: id
+          in: path
+          description: The id of the media to delete.
+          required: true
+          schema:
+            type: string
+            example: 80558ABA5C3504
       responses:
-        "200":
+        '200':
           description: Record was either deleted or did not exist.
           headers:
             x-record-count:
               schema:
                 type: integer
               description: The actual number of records deleted, could be zero if the record did not exist.
-        "400":
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
     put:
       tags:
         - media
@@ -588,36 +600,36 @@ paths:
       description: |
         Accepts a JSON payload containing a media record and updates it. The id must not be present in the payload.
       parameters:
-      - name: id
-        in: path
-        description: The id of the media to update.
-        required: true
-        schema:
-          type: string
-          example: 80558ABA5C3504
+        - name: id
+          in: path
+          description: The id of the media to update.
+          required: true
+          schema:
+            type: string
+            example: 80558ABA5C3504
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateMedia"
+              $ref: '#/components/schemas/UpdateMedia'
             example:
               name: Anna's MagicBand
               desc: This is the MagicBand that Anna got from Elsa
       responses:
-        "200":
+        '200':
           description: Record was updated.
           headers:
             x-record-count:
               schema:
                 type: integer
               description: The actual number of records updated or created
-        "201":
+        '201':
           description: Record did not exist and was created.
-        "400":
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
   /media-perms:
     get:
       tags:
@@ -633,18 +645,18 @@ paths:
             type: string
             example: 80558ABA5C3504
       responses:
-        "200":
+        '200':
           description: Array of MediaPerm objects.
           content:
-           application/json:
-             schema:
-               type: array
-               items:
-                 $ref: "#/components/schemas/MediaPerm"
-        "400":
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MediaPerm'
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
     post:
       tags:
         - media-perm
@@ -656,16 +668,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/InputMediaPerm"
+              $ref: '#/components/schemas/InputMediaPerm'
       responses:
-        "201":
+        '201':
           description: New record created.
-        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaPerm'
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "409":
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '409':
           description: Record already exists.
+        '404':
+          description: Newly inserted record could not be found.
   /media-perms/{id}:
     get:
       tags:
@@ -674,25 +692,25 @@ paths:
       description: |
         Takes an id and returns the media permission.
       parameters:
-      - name: id
-        in: path
-        description: The id of the requested media permission.
-        required: true
-        schema:
-          type: integer
-          example: 1
+        - name: id
+          in: path
+          description: The id of the requested media permission.
+          required: true
+          schema:
+            type: integer
+            example: 1
       responses:
-        "200":
+        '200':
           description: MediaPerm object.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MediaPerm"
-        "400":
+                $ref: '#/components/schemas/MediaPerm'
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "404":
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
           description: Record not found.
     delete:
       tags:
@@ -701,25 +719,25 @@ paths:
       description: |
         Takes an id and deletes that record. This method does not fail if the media permission does not exist as this is considered success.
       parameters:
-      - name: id
-        in: path
-        description: The id of the requested media permission.
-        required: true
-        schema:
-          type: integer
-          example: 1
+        - name: id
+          in: path
+          description: The id of the requested media permission.
+          required: true
+          schema:
+            type: integer
+            example: 1
       responses:
-        "200":
+        '200':
           description: Record was either deleted or did not exist.
           headers:
             x-record-count:
               schema:
                 type: integer
               description: The actual number of records deleted, could be zero if the record did not exist.
-        "400":
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
     put:
       tags:
         - media-perm
@@ -727,33 +745,33 @@ paths:
       description: |
         Updates the media perm record specified.
       parameters:
-      - name: id
-        in: path
-        description: The id of the requested media permission.
-        required: true
-        schema:
-          type: integer
-          example: 1
+        - name: id
+          in: path
+          description: The id of the requested media permission.
+          required: true
+          schema:
+            type: integer
+            example: 1
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/InputMediaPerm"
+              $ref: '#/components/schemas/InputMediaPerm'
       responses:
-        "200":
+        '200':
           description: Record was updated.
           headers:
             x-record-count:
               schema:
                 type: integer
               description: The actual number of records updated or created
-        "201":
+        '201':
           description: Record did not exist and was created.
-        "400":
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
   /permissions:
     get:
       tags:
@@ -762,18 +780,18 @@ paths:
       description: |
         Retrieves all the permission records. This implementation does not currently support pagination.
       responses:
-        "200":
+        '200':
           description: Array of Permission objects.
           content:
-           application/json:
-             schema:
-               type: array
-               items:
-                 $ref: "#/components/schemas/Permission"
-        "400":
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Permission'
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
     post:
       tags:
         - permission
@@ -785,15 +803,19 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Permission"
+              $ref: '#/components/schemas/Permission'
       responses:
-        "201":
+        '201':
           description: New record created.
-        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permission'
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "409":
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '409':
           description: Record already exists.
   /permissions/{id}:
     get:
@@ -803,25 +825,25 @@ paths:
       description: |
         Takes a name and returns the permission.
       parameters:
-      - name: id
-        in: path
-        description: The id of the requested permission.
-        required: true
-        schema:
-          type: integer
-          example: 1
+        - name: id
+          in: path
+          description: The id of the requested permission.
+          required: true
+          schema:
+            type: integer
+            example: 1
       responses:
-        "200":
+        '200':
           description: Permission object.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Permission"
-        "400":
+                $ref: '#/components/schemas/Permission'
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "404":
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
           description: Record not found.
     delete:
       tags:
@@ -830,25 +852,25 @@ paths:
       description: |
         Takes an id and deletes that record. This method does not fail if the permission does not exist as this is considered success.
       parameters:
-      - name: id
-        in: path
-        description: The id of the permission to delete.
-        required: true
-        schema:
-          type: integer
-          example: 1
+        - name: id
+          in: path
+          description: The id of the permission to delete.
+          required: true
+          schema:
+            type: integer
+            example: 1
       responses:
-        "200":
+        '200':
           description: Record was either deleted or did not exist.
           headers:
             x-record-count:
               schema:
                 type: integer
               description: The actual number of records deleted, could be zero if the record did not exist.
-        "400":
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
     put:
       tags:
         - permission
@@ -856,33 +878,33 @@ paths:
       description: |
         Accepts a JSON payload containing a permission record and updates it. The id must not be present in the payload.
       parameters:
-      - name: id
-        in: path
-        description: The id of the permission to update.
-        required: true
-        schema:
-          type: integer
-          example: 1
+        - name: id
+          in: path
+          description: The id of the permission to update.
+          required: true
+          schema:
+            type: integer
+            example: 1
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/SimplePermission"
+              $ref: '#/components/schemas/SimplePermission'
       responses:
-        "200":
+        '200':
           description: Record was updated.
           headers:
             x-record-count:
               schema:
                 type: integer
               description: The actual number of records updated or created
-        "201":
+        '201':
           description: Record did not exist and was created.
-        "400":
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
   /player/{name}:
     get:
       tags:
@@ -892,26 +914,26 @@ paths:
       description: |
         Retrieves a sound as an audio/wav stream to be used with various audio players.
       parameters:
-      - name: name
-        in: path
-        description: The name of the requested sound.
-        required: true
-        schema:
-          type: string
-          example: read.wav
+        - name: name
+          in: path
+          description: The name of the requested sound.
+          required: true
+          schema:
+            type: string
+            example: read.wav
       responses:
-        "200":
+        '200':
           description: Sound object.
           content:
             audio/wav:
               schema:
                 type: string
                 format: binary
-        "400":
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "404":
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
           description: Record not found.
   /reader:
     get:
@@ -932,19 +954,19 @@ paths:
             maximum: 30
             example: 20
       responses:
-        "200":
+        '200':
           description: RFID
           content:
             application/json:
               schema:
                 type: string
                 example: 80558ABA5C3504
-        "204":
+        '204':
           description: No data read from reader, it is recommended to try again, possibly with a longer timeout.
-        "400":
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
   /sounds:
     get:
       tags:
@@ -953,18 +975,18 @@ paths:
       description: |
         Retrieves all the sound records. This implementation does not currently support pagination.
       responses:
-        "200":
+        '200':
           description: Array of Sound objects.
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/SimpleSound"
-        "400":
+                  $ref: '#/components/schemas/SimpleSound'
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
     post:
       tags:
         - sound
@@ -991,14 +1013,20 @@ paths:
               content:
                 contentType: audio/wav
       responses:
-        "201":
+        '201':
           description: New record created.
-        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimpleSound'
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "409":
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '409':
           description: Record already exists.
+        '404':
+          description: Newly inserted record could not be found.
   /sounds/{id}:
     get:
       tags:
@@ -1007,25 +1035,25 @@ paths:
       description: |
         Takes an id and returns the sound.
       parameters:
-      - name: id
-        in: path
-        description: The id of the requested sound.
-        required: true
-        schema:
-          type: integer
-          example: 1
+        - name: id
+          in: path
+          description: The id of the requested sound.
+          required: true
+          schema:
+            type: integer
+            example: 1
       responses:
-        "200":
+        '200':
           description: Sound object.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Sound"
-        "400":
+                $ref: '#/components/schemas/Sound'
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "404":
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
           description: Record not found.
     delete:
       tags:
@@ -1034,25 +1062,25 @@ paths:
       description: |
         Takes an id and deletes that record. This method does not fail if the sound does not exist as this is considered success.
       parameters:
-      - name: id
-        in: path
-        description: The id of the sound to delete.
-        required: true
-        schema:
-          type: integer
-          example: 1
+        - name: id
+          in: path
+          description: The id of the sound to delete.
+          required: true
+          schema:
+            type: integer
+            example: 1
       responses:
-        "200":
+        '200':
           description: Record was either deleted or did not exist.
           headers:
             x-record-count:
               schema:
                 type: integer
               description: The actual number of records deleted, could be zero if the record did not exist.
-        "400":
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
     put:
       tags:
         - sound
@@ -1060,13 +1088,13 @@ paths:
       description: |
         Accepts a multi-part form upload of an audio/wav file and a name and updates it.
       parameters:
-      - name: id
-        in: path
-        description: The id of the sound to update.
-        required: true
-        schema:
-          type: integer
-          example: 1
+        - name: id
+          in: path
+          description: The id of the sound to update.
+          required: true
+          schema:
+            type: integer
+            example: 1
       requestBody:
         required: true
         content:
@@ -1087,19 +1115,19 @@ paths:
               content:
                 contentType: audio/wav
       responses:
-        "200":
+        '200':
           description: Record was updated.
           headers:
             x-record-count:
               schema:
                 type: integer
               description: The actual number of records updated or created
-        "201":
+        '201':
           description: Record did not exist and was created.
-        "400":
+        '400':
           description: Invalid request.
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
 components:
   schemas:
     Color:
@@ -1122,28 +1150,28 @@ components:
           pattern: '^#[a-f0-9]{6}$'
     Config:
       allOf:
-        - $ref: "#/components/schemas/SimpleConfig"
+        - $ref: '#/components/schemas/SimpleConfig'
         - type: object
           required:
-          - key
+            - key
     Guest:
       allOf:
-        - $ref: "#/components/schemas/SimpleGuest"
+        - $ref: '#/components/schemas/SimpleGuest'
         - type: object
           required:
-          - id
+            - id
     GuestMedia:
       allOf:
-        - $ref: "#/components/schemas/SimpleGuestMedia"
+        - $ref: '#/components/schemas/SimpleGuestMedia'
         - type: object
           required:
-          - id
+            - id
     InputGuest:
       required:
-      - first_name
-      - last_name
-      - sound
-      - color
+        - first_name
+        - last_name
+        - sound
+        - color
       type: object
       properties:
         first_name:
@@ -1195,45 +1223,45 @@ components:
       additionalProperties: false
     Media:
       allOf:
-        - $ref: "#/components/schemas/SimpleMedia"
+        - $ref: '#/components/schemas/SimpleMedia'
         - type: object
           required:
-          - id
+            - id
     MediaConfig:
       required:
-      - media
-      - permission
+        - media
+        - permission
       type: object
       properties:
         media:
           oneOf:
-            - $ref: "#/components/schemas/Media"
+            - $ref: '#/components/schemas/Media'
           readOnly: true
         permission:
           oneOf:
-            - $ref: "#/components/schemas/Permission"
+            - $ref: '#/components/schemas/Permission'
           readOnly: true
         guest:
           oneOf:
-            - $ref: "#/components/schemas/Guest"
-            - $ref: "#/components/schemas/NullValue"
+            - $ref: '#/components/schemas/Guest'
+            - $ref: '#/components/schemas/NullValue'
           nullable: true
           readOnly: true
         sound:
           oneOf:
-            - $ref: "#/components/schemas/SimpleSound"
-            - $ref: "#/components/schemas/NullValue"
+            - $ref: '#/components/schemas/SimpleSound'
+            - $ref: '#/components/schemas/NullValue'
           nullable: true
           readOnly: true
         color:
           oneOf:
-             - $ref: "#/components/schemas/Color"
-             - $ref: "#/components/schemas/NullValue"
+            - $ref: '#/components/schemas/Color'
+            - $ref: '#/components/schemas/NullValue'
           nullable: true
       additionalProperties: false
     MediaPerm:
       allOf:
-        - $ref: "#/components/schemas/SimpleMediaPerm"
+        - $ref: '#/components/schemas/SimpleMediaPerm'
         - type: object
           required:
             - id
@@ -1246,16 +1274,16 @@ components:
           - type: boolean
           - type: object
           - type: array
-            items: {}    
+            items: {}
     Permission:
       allOf:
-        - $ref: "#/components/schemas/SimplePermission"
+        - $ref: '#/components/schemas/SimplePermission'
         - type: object
           required:
-          - name
+            - name
     Sound:
       allOf:
-        - $ref: "#/components/schemas/SimpleSound"
+        - $ref: '#/components/schemas/SimpleSound'
         - type: object
           required:
             - id
@@ -1263,7 +1291,7 @@ components:
             - content
     SimpleConfig:
       required:
-      - value
+        - value
       type: object
       properties:
         key:
@@ -1275,8 +1303,8 @@ components:
       additionalProperties: false
     SimpleGuest:
       required:
-      - first_name
-      - last_name
+        - first_name
+        - last_name
       type: object
       properties:
         id:
@@ -1291,19 +1319,19 @@ components:
           example: Mouse
         sound:
           oneOf:
-            - $ref: "#/components/schemas/SimpleSound"
-            - $ref: "#/components/schemas/NullValue"
+            - $ref: '#/components/schemas/SimpleSound'
+            - $ref: '#/components/schemas/NullValue'
           nullable: true
         color:
           oneOf:
-             - $ref: "#/components/schemas/Color"
-             - $ref: "#/components/schemas/NullValue"
+            - $ref: '#/components/schemas/Color'
+            - $ref: '#/components/schemas/NullValue'
           nullable: true
       additionalProperties: false
     SimpleGuestMedia:
       required:
-      - guest
-      - media
+        - guest
+        - media
       type: object
       properties:
         id:
@@ -1311,23 +1339,23 @@ components:
           readOnly: true
           example: 1
         guest:
-          $ref: "#/components/schemas/Guest"
+          $ref: '#/components/schemas/Guest'
         media:
-          $ref: "#/components/schemas/Media"
+          $ref: '#/components/schemas/Media'
         sound:
           oneOf:
-            - $ref: "#/components/schemas/SimpleSound"
-            - $ref: "#/components/schemas/NullValue"
+            - $ref: '#/components/schemas/SimpleSound'
+            - $ref: '#/components/schemas/NullValue'
           nullable: true
         color:
           oneOf:
-             - $ref: "#/components/schemas/Color"
-             - $ref: "#/components/schemas/NullValue"
+            - $ref: '#/components/schemas/Color'
+            - $ref: '#/components/schemas/NullValue'
           nullable: true
       additionalProperties: false
     SimpleMedia:
       required:
-      - name
+        - name
       type: object
       properties:
         id:
@@ -1344,17 +1372,17 @@ components:
     SimpleMediaPerm:
       type: object
       required:
-      - media
-      - permission
+        - media
+        - permission
       properties:
         id:
           type: integer
           readOnly: true
           example: 1
         media:
-          $ref: "#/components/schemas/Media"
+          $ref: '#/components/schemas/Media'
         permission:
-          $ref: "#/components/schemas/Permission"
+          $ref: '#/components/schemas/Permission'
       additionalProperties: false
     SimplePermission:
       type: object
@@ -1396,7 +1424,7 @@ components:
       additionalProperties: false
     UpdateMedia:
       required:
-      - name
+        - name
       type: object
       properties:
         name:
