@@ -36,12 +36,15 @@ def delete(id: int) -> tuple[None, int, dict[str, str]]:
     return None, 200, {RECORD_COUNT_HEADER: str(model.delete(id))}
 
 
-def put(id: int, body: Mapping[str, Any], content: Any) -> tuple[None, int, dict[str, str]]:
-    if content is None or content.content_type != 'audio/wav':
-        return 'audio/wav data is required', 415
-    file_content = content.file.read()
-    if content.size <= 0:
-        return 'audio/wav data is required', 400
+def put(id: int, body: Mapping[str, Any], content: Any = None) -> tuple[None, int, dict[str, str]]:
+    if content is not None and content.content_type != 'audio/wav':
+        return 'Invalid content type. Expected audio/wav.', 415
+    file_content = None
+    # Content is not required on an update, we treat this as a name change
+    if content is not None:
+        file_content = content.file.read()
+        if len(file_content) <= 0:
+            return 'audio/wav data is required', 400
     name = body['name']
 
     try:

@@ -84,10 +84,10 @@ def test_put_no_content(rh, sounds):
         415,
     )
 
-
 def test_put_too_little_content(rh, sounds):
     content = sounds[0].test_to_multipart()
-    content = (content[0], FileStorage(BytesIO(b''), 'local file name.wav', sounds[0].name, 'audio/wav', 0))  # Replace the file information with an empty file
+    # Replace the file information with an empty file
+    content = (content[0], {'content': (sounds[0].name, BytesIO(b''), 'audio/wav')})  
     rh.assert_response(rh.open('put', f'{api}/{sounds[0].id}', content, 'multipart/form-data'), 400)
 
 
