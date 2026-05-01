@@ -2,5 +2,5 @@ connexion[swagger-ui,uvicorn]>=3.3.0,<4
 pytest>=9.0.2,<10
 coverage>=7.13.5,<8
 wheel>=0.46.3,<1
-ruff>=0.15.9,<1
+ruff>=0.15.12,<1
 click>=8.1.0,<9
