@@ -8,7 +8,7 @@ setup(
     author='Brian Curnow',
     author_email='bcurnow@users.noreply.github.com',
     classifiers=[
-        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.13',
         'License :: OSI Approved :: Apache Software License',
         'Operating System :: OS Independent',
         'Natural Language :: English',
