@@ -1,6 +1,6 @@
 connexion[swagger-ui,uvicorn]>=3.3.0,<4
 pytest>=9.1.1,<10
-coverage>=7.14.1,<8
+coverage>=7.14.3,<8
 wheel>=0.46.3,<1
 ruff>=0.15.20,<1
 wheel>=0.47.0,<1
